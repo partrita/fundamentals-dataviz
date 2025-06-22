@@ -1,0 +1,107 @@
+# 다중 패널 그림 {#multi-panel-figures}
+
+데이터 세트가 크고 복잡해지면 단일 그림 패널에 합리적으로 표시할 수 있는 것보다 훨씬 많은 정보를 포함하는 경우가 많습니다. 이러한 데이터 세트를 시각화하려면 다중 패널 그림을 만드는 것이 도움이 될 수 있습니다. 이는 각 패널이 데이터의 일부 하위 집합을 보여주는 여러 그림 패널로 구성된 그림입니다. 이러한 그림에는 두 가지 뚜렷한 범주가 있습니다. 1. 작은 다중 그림은 규칙적인 격자로 배열된 여러 패널로 구성된 플롯입니다. 각 패널은 데이터의 다른 하위 집합을 보여주지만 모든 패널은 동일한 유형의 시각화를 사용합니다. 2. 복합 그림은 임의의 배열(격자 기반일 수도 있고 아닐 수도 있음)로 조립된 별도의 그림 패널로 구성되며 완전히 다른 시각화 또는 심지어 다른 데이터 세트를 보여줄 수도 있습니다.
+
+이 책 전체에서 여러 곳에서 두 가지 유형의 다중 패널 그림을 모두 접했습니다. 일반적으로 이러한 그림은 직관적이고 해석하기 쉽습니다. 그러나 이러한 그림을 준비할 때 적절한 축 배율, 정렬 및 개별 패널 간의 일관성과 같이 주의해야 할 몇 가지 문제가 있습니다.
+
+## 작은 다중 그림
+
+"작은 다중 그림"이라는 용어는 @TufteEnvisioning에 의해 대중화되었습니다. "격자 그림"이라는 대체 용어는 거의 같은 시기에 벨 연구소의 클리블랜드, 베커 및 동료들에 의해 대중화되었습니다[@Cleveland1993; @Becker-Cleveland-Shyu-1996]. 용어에 관계없이 핵심 아이디어는 하나 이상의 데이터 차원에 따라 데이터를 조각으로 나누고 각 데이터 조각을 개별적으로 시각화한 다음 개별 시각화를 격자로 배열하는 것입니다. 격자의 열, 행 또는 개별 패널은 데이터 조각을 정의하는 데이터 차원의 값으로 레이블이 지정됩니다. 최근에는 이 기법을 널리 사용되는 ggplot2 플롯 라이브러리에서 이러한 플롯을 만드는 메서드(예: `facet_grid()`, @Wickham2016 참조)의 이름을 따서 "패싯팅"이라고도 합니다.
+
+첫 번째 예로 타이타닉 승객 데이터 세트에 이 기법을 적용합니다. 이 데이터 세트를 각 승객이 여행한 등급과 승객이 생존했는지 여부에 따라 하위 그룹으로 나눌 수 있습니다. 이러한 6개의 데이터 조각 각각에는 남성 및 여성 승객이 모두 있으며 막대를 사용하여 그 수를 시각화할 수 있습니다. 결과는 6개의 막대 그래프이며, 3개 행(각 등급에 대해 하나씩)의 두 열(사망한 승객에 대해 하나, 생존한 승객에 대해 하나)로 배열합니다(그림 \@ref(fig:titanic-passenger-breakdown)). 열과 행에는 레이블이 지정되어 있으므로 6개의 플롯 중 어떤 것이 생존 상태와 등급의 어떤 조합에 해당하는지 즉시 명확합니다.
+
+(ref:titanic-passenger-breakdown) 타이타닉호 승객을 성별, 생존 여부, 탑승 등급(1등석, 2등석, 3등석)별로 분류한 내역.
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/titanic-passenger-breakdown-1.png" alt="(ref:titanic-passenger-breakdown)" width="480" />
+<p class="caption">(\#fig:titanic-passenger-breakdown)(ref:titanic-passenger-breakdown)</p>
+</div>
+
+이 시각화는 타이타닉 승객의 운명에 대한 직관적이고 해석하기 쉬운 시각화를 제공합니다. 대부분의 남성이 사망하고 대부분의 여성이 생존했음을 명확하게 알 수 있습니다. 또한 사망한 여성 중 거의 모든 여성이 3등석으로 여행했습니다.
+
+작은 다중 그림은 한 번에 매우 많은 양의 데이터를 시각화하는 강력한 도구입니다. 그림 \@ref(fig:titanic-passenger-breakdown)은 6개의 개별 패널을 사용하지만 훨씬 더 많이 사용할 수 있습니다. 그림 \@ref(fig:movie-rankings)은 100년 동안 개봉된 영화에 대해 인터넷 영화 데이터베이스(IMDB)에서 영화의 평균 순위와 영화가 받은 투표 수 사이의 관계를 개별적으로 보여줍니다. 여기서 데이터 세트는 연도라는 단일 차원으로만 분할되며 각 연도의 패널은 왼쪽 위에서 오른쪽 아래로 행으로 배열됩니다. 이 시각화는 평균 순위와 투표 수 사이에 전반적인 관계가 있음을 보여주므로 투표 수가 많은 영화일수록 순위가 높은 경향이 있습니다. 그러나 이 추세의 강도는 연도에 따라 다르며 2000년대 초반에 개봉된 영화의 경우 관계가 없거나 심지어 음의 관계가 있습니다.
+
+(ref:movie-rankings) 1906년부터 2005년까지 영화의 평균 순위 대 투표 수. 점은 개별 영화를 나타내고 선은 각 영화의 평균 순위를 영화가 받은 투표 수의 로그에 대한 선형 회귀를 나타냅니다. 대부분의 해에 투표 수가 많은 영화일수록 평균적으로 평균 순위가 높습니다. 그러나 이 추세는 20세기 말에 약화되었으며 2000년대 초반에 개봉된 영화에서는 음의 관계를 볼 수 있습니다. 데이터 출처: 인터넷 영화 데이터베이스(IMDB, http://imdb.com/)
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/movie-rankings-1.png" alt="(ref:movie-rankings)" width="754.285714285714" />
+<p class="caption">(\#fig:movie-rankings)(ref:movie-rankings)</p>
+</div>
+
+이러한 큰 그림을 쉽게 이해하려면 각 패널이 동일한 축 범위와 배율을 사용하는 것이 중요합니다. 인간의 마음은 이것이 사실이라고 예상합니다. 그렇지 않으면 독자가 그림이 보여주는 것을 잘못 해석할 가능성이 높습니다. 예를 들어 그림 \@ref(fig:BA-degrees-variable-y-lims)를 생각해 보십시오. 이 그림은 여러 학위 분야에서 학사 학위 비율이 시간 경과에 따라 어떻게 변했는지 보여줍니다. 이 그림은 1971년부터 2015년까지 평균적으로 모든 학위의 4% 이상을 차지한 9개 학위 분야를 보여줍니다. 각 학위 분야의 곡선이 전체 *y* 축 범위를 차지하도록 패널의 *y* 축 배율이 조정되었습니다. 결과적으로 그림 \@ref(fig:BA-degrees-variable-y-lims)을 대충 살펴보면 9개 학위 분야가 모두 똑같이 인기가 있고 모두 비슷한 규모의 인기 변화를 경험했음을 알 수 있습니다.
+
+(ref:BA-degrees-variable-y-lims) 미국 고등 교육 기관에서 수여한 학사 학위 동향. 평균적으로 모든 학위의 4% 이상을 차지하는 모든 학위 분야가 표시됩니다. 이 그림은 모든 패널이 다른 *y* 축 범위를 사용하기 때문에 "나쁨"으로 표시되었습니다. 이 선택은 여러 학위 분야의 상대적 크기를 모호하게 만들고 일부 학위 분야에서 발생한 변화를 과장합니다. 데이터 출처: 국립 교육 통계 센터
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/BA-degrees-variable-y-lims-1.png" alt="(ref:BA-degrees-variable-y-lims)" width="754.285714285714" />
+<p class="caption">(\#fig:BA-degrees-variable-y-lims)(ref:BA-degrees-variable-y-lims)</p>
+</div>
+
+그러나 모든 패널을 동일한 *y* 축에 배치하면 이 해석이 매우 오해의 소지가 있음이 드러납니다(그림 \@ref(fig:BA-degrees-fixed-y-lims)). 일부 학위 분야는 다른 분야보다 훨씬 인기가 많으며 마찬가지로 일부 분야는 다른 분야보다 훨씬 많이 성장하거나 축소되었습니다. 예를 들어 교육은 많이 감소한 반면 시각 및 공연 예술은 거의 일정하거나 약간 증가했을 수 있습니다.
+
+(ref:BA-degrees-fixed-y-lims) 미국 고등 교육 기관에서 수여한 학사 학위 동향. 평균적으로 모든 학위의 4% 이상을 차지하는 모든 학위 분야가 표시됩니다. 데이터 출처: 국립 교육 통계 센터
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/BA-degrees-fixed-y-lims-1.png" alt="(ref:BA-degrees-fixed-y-lims)" width="754.285714285714" />
+<p class="caption">(\#fig:BA-degrees-fixed-y-lims)(ref:BA-degrees-fixed-y-lims)</p>
+</div>
+
+저는 일반적으로 작은 다중 그림 플롯의 개별 패널에 다른 축 배율을 사용하는 것을 권장하지 않습니다. 그러나 경우에 따라 이 문제를 피할 수 없는 경우가 있습니다. 이러한 시나리오에 직면하면 최소한 그림 캡션에서 독자의 주의를 이 문제로 끌어야 한다고 생각합니다. 예를 들어 "이 그림의 여러 패널에서 *y* 축 배율이 다릅니다."와 같은 문장을 추가할 수 있습니다.
+
+작은 다중 그림 플롯에서 개별 패널의 순서에 대해 생각하는 것도 중요합니다. 순서가 논리적인 원칙을 따르면 플롯을 더 쉽게 해석할 수 있습니다. 그림 \@ref(fig:titanic-passenger-breakdown)에서는 가장 높은 등급(1등석)에서 가장 낮은 등급(3등석)으로 행을 배열했습니다. 그림 \@ref(fig:movie-rankings)에서는 왼쪽 위에서 오른쪽 아래로 연도가 증가하도록 패널을 배열했습니다. 그림 \@ref(fig:BA-degrees-fixed-y-lims)에서는 가장 인기 있는 학위가 맨 위 행 및/또는 왼쪽에 있고 가장 인기 없는 학위가 맨 아래 행 및/또는 오른쪽에 있도록 평균 학위 인기도가 감소하도록 패널을 배열했습니다.
+
+<div class="rmdtip">
+<p>항상 작은 다중 그림 플롯의 패널을 의미 있고 논리적인 순서로 배열하십시오.</p>
+</div>
+
+## 복합 그림 {#compound-figures}
+
+여러 패널이 있는 모든 그림이 작은 다중 그림 패턴에 맞는 것은 아닙니다. 때로는 단순히 여러 개의 독립적인 패널을 결합하여 하나의 포괄적인 요점을 전달하는 결합된 그림을 만들고 싶을 때가 있습니다. 이 경우 개별 플롯을 가져와 행, 열 또는 기타 더 복잡한 배열로 배열하고 전체 배열을 하나의 그림이라고 부를 수 있습니다. 예를 들어 그림 \@ref(fig:BA-degrees-compound)를 참조하십시오. 이 그림은 미국 고등 교육 기관에서 수여한 학사 학위 동향 분석을 계속합니다. 그림 \@ref(fig:BA-degrees-compound)의 (a) 패널은 1971년부터 2015년까지 수여된 총 학위 수의 증가를 보여주며, 이 기간 동안 수여된 학위 수는 거의 두 배가 되었습니다. (b) 패널은 대신 가장 인기 있는 5개 학위 분야에서 같은 기간 동안 수여된 학위 비율의 변화를 보여줍니다. 사회 과학, 역사, 교육은 1971년부터 2015년까지 엄청난 감소를 경험한 반면 경영 및 보건 전문직은 상당한 성장을 보였음을 알 수 있습니다.
+
+작은 다중 그림 예제와 달리 복합 그림의 개별 패널에는 알파벳 레이블이 지정되어 있습니다. 라틴 알파벳의 소문자 또는 대문자를 사용하는 것이 일반적입니다. 특정 패널을 고유하게 지정하려면 레이블링이 필요합니다. 예를 들어 그림 \@ref(fig:BA-degrees-compound)에서 학위 수여 비율의 변화를 보여주는 부분에 대해 이야기하고 싶다면 해당 그림의 (b) 패널 또는 간단히 그림 \@ref(fig:BA-degrees-compound)b를 참조할 수 있습니다. 레이블링이 없으면 그림 \@ref(fig:BA-degrees-compound)의 "오른쪽 패널" 또는 "왼쪽 패널"에 대해 어색하게 이야기해야 하며 더 복잡한 패널 배열의 경우 특정 패널을 참조하는 것이 훨씬 더 어색할 것입니다. 작은 다중 그림의 경우 각 패널이 그림 레이블로 제공되는 패싯 변수에 의해 고유하게 지정되므로 레이블링이 필요하지 않으며 일반적으로 수행되지 않습니다.
+
+(ref:BA-degrees-compound) 미국 고등 교육 기관에서 수여한 학사 학위 동향. (a) 1970년부터 2015년까지 총 학위 수는 거의 두 배가 되었습니다. (b) 가장 인기 있는 학위 분야 중 사회 과학, 역사, 교육은 크게 감소한 반면 경영 및 보건 전문직은 성장했습니다. 데이터 출처: 국립 교육 통계 센터
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/BA-degrees-compound-1.png" alt="(ref:BA-degrees-compound)" width="754.285714285714" />
+<p class="caption">(\#fig:BA-degrees-compound)(ref:BA-degrees-compound)</p>
+</div>
+
+복합 그림의 여러 패널에 레이블을 지정할 때 레이블이 전체 그림 디자인에 어떻게 맞는지 주의하십시오. 레이블이 다른 사람이 나중에 그림에 붙인 것처럼 보이는 그림을 자주 봅니다. 레이블이 지나치게 크고 눈에 띄게 만들어지거나 어색한 위치에 배치되거나 그림의 나머지 부분과 다른 글꼴로 조판되는 것은 드문 일이 아닙니다. (예는 그림 \@ref(fig:BA-degrees-compound-bad) 참조) 레이블은 복합 그림을 볼 때 가장 먼저 보이는 것이 아니어야 합니다. 사실 전혀 눈에 띄지 않아도 됩니다. 일반적으로 왼쪽 위 모서리에서 "a"로 시작하여 왼쪽에서 오른쪽으로, 위에서 아래로 연속적으로 레이블을 지정하는 규칙이므로 어떤 그림 패널에 어떤 레이블이 있는지 알고 있습니다. 저는 이러한 레이블을 페이지 번호와 동일하다고 생각합니다. 일반적으로 페이지 번호를 읽지 않으며 어떤 페이지에 어떤 번호가 있는지 놀랍지 않지만 경우에 따라 페이지 번호를 사용하여 책이나 기사의 특정 위치를 참조하는 것이 도움이 될 수 있습니다.
+
+(ref:BA-degrees-compound-bad) 레이블링이 잘못된 그림 \@ref(fig:BA-degrees-compound)의 변형. 레이블이 너무 크고 두꺼우며 잘못된 글꼴로 되어 있고 어색한 위치에 배치되어 있습니다. 또한 대문자로 레이블링하는 것은 괜찮고 실제로 매우 일반적이지만 레이블링은 문서의 모든 그림에서 일관되어야 합니다. 이 책에서는 다중 패널 그림에 소문자 레이블을 사용하는 것이 규칙이므로 이 그림은 이 책의 다른 그림과 일치하지 않습니다.
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/BA-degrees-compound-bad-1.png" alt="(ref:BA-degrees-compound-bad)" width="754.285714285714" />
+<p class="caption">(\#fig:BA-degrees-compound-bad)(ref:BA-degrees-compound-bad)</p>
+</div>
+
+
+또한 복합 그림의 개별 패널이 어떻게 어울리는지 주의해야 합니다. 개별적으로는 괜찮지만 함께 작동하지 않는 그림 패널 세트를 만들 수 있습니다. 특히 일관된 시각적 언어를 사용해야 합니다. "시각적 언어"란 데이터를 표시하는 데 사용하는 색상, 기호, 글꼴 등을 의미합니다. 그리고 언어를 일관되게 유지한다는 것은 간단히 말해서 동일한 것이 그림 전체에서 동일하거나 적어도 실질적으로 유사하게 보이는 것을 의미합니다.
+
+이 원칙을 위반하는 예를 살펴보겠습니다. 그림 \@ref(fig:athletes-composite-inconsistent)은 남성 및 여성 운동선수의 생리학 및 신체 구성에 대한 데이터 세트를 시각화하는 3패널 그림입니다. (a) 패널은 데이터 세트의 남성과 여성 수를 보여주고, (b) 패널은 남성과 여성의 적혈구 및 백혈구 수를 보여주며, (c) 패널은 스포츠별로 분류된 남성과 여성의 체지방률을 보여줍니다. 각 패널은 개별적으로 수용 가능한 그림입니다. 그러나 조합하면 공통된 시각적 언어를 공유하지 않기 때문에 세 패널이 작동하지 않습니다. 첫째, (a) 패널은 남성과 여성 운동선수 모두에게 동일한 파란색을 사용하고, (b) 패널은 남성 운동선수에게만 사용하며, (c) 패널은 여성 운동선수에게 사용합니다. 또한 (b) 및 (c) 패널에는 추가 색상이 도입되지만 이러한 색상은 두 패널 간에 다릅니다. 남성과 여성 운동선수에게 동일한 두 가지 색상을 일관되게 사용하고 (a) 패널에도 동일한 색상 구성표를 적용하는 것이 더 좋았을 것입니다. 둘째, (a) 및 (b) 패널에서는 여성이 왼쪽에 있고 남성이 오른쪽에 있지만 (c) 패널에서는 순서가 반대입니다. (c) 패널의 상자 그림 순서는 (a) 및 (b) 패널과 일치하도록 변경해야 합니다.
+
+(ref:athletes-composite-inconsistent) 남성 및 여성 운동선수의 생리학 및 신체 구성. (a) 데이터 세트에는 73명의 여성 및 85명의 남성 프로 운동선수가 포함됩니다. (b) 남성 운동선수는 여성 운동선수보다 적혈구(RBC, 리터당 $10^{12}$ 단위로 보고됨) 수가 더 높은 경향이 있지만 백혈구 수(WBC, 리터당 $10^{9}$ 단위로 보고됨)에는 이러한 차이가 없습니다. (c) 남성 운동선수는 동일한 스포츠를 하는 여성 운동선수보다 체지방률이 낮은 경향이 있습니다. 데이터 출처: @Telford-Cunningham-1991
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/athletes-composite-inconsistent-1.png" alt="(ref:athletes-composite-inconsistent)" width="685.714285714286" />
+<p class="caption">(\#fig:athletes-composite-inconsistent)(ref:athletes-composite-inconsistent)</p>
+</div>
+
+그림 \@ref(fig:athletes-composite-good)은 이러한 모든 문제를 해결합니다. 이 그림에서 여성 운동선수는 일관되게 주황색으로 표시되고 남성 운동선수의 왼쪽에 표시되며 남성 운동선수는 파란색으로 표시됩니다. 이 그림이 그림 \@ref(fig:athletes-composite-inconsistent)보다 얼마나 읽기 쉬운지 주목하십시오. 일관된 시각적 언어를 사용하면 여러 패널의 어떤 시각적 요소가 여성을 나타내고 어떤 요소가 남성을 나타내는지 결정하는 데 많은 정신적 노력이 필요하지 않습니다. 반면에 그림 \@ref(fig:athletes-composite-inconsistent)은 상당히 혼란스러울 수 있습니다. 특히 언뜻 보면 남성이 여성보다 체지방률이 높은 경향이 있다는 인상을 줄 수 있습니다. 또한 그림 \@ref(fig:athletes-composite-good)에는 범례가 하나만 필요하지만 그림 \@ref(fig:athletes-composite-inconsistent)에는 두 개가 필요했습니다. 시각적 언어가 일관되므로 (b) 및 (c) 패널에 동일한 범례가 작동합니다.
+
+(ref:athletes-composite-good) 남성 및 여성 운동선수의 생리학 및 신체 구성. 이 그림은 그림 \@ref(fig:athletes-composite-inconsistent)과 정확히 동일한 데이터를 보여주지만 이제 일관된 시각적 언어를 사용합니다. 여성 운동선수의 데이터는 항상 해당 남성 운동선수의 데이터 왼쪽에 표시되며 성별은 그림의 모든 요소에 걸쳐 일관되게 색상으로 구분됩니다. 데이터 출처: @Telford-Cunningham-1991
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/athletes-composite-good-1.png" alt="(ref:athletes-composite-good)" width="685.714285714286" />
+<p class="caption">(\#fig:athletes-composite-good)(ref:athletes-composite-good)</p>
+</div>
+
+마지막으로 복합 그림에서 개별 그림 패널의 정렬에 주의해야 합니다. 개별 패널의 축 및 기타 그래픽 요소는 모두 서로 정렬되어야 합니다. 특히 개별 패널을 별도로 준비하고(다른 사람이나 다른 프로그램에서) 이미지 조작 프로그램에서 함께 붙여넣는 경우 정렬을 올바르게 하는 것이 상당히 까다로울 수 있습니다. 이러한 정렬 문제에 주의를 환기시키기 위해 그림 \@ref(fig:athletes-composite-misaligned)는 그림 \@ref(fig:athletes-composite-good)의 변형을 보여주며, 여기서 모든 그림 요소가 약간 정렬되지 않았습니다. 이러한 정렬 문제를 강조하기 위해 그림 \@ref(fig:athletes-composite-misaligned)의 모든 패널에 축선을 추가했습니다. 그림의 다른 패널에 대한 다른 축선과 정렬된 축선이 없는 것을 확인하십시오.
+
+(ref:athletes-composite-misaligned) 모든 그림 패널이 약간 정렬되지 않은 그림 \@ref(fig:athletes-composite-good)의 변형. 정렬 불량은 보기 흉하며 피해야 합니다.
+
+<div class="figure" style="text-align: center">
+<img src="multi-panel_figures_files/figure-html/athletes-composite-misaligned-1.png" alt="(ref:athletes-composite-misaligned)" width="685.714285714286" />
+<p class="caption">(\#fig:athletes-composite-misaligned)(ref:athletes-composite-misaligned)</p>
+</div>

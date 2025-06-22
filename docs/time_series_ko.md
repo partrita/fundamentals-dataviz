@@ -1,0 +1,131 @@
+# 시계열 및 기타 독립 변수 함수 시각화 {#time-series}
+
+이전 장에서는 한 정량적 변수를 다른 정량적 변수와 비교하여 플로팅하는 산점도에 대해 논의했습니다. 두 변수 중 하나를 시간으로 생각할 수 있는 경우 특별한 경우가 발생하는데, 시간은 데이터에 추가적인 구조를 부여하기 때문입니다. 이제 데이터 포인트에는 고유한 순서가 있습니다. 시간을 증가하는 순서대로 포인트를 배열하고 각 데이터 포인트에 대해 이전 및 다음 포인트를 정의할 수 있습니다. 우리는 종종 이러한 시간적 순서를 시각화하며 선 그래프를 사용하여 그렇게 합니다. 그러나 선 그래프는 시계열에만 국한되지 않습니다. 한 변수가 데이터에 순서를 부여할 때마다 적합합니다. 예를 들어 처리 변수가 의도적으로 다양한 값으로 설정되는 제어된 실험에서도 이러한 시나리오가 발생합니다. 시간에 따라 여러 변수가 있는 경우 별도의 선 플롯을 그리거나 일반 산점도를 그린 다음 시간적으로 인접한 점을 연결하는 선을 그릴 수 있습니다.
+
+
+## 개별 시계열
+
+시계열의 첫 번째 시연으로 생물학 분야의 월별 프리프린트 제출 패턴을 고려해 보겠습니다. 프리프린트는 연구자들이 공식적인 동료 검토 및 과학 저널 게재 전에 온라인에 게시하는 과학 논문입니다. 2013년 11월 생물 과학 분야 연구자들을 위해 특별히 설립된 프리프린트 서버인 bioRxiv는 그 이후로 월별 제출 건수가 크게 증가했습니다. 각 월의 제출 건수를 나타내는 점을 그려 이 증가를 시각화할 수 있습니다(그림 \@ref(fig:biorxiv-dots)). (챕터 \@ref(visualizing-associations)의 산점도 형태)
+
+(ref:biorxiv-dots) 2014년 11월 창립부터 2018년 4월까지 프리프린트 서버 bioRxiv에 월별 제출 건수. 각 점은 한 달의 제출 건수를 나타냅니다. 4.5년 전체 기간 동안 제출 건수가 꾸준히 증가했습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/biorxiv-dots-1.png" alt="(ref:biorxiv-dots)" width="576" />
+<p class="caption">(\#fig:biorxiv-dots)(ref:biorxiv-dots)</p>
+</div>
+
+그러나 그림 \@ref(fig:biorxiv-dots)와 챕터 \@ref(visualizing-associations)에서 논의된 산점도 사이에는 중요한 차이점이 있습니다. 그림 \@ref(fig:biorxiv-dots)에서는 점이 *x* 축을 따라 균등하게 간격을 두고 있으며 점 사이에 정의된 순서가 있습니다. 각 점은 정확히 하나의 왼쪽 이웃과 하나의 오른쪽 이웃을 갖습니다(가장 왼쪽과 가장 오른쪽 점은 각각 하나의 이웃만 가짐). 인접한 점을 선으로 연결하여 이 순서를 시각적으로 강조할 수 있습니다(그림 \@ref(fig:biorxiv-dots-line)). 이러한 플롯을 *선 그래프*라고 합니다.
+
+(ref:biorxiv-dots-line) 월별 프리프린트 서버 bioRxiv 제출 건수, 점과 선으로 연결하여 표시. 선은 데이터를 나타내지 않으며 단지 눈을 안내하기 위한 것입니다. 개별 점을 선으로 연결함으로써 점 사이에 순서가 있으며 각 점에는 바로 앞에 오는 이웃과 바로 뒤에 오는 이웃이 하나씩 있음을 강조합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/biorxiv-dots-line-1.png" alt="(ref:biorxiv-dots-line)" width="576" />
+<p class="caption">(\#fig:biorxiv-dots-line)(ref:biorxiv-dots-line)</p>
+</div>
+
+일부 사람들은 선이 관찰된 데이터를 나타내지 않기 때문에 점 사이에 선을 그리는 것에 반대합니다. 특히 관찰값이 몇 개 없고 멀리 떨어져 있는 경우 중간 시간에 관찰이 이루어졌다면 표시된 선 위에 정확히 떨어지지 않았을 것입니다. 따라서 어떤 의미에서 선은 꾸며낸 데이터에 해당합니다. 그러나 점이 멀리 떨어져 있거나 고르지 않게 간격을 두고 있는 경우 인식에 도움이 될 수 있습니다. 예를 들어 그림 캡션에 "선은 눈을 안내하기 위한 것입니다"(그림 \@ref(fig:biorxiv-dots-line)의 캡션 참조)라고 작성하여 이 딜레마를 다소 해결할 수 있습니다.
+
+그러나 시계열을 나타내기 위해 선을 사용하는 것은 일반적으로 허용되는 관행이며 점은 종종 완전히 생략됩니다(그림 \@ref(fig:biorxiv-line)). 점이 없으면 그림은 데이터의 전반적인 추세에 더 중점을 두고 개별 관찰에는 덜 중점을 둡니다. 점이 없는 그림은 시각적으로도 덜 복잡합니다. 일반적으로 시계열이 조밀할수록 점으로 개별 관찰을 표시하는 것이 덜 중요합니다. 여기에 표시된 프리프린트 데이터 세트의 경우 점을 생략해도 괜찮다고 생각합니다.
+
+(ref:biorxiv-line) 월별 프리프린트 서버 bioRxiv 제출 건수, 점 없는 선 그래프로 표시. 점을 생략하면 특정 시점의 개별 관찰을 덜 강조하면서 전반적인 시간적 추세를 강조합니다. 시점이 매우 조밀하게 간격을 두고 있는 경우 특히 유용합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/biorxiv-line-1.png" alt="(ref:biorxiv-line)" width="576" />
+<p class="caption">(\#fig:biorxiv-line)(ref:biorxiv-line)</p>
+</div>
+
+또한 곡선 아래 영역을 단색으로 채울 수도 있습니다(그림 \@ref(fig:biorxiv-line-area)). 이 선택은 곡선 위 영역과 아래 영역을 시각적으로 분리하므로 데이터의 포괄적인 추세를 더욱 강조합니다. 그러나 이 시각화는 *y* 축이 0에서 시작하여 각 시점의 음영 영역 높이가 해당 시점의 데이터 값을 나타내는 경우에만 유효합니다.
+
+(ref:biorxiv-line-area) 월별 프리프린트 서버 bioRxiv 제출 건수, 아래 영역이 채워진 선 그래프로 표시. 곡선 아래 영역을 채움으로써 선만 그리는 것보다(그림 \@ref(fig:biorxiv-line)) 포괄적인 시간적 추세를 훨씬 더 강조합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/biorxiv-line-area-1.png" alt="(ref:biorxiv-line-area)" width="576" />
+<p class="caption">(\#fig:biorxiv-line-area)(ref:biorxiv-line-area)</p>
+</div>
+
+
+## 여러 시계열 및 용량-반응 곡선
+
+한 번에 여러 시계열을 표시하려는 경우가 많습니다. 이 경우 그림이 혼란스럽거나 읽기 어려워질 수 있으므로 데이터를 플로팅하는 방법에 더 주의해야 합니다. 예를 들어 여러 프리프린트 서버에 대한 월별 제출 건수를 표시하려는 경우 개별 시계열이 서로 겹치므로 산점도는 좋은 생각이 아닙니다(그림 \@ref(fig:bio-preprints-dots)). 점을 선으로 연결하면 이 문제가 완화됩니다(그림 \@ref(fig:bio-preprints-lines)).
+
+(ref:bio-preprints-dots) 생의학 연구를 다루는 세 개의 프리프린트 서버(bioRxiv, arXiv의 q-bio 섹션, PeerJ Preprints)에 대한 월별 제출 건수. 각 점은 해당 프리프린트 서버에 대한 한 달의 제출 건수를 나타냅니다. 이 그림은 세 개의 시계열이 시각적으로 서로 간섭하고 읽기 어렵기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/bio-preprints-dots-1.png" alt="(ref:bio-preprints-dots)" width="576" />
+<p class="caption">(\#fig:bio-preprints-dots)(ref:bio-preprints-dots)</p>
+</div>
+
+(ref:bio-preprints-lines) 생의학 연구를 다루는 세 개의 프리프린트 서버에 대한 월별 제출 건수. 그림 \@ref(fig:bio-preprints-dots)의 점을 선으로 연결함으로써 뷰어가 각 개별 시계열을 따라갈 수 있도록 도와줍니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/bio-preprints-lines-1.png" alt="(ref:bio-preprints-lines)" width="576" />
+<p class="caption">(\#fig:bio-preprints-lines)(ref:bio-preprints-lines)</p>
+</div>
+
+그림 \@ref(fig:bio-preprints-lines)는 프리프린트 데이터 세트의 허용 가능한 시각화를 나타냅니다. 그러나 별도의 범례는 불필요한 인지 부하를 발생시킵니다. 선에 직접 레이블을 지정하여 이러한 인지 부하를 줄일 수 있습니다(그림 \@ref(fig:bio-preprints-direct-label)). 또한 이 그림에서는 개별 점을 제거하여 원래 시작점인 그림 \@ref(fig:bio-preprints-dots)보다 훨씬 간소화되고 읽기 쉬운 결과를 얻었습니다.
+
+(ref:bio-preprints-direct-label) 생의학 연구를 다루는 세 개의 프리프린트 서버에 대한 월별 제출 건수. 범례를 제공하는 대신 선에 직접 레이블을 지정하여 그림을 읽는 데 필요한 인지 부하를 줄였습니다. 그리고 범례를 제거하면 여러 모양의 점이 필요하지 않습니다. 따라서 점을 제거하여 그림을 더욱 간소화할 수 있습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/bio-preprints-direct-label-1.png" alt="(ref:bio-preprints-direct-label)" width="576" />
+<p class="caption">(\#fig:bio-preprints-direct-label)(ref:bio-preprints-direct-label)</p>
+</div>
+
+선 그래프는 시계열에만 국한되지 않습니다. 데이터 포인트가 *x* 축을 따라 표시된 변수에 반영되는 자연스러운 순서를 가지므로 인접한 포인트를 선으로 연결할 수 있을 때마다 적합합니다. 이러한 상황은 예를 들어 용량-반응 곡선에서 발생하며, 여기서 실험에서 일부 수치 매개변수(용량)를 변경하면 관심 있는 결과(반응)에 어떤 영향을 미치는지 측정합니다. 그림 \@ref(fig:oats-yield)는 이러한 유형의 고전적인 실험을 보여주며, 비료 양을 늘림에 따라 귀리 수확량을 측정합니다. 선 그래프 시각화는 고려된 세 가지 귀리 품종에 대해 용량-반응 곡선이 유사한 모양을 갖지만 비료가 없는 경우(즉, 일부 품종은 다른 품종보다 자연적으로 수확량이 높음) 시작점이 다르다는 것을 강조합니다.
+
+
+(ref:oats-yield) 분뇨로 비료를 준 후 귀리 품종의 평균 수확량을 보여주는 용량-반응 곡선. 분뇨는 질소 공급원 역할을 하며 귀리 수확량은 일반적으로 품종에 관계없이 질소 공급량이 많을수록 증가합니다. 여기서 분뇨 시비량은 에이커당 cwt(백량) 단위로 측정됩니다. 백량은 112파운드 또는 50.8kg에 해당하는 오래된 영국식 단위입니다. 데이터 출처: @Yates1935
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/oats-yield-1.png" alt="(ref:oats-yield)" width="576" />
+<p class="caption">(\#fig:oats-yield)(ref:oats-yield)</p>
+</div>
+
+## 둘 이상의 반응 변수의 시계열 {#time-series-connected-scatter}
+
+이전 예에서는 단일 반응 변수(예: 월별 프리프린트 제출 건수 또는 귀리 수확량)의 시계열만 다루었습니다. 그러나 둘 이상의 반응 변수가 있는 경우는 드물지 않습니다. 이러한 상황은 거시경제학에서 흔히 발생합니다. 예를 들어 이전 12개월 동안의 주택 가격 변화가 실업률과 어떻게 관련되는지에 관심이 있을 수 있습니다. 실업률이 낮을 때 주택 가격이 상승하고 그 반대의 경우도 마찬가지일 것으로 예상할 수 있습니다.
+
+이전 하위 섹션의 도구를 사용하여 이러한 데이터를 서로 겹쳐 쌓인 두 개의 개별 선 그래프로 시각화할 수 있습니다(그림 \@ref(fig:house-price-unemploy)). 이 플롯은 관심 있는 두 변수를 직접 보여주며 해석하기 쉽습니다. 그러나 두 변수가 별도의 선 그래프로 표시되므로 변수 간 비교가 번거로울 수 있습니다. 두 변수가 동일하거나 반대 방향으로 움직이는 시간 영역을 식별하려면 두 그래프 사이를 왔다 갔다 하며 두 곡선의 상대적인 기울기를 비교해야 합니다.
+
+(ref:house-price-unemploy) 2001년 1월부터 2017년 12월까지 시간 경과에 따른 주택 가격 12개월 변화 (a) 및 실업률 (b). 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국.
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/house-price-unemploy-1.png" alt="(ref:house-price-unemploy)" width="685.714285714286" />
+<p class="caption">(\#fig:house-price-unemploy)(ref:house-price-unemploy)</p>
+</div>
+
+두 개의 개별 선 그래프를 표시하는 대신 두 변수를 서로 비교하여 플로팅하고 가장 이른 시점에서 가장 늦은 시점으로 이어지는 경로를 그릴 수 있습니다(그림 \@ref(fig:house-price-path)). 이러한 시각화를 *연결된 산점도*라고 하는데, 기술적으로는 두 변수를 서로 비교하는 산점도를 만든 다음 인접한 점을 연결하기 때문입니다. 물리학자와 엔지니어는 종종 이를 *위상 초상화*라고 부르는데, 해당 분야에서는 위상 공간에서의 움직임을 나타내는 데 일반적으로 사용되기 때문입니다. 이전에 챕터 \@ref(coordinate-systems-axes)에서 텍사스 주 휴스턴의 일일 기온 정상값을 캘리포니아 주 샌디에이고의 기온 정상값과 비교하여 플로팅한 연결된 산점도를 접했습니다(그림 \@ref(fig:temperature-normals-Houston-San-Diego)).
+
+(ref:house-price-path) 2001년 1월부터 2017년 12월까지 주택 가격 12개월 변화 대 실업률, 연결된 산점도로 표시. 어두운 음영은 더 최근의 달을 나타냅니다. 그림 \@ref(fig:house-price-unemploy)에서 볼 수 있는 주택 가격 변화와 실업률 간의 반비례 관계는 연결된 산점도가 두 개의 반시계 방향 원을 형성하도록 합니다. 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국. 원본 그림 개념: 렌 키퍼
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/house-price-path-1.png" alt="(ref:house-price-path)" width="576" />
+<p class="caption">(\#fig:house-price-path)(ref:house-price-path)</p>
+</div>
+
+연결된 산점도에서 왼쪽 아래에서 오른쪽 위로 가는 선은 두 변수 간의 상관 관계를 나타내고(한 변수가 증가하면 다른 변수도 증가함) 왼쪽 위에서 오른쪽 아래로 가는 수직 방향의 선은 반비례 관계를 나타냅니다(한 변수가 증가하면 다른 변수는 감소함). 두 변수가 다소 주기적인 관계를 갖는 경우 연결된 산점도에서 원이나 나선을 볼 수 있습니다. 그림 \@ref(fig:house-price-path)에서는 2001년부터 2005년까지 작은 원 하나와 나머지 기간 동안 큰 원 하나를 볼 수 있습니다.
+
+
+연결된 산점도를 그릴 때는 데이터의 방향과 시간적 규모를 모두 표시하는 것이 중요합니다. 이러한 힌트가 없으면 플롯이 의미 없는 낙서로 변할 수 있습니다(그림 \@ref(fig:house-price-path-bad)). 여기서는 (그림 \@ref(fig:house-price-path)에서) 색상의 점진적인 어두워짐을 사용하여 방향을 나타냅니다. 또는 경로를 따라 화살표를 그릴 수도 있습니다.
+
+(ref:house-price-path-bad) 2001년 1월부터 2017년 12월까지 주택 가격 12개월 변화 대 실업률. 이 그림은 그림 \@ref(fig:house-price-path)의 날짜 표시와 색상 음영이 없으면 데이터의 방향이나 변화 속도를 볼 수 없기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국.
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/house-price-path-bad-1.png" alt="(ref:house-price-path-bad)" width="576" />
+<p class="caption">(\#fig:house-price-path-bad)(ref:house-price-path-bad)</p>
+</div>
+
+연결된 산점도를 사용하는 것이 좋을까요, 아니면 두 개의 개별 선 그래프를 사용하는 것이 좋을까요? 개별 선 그래프는 읽기 쉬운 경향이 있지만 연결된 산점도에 익숙해지면 선 그래프에서는 발견하기 어려울 수 있는 특정 패턴(예: 약간의 불규칙성이 있는 주기적 행동)을 추출할 수 있습니다. 실제로 저에게는 그림 \@ref(fig:house-price-unemploy)에서 주택 가격 변화와 실업률 간의 주기적 관계를 발견하기 어렵지만 그림 \@ref(fig:house-price-path)의 반시계 방향 나선은 이를 명확하게 보여줍니다. 연구 보고서에 따르면 독자는 선 그래프보다 연결된 산점도에서 순서와 방향을 혼동할 가능성이 더 높고 상관 관계를 보고할 가능성은 낮습니다[@Haroz_et_al_2016]. 반면에 연결된 산점도는 참여도를 높이는 것처럼 보이므로 이러한 플롯은 독자를 이야기로 끌어들이는 효과적인 도구가 될 수 있습니다[@Haroz_et_al_2016].
+
+연결된 산점도는 한 번에 두 개의 변수만 표시할 수 있지만 더 높은 차원의 데이터 세트를 시각화하는 데에도 사용할 수 있습니다. 요령은 먼저 차원 축소를 적용하는 것입니다(챕터 \@ref(visualizing-associations) 참조). 그런 다음 차원 축소된 공간에 연결된 산점도를 그릴 수 있습니다. 이 접근 방식의 예로 세인트루이스 연방 준비 은행에서 제공하는 100개 이상의 거시경제 지표에 대한 월별 관찰 데이터베이스를 시각화합니다. 모든 지표에 대해 주성분 분석(PCA)을 수행한 다음 PC 2 대 PC 1(그림 \@ref(fig:fred-md-PCA)a) 및 PC 3(그림 \@ref(fig:fred-md-PCA)b)의 연결된 산점도를 그립니다.
+
+(ref:fred-md-PCA) 주성분 공간에서 연결된 산점도로 고차원 시계열 시각화. 경로는 1990년 1월부터 2017년 12월까지 100개 이상의 거시경제 지표의 공동 움직임을 나타냅니다. 경기 침체 및 회복 시기는 색상으로 표시되며 세 번의 경기 침체 종료 지점(1991년 3월, 2001년 11월, 2009년 6월)도 레이블로 표시됩니다. (a) PC 2 대 PC 1. (b) PC 2 대 PC 3. 데이터 출처: M. W. McCracken, 세인트루이스 연준
+
+<div class="figure" style="text-align: center">
+<img src="time_series_files/figure-html/fred-md-PCA-1.png" alt="(ref:fred-md-PCA)" width="685.714285714286" />
+<p class="caption">(\#fig:fred-md-PCA)(ref:fred-md-PCA)</p>
+</div>
+
+특히 그림 \@ref(fig:fred-md-PCA)a는 왼쪽에서 오른쪽으로 시간이 흐르는 일반적인 선 그림처럼 보입니다. 이 패턴은 PCA의 일반적인 특징으로 인해 발생합니다. 첫 번째 구성 요소는 종종 시스템의 전체 크기를 측정합니다. 여기서 PC 1은 대략 경제의 전체 크기를 측정하며 시간이 지남에 따라 거의 감소하지 않습니다.
+
+경기 침체 및 회복 시기를 색상으로 구분하여 연결된 산점도를 색칠하면 경기 침체는 PC 2의 하락과 관련이 있는 반면 회복은 PC 1 또는 PC 2의 명확한 특징과 관련이 없음을 알 수 있습니다(그림 \@ref(fig:fred-md-PCA)a). 그러나 회복은 PC 3의 하락과 관련이 있는 것으로 보입니다(그림 \@ref(fig:fred-md-PCA)b). 또한 PC 2 대 PC 3 플롯에서는 선이 시계 방향 나선 모양을 따르는 것을 볼 수 있습니다. 이 패턴은 경기 침체가 회복을 따르고 그 반대의 경우도 마찬가지인 경제의 주기적인 특성을 강조합니다.

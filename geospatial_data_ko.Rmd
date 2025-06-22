@@ -1,0 +1,955 @@
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+
+library(forcats)
+library(ggmap)
+library(statebins)
+library(sf)
+library(lubridate)
+library(geofacet)
+```
+
+# 지리 공간 데이터 시각화 {#geospatial-data}
+
+많은 데이터 세트에는 물리적 세계의 위치와 연결된 정보가 포함되어 있습니다. 예를 들어 생태학 연구에서 데이터 세트에는 특정 식물이나 동물이 발견된 위치가 나열될 수 있습니다. 마찬가지로 사회경제적 또는 정치적 맥락에서 데이터 세트에는 특정 속성(예: 소득, 연령 또는 학력)을 가진 사람들이 사는 위치 또는 인공물(예: 다리, 도로, 건물)이 건설된 위치에 대한 정보가 포함될 수 있습니다. 이러한 모든 경우에 데이터를 적절한 지리 공간적 맥락에서 시각화하는 것, 즉 데이터를 실제 지도나 지도와 유사한 다이어그램으로 표시하는 것이 도움이 될 수 있습니다.
+
+지도는 독자에게 직관적인 경향이 있지만 디자인하기 어려울 수 있습니다. 지도 투영과 같은 개념과 특정 응용 프로그램에 대해 각도 또는 면적의 정확한 표현이 더 중요한지 여부를 고려해야 합니다. 일반적인 매핑 기법인 *단계 구분도*는 데이터 값을 서로 다른 색상의 공간 영역으로 나타내는 것으로 구성됩니다. 단계 구분도는 때때로 매우 유용할 수 있지만 다른 경우에는 매우 오해의 소지가 있을 수 있습니다. 대안으로 *카토그램*이라는 지도와 유사한 다이어그램을 구성할 수 있으며, 이는 의도적으로 지도 영역을 왜곡하거나 예를 들어 동일한 크기의 정사각형과 같이 양식화된 형태로 나타낼 수 있습니다.
+
+
+## 투영
+
+지구는 대략 구형이며(그림 \@ref(fig:world-orthographic)), 더 정확하게는 회전축을 따라 약간 납작한 편구체입니다. 회전축이 편구체와 교차하는 두 위치를 *극*(북극과 남극)이라고 합니다. 편구체를 두 극에 등거리인 선을 그려 북반구와 남반구로 나눕니다. 이 선을 *적도*라고 합니다. 지구상의 위치를 고유하게 지정하려면 세 가지 정보가 필요합니다. 적도 방향을 따라 어디에 위치하는지(경도), 적도에 수직으로 이동할 때 어느 극에 얼마나 가까운지(위도), 지구 중심에서 얼마나 멀리 떨어져 있는지(고도)입니다. 경도, 위도, 고도는 *기준계*라고 하는 참조 시스템에 대해 지정됩니다. 기준계는 지구의 모양과 크기, 그리고 경도, 위도, 고도 0의 위치와 같은 속성을 지정합니다. 널리 사용되는 기준계 중 하나는 GPS(Global Positioning System)에서 사용하는 WGS(World Geodetic System) 84입니다.
+
+(ref:world-orthographic) 우주에서 볼 수 있는 유럽과 북아프리카를 보여주는 세계의 정사 투영. 북극에서 남쪽으로 뻗어 나가는 선을 *경선*이라고 하고 경선에 직교하는 선을 *평행선*이라고 합니다. 모든 경선은 길이가 같지만 평행선은 어느 극에 가까울수록 짧아집니다.
+
+```{r world-orthographic, fig.width = 5.5, fig.asp = 1, fig.cap = '(ref:world-orthographic)'}
+intersperse <- function(x1, x2) {
+  x <- numeric(0)
+  for (i in seq_along(x1)) {
+    x <- c(x, x1[i], x2[i], NA)
+  }
+  x
+}
+
+cenlat <- 40
+cenlong <- 15
+
+ocean_col <- "#56B4E950"
+land_col <- "#E69F00B0"
+graticule_col <- "grey30"
+line_col <- "black"
+
+draw_ocean(cenlat, cenlong, col = ocean_col, line_col = graticule_col, lwd = 0.25)
+draw_land(map_polys$world, cenlat, cenlong, col = land_col, line_col = line_col, lwd = 0.5)
+
+p1 <- dviz.supp::orthproj(
+  lat = c(0.5, 66, 63, 54, 30.5, 44.5, 59.5),
+  long = c(-25, -29, 1, 31, -22, -22, -22),
+  cenlat = cenlat,
+  cenlong = cenlong
+)
+
+p2 <- dviz.supp::orthproj(
+  lat = c(6, 65, 65, 65, 35, 35, 35),
+  long = c(-28, 52, 52, 52, -35, -35, -35),
+  cenlat = cenlat,
+  cenlong = cenlong
+)
+
+lines(x = intersperse(p1$x, p2$x), y = intersperse(p1$y, p2$y))
+par(family = dviz_font_family, ps = 12)
+text(
+  x = c(0.03, p2$x[1], p2$x[7], p2$x[2]),
+  y = c(0.765, p2$y[1], p2$y[7], p2$y[2]),
+  labels = c("북극", "적도", "평행선", "경선"),
+  pos = c(3, 3, 2, 4),
+  offset = .2
+)
+```
+고도는 많은 지리 공간 응용 프로그램에서 중요한 양이지만 지도를 형태로 지리 공간 데이터를 시각화할 때는 주로 다른 두 차원인 경도와 위도에 관심을 갖습니다. 경도와 위도는 모두 각도이며 도로 표현됩니다. 경도 도는 위치가 동쪽 또는 서쪽으로 얼마나 떨어져 있는지 측정합니다. 동일한 경도의 선을 *경선*이라고 하며 모든 경선은 두 극에서 끝납니다(그림 \@ref(fig:world-orthographic)). 0&deg; 경도에 해당하는 본초 자오선은 영국 그리니치 마을을 통과합니다. 본초 자오선 반대편의 경선은 180&deg; 경도(180&deg;E라고도 함)에 있으며 이는 -180&deg; 경도(180&deg;W라고도 함)와 동일하며 국제 날짜 변경선 근처에 있습니다. 위도 도는 위치가 북쪽 또는 남쪽으로 얼마나 떨어져 있는지 측정합니다. 적도는 0&deg; 위도에 해당하고 북극은 90&deg; 위도(90&deg;N이라고도 함)에 해당하며 남극은 -90&deg; 위도(90&deg;S라고도 함)에 해당합니다. 동일한 위도의 선은 적도와 평행하게 이어지므로 *평행선*이라고 합니다. 모든 경선은 길이가 같으며 지구 주위의 대원의 절반에 해당하지만 평행선의 길이는 위도에 따라 다릅니다(그림 \@ref(fig:world-orthographic)). 가장 긴 평행선은 0&deg; 위도의 적도이며 가장 짧은 평행선은 북극과 남극, 90&deg;N 및 90&deg;S에 있으며 길이가 0입니다.
+
+지도 제작의 과제는 지구의 구형 표면을 가져와 평평하게 만들어 지도에 표시해야 한다는 것입니다. *투영*이라고 하는 이 과정은 곡면을 평면에 정확하게 투영할 수 없기 때문에 필연적으로 왜곡을 유발합니다. 구체적으로 투영은 각도 또는 면적 중 하나는 보존할 수 있지만 둘 다 보존할 수는 없습니다. 전자를 수행하는 투영을 *등각*이라고 하고 후자를 수행하는 투영을 *등면적*이라고 합니다. 다른 투영은 각도나 면적을 보존하지 않고 대신 일부 기준점이나 선까지의 거리와 같은 다른 관심 있는 양을 보존할 수 있습니다. 마지막으로 일부 투영은 각도와 면적을 보존하는 것 사이의 절충안을 시도합니다. 이러한 절충 투영은 전 세계를 미적으로 만족스러운 방식으로 표시하는 데 자주 사용되며 각도 및 면적 왜곡을 어느 정도 허용합니다(그림 \@ref(fig:worldmap-four-projections)). 특정 지도에 대해 지구의 일부 또는 전체를 투영하는 다양한 방법을 체계화하고 추적하기 위해 EPSG(European Petroleum Survey Group) 또는 ESRI(Environmental Systems Research Institute)와 같은 다양한 표준 기관 및 조직에서 투영 등록부를 유지 관리합니다. 예를 들어 EPSG:4326은 GPS에서 사용하는 WGS 84 좌표계의 투영되지 않은 경도 및 위도 값을 나타냅니다. http://spatialreference.org/ 및 https://epsg.io/를 포함한 여러 웹사이트에서 이러한 등록된 투영에 편리하게 액세스할 수 있습니다.
+
+가장 초기에 사용된 지도 투영법 중 하나인 메르카토르 투영법은 16세기에 항해용으로 개발되었습니다. 모양을 정확하게 나타내지만 극 근처에서 심각한 면적 왜곡을 유발하는 등각 투영법입니다(그림 \@ref(fig:world-mercator)). 메르카토르 투영법은 지구를 원통에 매핑한 다음 원통을 펼쳐 직사각형 지도를 만듭니다. 이 투영법에서 경선은 등간격 수직선인 반면 평행선은 적도에서 멀어질수록 간격이 넓어지는 수평선입니다(그림 \@ref(fig:world-mercator)). 평행선 사이의 간격은 경선을 완벽하게 수직으로 유지하기 위해 극에 가까울수록 늘려야 하는 정도에 비례하여 증가합니다.
+
+(ref:world-mercator) 세계의 메르카토르 투영법. 이 투영법에서 평행선은 직선 수평선이고 경선은 직선 수직선입니다. 국부적인 각도를 보존하는 등각 투영법이지만 극 근처에서 면적에 심각한 왜곡을 유발합니다. 예를 들어 이 투영법에서 그린란드는 아프리카보다 커 보이지만 실제로는 아프리카가 그린란드보다 14배 더 큽니다(그림 \@ref(fig:world-orthographic) 및 \@ref(fig:world-goode) 참조).
+
+```{r world-mercator, fig.width = 5, fig.asp = 0.85, fig.cap = '(ref:world-mercator)'}
+world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))
+
+crs_longlat <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+
+crs_mercator <- "+proj=merc"
+
+# 변환된 좌표에서 경계 상자 계산
+mercator_bbox <-
+  rbind(c(-180, -85), c(180, 85)) %>%
+  st_multipoint() %>%
+  st_sfc(
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  ) %>%
+  st_transform(crs = crs_mercator)
+
+ggplot(world_sf) +
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) +
+  scale_x_continuous(name = "경도", breaks = seq(-120, 120, by = 60)) +
+  scale_y_continuous(name = "위도", breaks = seq(-80, 80, by = 20)) +
+  coord_sf(
+    xlim = mercator_bbox[[1]][, 1],
+    ylim = mercator_bbox[[1]][, 2],
+    expand = FALSE,
+    crs = crs_mercator
+  ) +
+  theme_dviz_grid(font_size = 12, rel_small = 1) +
+  theme(
+    panel.background = element_rect(fill = "#56B4E950", color = "#56B4E950"),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    axis.ticks = element_line(color = "gray30", size = 0.5/.pt)
+  )
+```
+
+심각한 면적 왜곡을 유발하기 때문에 메르카토르 투영법은 전 세계 지도에 대한 선호도가 떨어졌습니다. 그러나 이 투영법의 변형은 계속해서 사용되고 있습니다. 예를 들어 횡단 메르카토르 투영법은 적당히 작은 영역(경도 몇 도 미만)을 큰 배율로 표시하는 대규모 지도에 일상적으로 사용됩니다. 또 다른 변형인 웹 메르카토르 투영법은 Google 지도용으로 Google에서 도입했으며 여러 온라인 지도 응용 프로그램에서 사용됩니다.
+
+완벽하게 면적을 보존하는 전 세계 투영법은 구드 호몰로사인입니다(그림 \@ref(fig:world-goode)). 일반적으로 중단된 형태로 표시되며 북반구에 한 번, 남반구에 세 번 절단되어 주요 육지를 방해하지 않도록 신중하게 선택됩니다(그림 \@ref(fig:world-goode)). 절단은 투영법이 면적을 보존하고 각도를 대략적으로 보존하도록 하지만 바다가 연속적이지 않고 그린란드 중간을 가로지르는 절단과 남극 대륙을 가로지르는 여러 절단이 발생하는 단점이 있습니다. 중단된 구드 호몰로사인은 특이한 미학적 특징과 이상한 이름을 가지고 있지만 전 세계적으로 면적을 정확하게 재현해야 하는 지도 응용 프로그램에 좋은 선택입니다.
+
+(ref:world-goode) 세계의 중단된 구드 호몰로사인 투영법. 이 투영법은 각도 왜곡을 최소화하면서 면적을 정확하게 보존하지만 바다와 일부 육지(그린란드, 남극 대륙)를 비연속적인 방식으로 표시하는 단점이 있습니다.
+
+```{r world-goode, fig.width = 5*6/4.2, fig.asp = 0.45, fig.cap = '(ref:world-goode)'}
+crs_goode <- "+proj=igh"
+
+# 경위도 좌표의 투영 윤곽선
+lats <- c(
+  90:-90, # 오른쪽 아래
+  -90:0, 0:-90, # 세 번째 절단 하단
+  -90:0, 0:-90, # 두 번째 절단 하단
+  -90:0, 0:-90, # 첫 번째 절단 하단
+  -90:90, # 왼쪽 위
+  90:0, 0:90, # 절단 상단
+  90 # 닫기
+)
+longs <- c(
+  rep(180, 181), # 오른쪽 아래
+  rep(c(80.01, 79.99), each = 91), # 세 번째 절단 하단
+  rep(c(-19.99, -20.01), each = 91), # 두 번째 절단 하단
+  rep(c(-99.99, -100.01), each = 91), # 첫 번째 절단 하단
+  rep(-180, 181), # 왼쪽 위
+  rep(c(-40.01, -39.99), each = 91), # 절단 상단
+  180 # 닫기
+)
+
+goode_outline <-
+  list(cbind(longs, lats)) %>%
+  st_polygon() %>%
+  st_sfc(
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  ) %>%
+  st_transform(crs = crs_goode)
+
+# 변환된 좌표의 경계 상자
+xlim <- c(-21945470, 21963330)
+ylim <- c(-9538022, 9266738)
+goode_bbox <-
+  list(
+    cbind(
+      c(xlim[1], xlim[2], xlim[2], xlim[1], xlim[1]),
+      c(ylim[1], ylim[1], ylim[2], ylim[2], ylim[1])
+    )
+  ) %>%
+  st_polygon() %>%
+  st_sfc(crs = crs_goode)
+
+# 지구 윤곽선 외부 영역
+goode_without <- st_difference(goode_bbox, goode_outline)
+
+ggplot(world_sf) +
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) +
+  geom_sf(data = goode_without, fill = "white", color = NA) +
+  geom_sf(data = goode_outline, fill = NA, color = "grey30", size = 0.5/.pt) +
+  scale_x_continuous(name = NULL, breaks = seq(-120, 120, by = 60)) +
+  scale_y_continuous(name = NULL, breaks = seq(-60, 60, by = 30)) +
+  coord_sf(xlim = 0.95*xlim, ylim = 0.95*ylim, expand = FALSE, crs = crs_goode, ndiscr = 1000) +
+  theme_dviz_grid(font_size = 12, rel_small = 1) +
+  theme(
+    panel.background = element_rect(fill = "#56B4E950", color = "white", size = 1),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    axis.ticks = element_line(color = "gray30", size = 0.5/.pt)
+  )
+```
+
+지도 투영으로 인한 모양 또는 면적 왜곡은 전 세계 지도를 만들려고 할 때 특히 두드러지지만 개별 대륙이나 국가 규모에서도 문제를 일으킬 수 있습니다. 예를 들어 "하위 48개 주"(연속된 48개 주), 알래스카, 하와이로 구성된 미국을 생각해 보십시오(그림 \@ref(fig:usa-orthographic)). 하위 48개 주만 지도에 투영하는 것은 비교적 쉽지만 알래스카와 하와이는 하위 48개 주에서 너무 멀리 떨어져 있어 50개 주 전체를 하나의 지도에 투영하는 것이 어색해집니다.
+
+(ref:usa-orthographic) 지구본에 표시된 알래스카, 하와이 및 하위 48개 주의 상대적 위치.
+
+```{r usa-orthographic, fig.width = 5.5, fig.asp = 1, fig.cap = '(ref:usa-orthographic)'}
+cenlat <- 35
+cenlong <- -130
+
+draw_ocean(cenlat, cenlong, lwd = 0.25)
+draw_land(map_polys$usa, cenlat, cenlong, col = "#D00000D0")
+draw_land(map_polys$world_no_usa, cenlat, cenlong, col = "#C0C0C0B0")
+par(family = dviz_font_family_condensed, ps = 12)
+text(
+#  x = c(0.38, 0.05, -0.4),
+#  y = c(0.15, 0.49, -0.1),
+  x = c(0.36, -0.17, -0.4),
+  y = c(0.13, 0.49, -0.1),
+  labels = c("하위 48개 주", "알래스카", "하와이"),
+  col = c("white", "white", "black")
+)
+```
+
+그림 \@ref(fig:usa-true-albers)는 등면적 알버스 투영법을 사용하여 만든 50개 주 전체 지도를 보여줍니다. 이 투영법은 50개 주의 상대적인 모양, 면적, 위치를 합리적으로 표현하지만 몇 가지 문제가 있습니다. 첫째, 알래스카는 예를 들어 그림 \@ref(fig:world-mercator) 또는 \@ref(fig:usa-orthographic)에서 보이는 모습에 비해 이상하게 늘어나 보입니다. 둘째, 지도는 바다/빈 공간이 지배적입니다. 하위 48개 주가 지도 면적의 더 큰 부분을 차지하도록 더 확대할 수 있다면 더 좋을 것입니다.
+
+(ref:usa-true-albers) 미국 지도, 면적 보존 알버스 투영법 사용 (ESRI:102003, 일반적으로 하위 48개 주 투영에 사용됨). 알래스카와 하와이는 실제 위치에 표시됩니다.
+
+```{r usa-true-albers, fig.asp = 0.72, fig.cap = '(ref:usa-true-albers)'}
+longs <- -180:-20
+lats <- rep(89.9, length(longs))
+earth_boundary <- sf::st_sfc(
+    sf::st_linestring(
+      cbind(longs, lats)
+    ),
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  )
+earth_boundary <- sf::st_transform(earth_boundary, crs = "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+whiteout <- data.frame(
+  x = earth_boundary[[1]][, 1],
+  y = earth_boundary[[1]][, 2]
+)
+
+p <- ggplot(US_states_geoms$true_albers) +
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) +
+  geom_polygon(
+    data = whiteout, aes(x, y),
+    fill = "white", color = "gray30",
+    size = 0.5/.pt
+  ) +
+  coord_sf(xlim = c(-6721002, 2685733), ylim = c(-1634610, 4888053), expand = FALSE, ndiscr = 1000) +
+  scale_x_continuous(name = "경도", breaks = -20*c(3:10)) +
+  scale_y_continuous(name = "위도", breaks = (1:9)*10) +
+  theme_dviz_grid(font_size = 12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    panel.background = element_rect(fill = "#56B4E950"),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    axis.ticks = element_line(color = "gray30", size = 0.5/.pt)
+  )
+
+## sf 격자선 코드의 버그 해결
+## sf 0.7-3 이후 필요 없음
+#b <- ggplot_build(p)
+#b$layout$panel_params[[1]]$graticule$x_start[11] <- 0
+#b$layout$panel_params[[1]]$graticule$y_start[11] <- 0.849
+#ggdraw(ggplot_gtable(b))
+p
+```
+
+흥미롭지 않은 빈 공간 문제를 해결하기 위해 알래스카와 하와이를 별도로 투영하여(모양 왜곡을 최소화하기 위해) 하위 48개 주 아래에 표시하는 것이 일반적인 관행입니다(그림 \@ref(fig:usa-albers)). 그림 \@ref(fig:usa-albers)에서 알래스카가 그림 \@ref(fig:usa-true-albers)에서보다 하위 48개 주에 비해 훨씬 작게 보이는 것을 알 수 있습니다. 이러한 불일치의 이유는 알래스카가 이동했을 뿐만 아니라 일반적인 중서부 또는 서부 주와 비슷한 크기로 보이도록 축척되었기 때문입니다. 이러한 축척은 일반적인 관행이지만 매우 오해의 소지가 있으므로 그림에 "나쁨"이라고 표시했습니다.
+
+(ref:usa-albers) 알래스카와 하와이 주를 하위 48개 주 아래에 배치한 미국 시각화. 알래스카는 또한 주의 실제 크기의 35%만 선형 범위가 되도록 축척되었습니다. (즉, 주의 면적이 실제 크기의 약 12%로 축소되었습니다.) 이러한 축척은 알래스카가 시각적으로 일반적인 중서부 또는 서부 주와 비슷한 크기로 보이도록 하기 위해 자주 적용됩니다. 그러나 이 축척은 매우 오해의 소지가 있으므로 그림에 "나쁨"이라고 표시했습니다.
+
+```{r usa-albers, fig.asp = 0.65, fig.cap = '(ref:usa-albers)'}
+# 표준 미국 알버스 지도, AK는 인위적으로 작게 표시됨
+
+# 이전에 그린 지도와 같이 투명한 파란색 위에 투명한 주황색의 색상을 모방합니다.
+# 색상은 렌더링된 png에서 추출하여 얻었습니다.
+brown <- "#deb664"
+
+p <- ggplot(US_states_geoms$us_albers) +
+  geom_sf(fill = brown, color = "black", size = 0.5/.pt) +
+  coord_sf(datum = NA, expand = FALSE) +
+  theme_dviz_map() +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    plot.margin = margin(6, 6, 1, 1.5)
+  )
+
+stamp_bad(p)
+```
+
+알래스카를 이동하고 축척하는 대신 축척을 변경하지 않고 이동할 수도 있습니다(그림 \@ref(fig:usa-albers-revised)). 이 시각화는 알래스카가 텍사스 크기의 두 배 이상인 가장 큰 주임을 명확하게 보여줍니다. 미국이 이런 식으로 표시되는 것에 익숙하지 않지만 제 생각에는 그림 \@ref(fig:usa-albers)보다 50개 주를 훨씬 더 합리적으로 표현한 것입니다.
+
+(ref:usa-albers-revised) 알래스카와 하와이 주를 하위 48개 주 아래에 배치한 미국 시각화.
+
+```{r usa-albers-revised, fig.asp = 0.75, fig.cap = '(ref:usa-albers-revised)'}
+# 수정된 미국 알버스 지도, AK는 원래 크기로 표시됨
+ggplot(US_states_geoms$albers_revised) +
+  geom_sf(fill = brown, color = "black", size = 0.5/.pt) +
+  coord_sf(datum = NA, expand = FALSE) +
+  theme_dviz_map() +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk")
+  )
+```
+
+
+## 레이어
+
+지리 공간 데이터를 적절한 맥락에서 시각화하기 위해 일반적으로 다양한 유형의 정보를 보여주는 여러 레이어로 구성된 지도를 만듭니다. 이 개념을 설명하기 위해 샌프란시스코만 지역의 풍력 터빈 위치를 시각화하겠습니다. 베이 지역에서 풍력 터빈은 두 곳에 집중되어 있습니다. 실로 풍력 발전 단지라고 부를 한 곳은 리오 비스타 근처에 있고 다른 한 곳은 트레이시 근처 헤이워드 동쪽에 있습니다(그림 \@ref(fig:sfbay-overview)).
+
+(ref:sfbay-overview) 샌프란시스코만 지역의 풍력 터빈. 개별 풍력 터빈은 보라색 점으로 표시됩니다. 풍력 터빈이 밀집된 두 지역은 검은색 사각형으로 강조 표시됩니다. 리오 비스타 근처의 풍력 터빈을 통칭하여 실로 풍력 발전 단지라고 합니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터: 미국 풍력 터빈 데이터베이스
+
+```{r sfbay-overview, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:sfbay-overview)'}
+# http://www.csgnetwork.com/degreelenllavcalc.html에서
+# 위도 38도에서 경도 1도의 길이(미터)
+m_per_deg <- 87832.42967867786
+
+sfbay_scale = data.frame(
+  x = -122.83,
+  xend = -122.83 + 10000/m_per_deg,
+  y = 37.24,
+  yend = 37.24,
+  label = "10km"
+)
+
+sfbay_bbox <- c(left = -122.88, bottom = 37.20, right = -120.88, top = 38.31)
+
+wind_sfbay <- wind_turbines %>%
+  filter(
+    xlong < sfbay_bbox["right"],
+    xlong > sfbay_bbox["left"],
+    ylat > sfbay_bbox["bottom"],
+    ylat < sfbay_bbox["top"]
+  )
+
+shiloh_bbox <- c(left = -121.9, bottom = 38.06, right = -121.71, top = 38.20)
+tracy_bbox <- c(left = -121.73, bottom = 37.66, right = -121.55, top = 37.81)
+
+p1 <- ggmap(sfbay_maps$sfbay_bg)  +
+  inset_ggmap(sfbay_maps$sfbay_lines) +
+  geom_point(
+    data = wind_sfbay,
+    aes(x = xlong, y = ylat),
+    size = 0.1,
+    color = "#A825A8",
+    alpha = 1/3
+  ) +
+  geom_rect(
+    data = data.frame(rbind(t(shiloh_bbox), t(tracy_bbox))),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    size = 0.5,
+    color = "black",
+    fill = NA,
+    inherit.aes = FALSE
+  ) +
+  geom_text(
+    data = data.frame(x = 0.5*(shiloh_bbox['left'] + shiloh_bbox['right']), y = shiloh_bbox['top'], label = "실로 풍력 발전 단지"),
+    aes(x, y, label = label),
+    hjust = 0.512,
+    vjust = -0.51,
+    family = dviz_font_family,
+    color = "white",
+    size = 11/.pt
+  ) +
+  geom_text(
+    data = data.frame(x = 0.5*(shiloh_bbox['left'] + shiloh_bbox['right']),
+                      y = shiloh_bbox['top'], label = "실로 풍력 발전 단지"),
+    aes(x, y, label = label),
+    hjust = 0.5,
+    vjust = -0.5,
+    family = dviz_font_family,
+    size = 11/.pt
+  ) +
+  inset_ggmap(sfbay_maps$sfbay_labels) +
+  geom_segment(
+    data = sfbay_scale,
+    aes(x, y, xend = xend, yend = yend),
+    size = 1
+  ) +
+  geom_text(
+    data = sfbay_scale,
+    aes(0.5*(x+xend), y, label = label),
+    hjust = 0.5,
+    vjust = -0.5,
+    family = dviz_font_family,
+    size = 10/.pt
+  ) +
+  ggspatial::annotation_north_arrow(
+    width = grid::unit(1, "cm"),
+    height = grid::unit(1, "cm"),
+    pad_x = grid::unit(0.25, "cm"),
+    pad_y = grid::unit(0.5, "cm"),
+    style = ggspatial::north_arrow_fancy_orienteering(
+      line_width = 1,
+      text_size = 12,
+      text_family = dviz_font_family
+    ),
+    location ="tr"
+  ) +
+  theme_dviz_map()
+
+p1
+```
+
+그림 \@ref(fig:sfbay-overview)은 네 개의 개별 레이어로 구성됩니다. 맨 아래에는 언덕, 계곡, 물을 보여주는 지형 레이어가 있습니다. 다음 레이어는 도로망을 보여줍니다. 도로 레이어 위에는 개별 풍력 터빈의 위치를 나타내는 레이어를 배치했습니다. 이 레이어에는 풍력 터빈의 대부분을 강조 표시하는 두 개의 사각형도 포함되어 있습니다. 마지막으로 맨 위 레이어는 도시의 위치와 이름을 추가합니다. 이 네 개의 레이어는 그림 \@ref(fig:sfbay-layers)에 별도로 표시됩니다. 만들고 싶은 특정 지도에 대해 이러한 레이어 중 일부를 추가하거나 제거할 수 있습니다. 예를 들어 투표 구역 지도를 그리려는 경우 지형 정보는 관련성이 없고 주의를 산만하게 한다고 생각할 수 있습니다. 또는 태양광 발전 가능성을 평가하기 위해 노출되거나 덮인 지붕 면적 지도를 그리려는 경우 지형 정보를 개별 지붕과 실제 식생을 보여주는 위성 이미지로 대체할 수 있습니다. 대부분의 온라인 지도 응용 프로그램(예: Google 지도)에서 이러한 다양한 유형의 레이어를 대화식으로 시도해 볼 수 있습니다. 어떤 레이어를 유지하거나 제거하기로 결정하든 일반적으로 축척 막대와 북쪽 화살표를 추가하는 것이 좋습니다. 축척 막대는 독자가 지도에 표시된 공간 특징의 크기를 이해하는 데 도움이 되며 북쪽 화살표는 지도의 방향을 명확하게 합니다.
+
+(ref:sfbay-layers) 그림 \@ref(fig:sfbay-overview)의 개별 레이어. 아래에서 위로 그림은 지형 레이어, 도로 레이어, 풍력 터빈을 보여주는 레이어, 도시 레이블을 지정하고 축척 막대와 북쪽 화살표를 추가하는 레이어로 구성됩니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터 출처: 미국 풍력 터빈 데이터베이스
+
+```{r sfbay-layers, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:sfbay-layers) '}
+l1 <- ggmap(sfbay_maps$sfbay_bg) + labs(subtitle = "지형") +
+  geom_rect(
+    data = data.frame(t(sfbay_bbox)),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    fill = NA, color = "black",
+    size = 0.5,
+    inherit.aes  = FALSE
+  ) +
+  theme_dviz_map() +
+  theme(plot.subtitle = element_text(margin = margin(0, 0, 3, 0)))
+
+l2 <- ggmap(sfbay_maps$sfbay_lines) + labs(subtitle = "도로") +
+  geom_rect(
+    data = data.frame(t(sfbay_bbox)),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    fill = NA, color = "black",
+    size = 0.5,
+    inherit.aes  = FALSE
+  ) +
+  theme_dviz_map() +
+  theme(plot.subtitle = element_text(margin = margin(0, 0, 3, 0)))
+
+
+l3 <- ggmap(sfbay_maps$sfbay_labels) +
+  geom_segment(
+    data = sfbay_scale,
+    aes(x, y, xend = xend, yend = yend),
+    size = .5*1
+  ) +
+  geom_text(
+    data = sfbay_scale,
+    aes(0.5*(x+xend), y, label = label),
+    hjust = 0.5,
+    vjust = -0.5,
+    family = dviz_font_family,
+    size = .5*10/.pt
+  ) +
+  geom_rect(
+    data = data.frame(t(sfbay_bbox)),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    fill = NA, color = "black",
+    size = 0.5,
+    inherit.aes  = FALSE
+  ) +
+  ggspatial::annotation_north_arrow(
+    width = grid::unit(.5*1, "cm"),
+    height = grid::unit(.5*1, "cm"),
+    pad_x = grid::unit(.5*0.25, "cm"),
+    pad_y = grid::unit(.5*0.5, "cm"),
+    style = ggspatial::north_arrow_fancy_orienteering(
+      line_width = .5*1,
+      text_size = .5*12,
+      text_family = dviz_font_family
+    ),
+    location ="tr"
+  ) +
+ labs(subtitle = "도시 레이블, 축척 막대") +
+ theme_dviz_map() +
+ theme(plot.subtitle = element_text(margin = margin(0, 0, 3, 0)))
+
+
+l4 <- ggmap(sfbay_maps$sfbay_bg) +
+  geom_rect(
+    data = data.frame(t(sfbay_bbox)),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    fill = "white", color = "black",
+    size = 0.5,
+    inherit.aes  = FALSE
+  ) +
+  geom_point(
+    data = wind_sfbay,
+    aes(x = xlong, y = ylat),
+    size = .5*0.1,
+    color = "#A825A8",
+    alpha = 1/3
+  ) +
+  geom_rect(
+    data = data.frame(rbind(t(shiloh_bbox), t(tracy_bbox))),
+    aes(xmin = left, xmax = right, ymin = bottom, ymax = top),
+    size = .5*0.5,
+    color = "black",
+    fill = NA,
+    inherit.aes = FALSE
+  ) +
+  geom_text(
+    data = data.frame(x = 0.5*(shiloh_bbox['left'] + shiloh_bbox['right']), y = shiloh_bbox['top'], label = "실로 풍력 발전 단지"),
+    aes(x, y, label = label),
+    hjust = 0.5,
+    vjust = -0.5,
+    family = dviz_font_family,
+    size = .5*11/.pt
+  ) +
+  labs(subtitle = "풍력 터빈") +
+  theme_dviz_map() +
+  theme(plot.subtitle = element_text(margin = margin(0, 0, 3, 0)))
+
+plot_grid(
+  l1, NULL, l2,
+  l4, NULL, l3,
+  rel_widths = c(1, .05, 1)
+)
+
+# fig asp: 418/519 ~= 0.805
+```
+
+챕터 \@ref(aesthetic-mapping)에서 논의된 모든 개념, 즉 데이터를 미학적 요소에 매핑하는 개념은 지도에도 적용됩니다. 데이터 포인트를 지리적 맥락에 배치하고 색상이나 모양과 같은 미학적 요소를 통해 다른 데이터 차원을 표시할 수 있습니다. 예를 들어 그림 \@ref(fig:shiloh-map)은 그림 \@ref(fig:sfbay-overview)에서 "실로 풍력 발전 단지"로 표시된 사각형의 확대된 보기를 제공합니다. 개별 풍력 터빈은 점으로 표시되며 점의 색상은 특정 터빈이 건설된 시기를 나타내고 모양은 풍력 터빈이 속한 프로젝트를 나타냅니다. 이와 같은 지도는 지역이 어떻게 개발되었는지에 대한 간략한 개요를 제공할 수 있습니다. 예를 들어 여기서는 EDF Renewables가 2000년 이전에 건설된 비교적 작은 프로젝트이고 High Winds는 2000년에서 2004년 사이에 건설된 중간 규모의 프로젝트이며 Shiloh와 Solano는 이 지역에서 가장 큰 두 프로젝트로 모두 장기간에 걸쳐 건설되었음을 알 수 있습니다.
+
+(ref:shiloh-map) 실로 풍력 발전 단지의 개별 풍력 터빈 위치. 각 점은 풍력 터빈 하나의 위치를 강조 표시합니다. 지도 영역은 그림 \@ref(fig:sfbay-overview)의 사각형에 해당합니다. 점은 풍력 터빈이 건설된 시기에 따라 색상이 지정되며 점의 모양은 개별 풍력 터빈이 속한 다양한 프로젝트를 나타냅니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터 출처: 미국 풍력 터빈 데이터베이스
+
+```{r shiloh-map, fig.asp = 0.75, fig.cap = '(ref:shiloh-map)'}
+# http://www.csgnetwork.com/degreelenllavcalc.html에서
+# 위도 38도에서 경도 1도의 길이(미터)
+m_per_deg <- 87832.42967867786
+
+shiloh_scale = data.frame(
+  x = -121.735,
+  xend = -121.735 + 2000/m_per_deg,
+  y = 38.064,
+  yend = 38.064,
+  label = "2000m"
+)
+
+#bbox <- c(left = -121.9, bottom = 38.06, right = -121.71, top = 38.20)
+wind_shiloh <- wind_turbines %>%
+  filter(
+    xlong < shiloh_bbox["right"],
+    xlong > shiloh_bbox["left"],
+    ylat > shiloh_bbox["bottom"],
+    ylat < shiloh_bbox["top"]
+  ) %>%
+  mutate(
+    name = fct_relevel(fct_collapse(p_name,
+      `EDF Renewables` = "EDF Renewable V",
+      `High Winds` = "High Winds",
+      `Shiloh` = c("Shiloh Wind Project", "Shiloh II", "Shiloh III", "Shiloh IV"),
+      `Solano` = c("Solano Phase 3", "Solano Phase IIA", "Solano Wind Project", "Solano Wind Project, Phase I", "Solano Wind Project, Phase IA"),
+      `other` = c("Montezuma", "Montezuma Winds II", "unknown Solano County")
+    ), "EDF Renewables", "High Winds", "Shiloh", "Solano", "other"),
+    year_range = cut(
+      p_year,
+      breaks = c(1980, 2000, 2005, 2010, 2015),
+      labels = c("2000년 이전", "2000년 ~ 2004년", "2005년 ~ 2009년", "2010년 ~ 2014년"),
+      right = FALSE
+    )
+  )
+
+p2 <- ggmap(sfbay_maps$shiloh_terrain)  +
+  geom_point(
+    data = wind_shiloh,
+    aes(x = xlong, y = ylat, fill = year_range, shape = name),
+    size = 1.5,
+    color = "black", stroke = 0.2
+  ) +
+  geom_segment(
+    data = shiloh_scale,
+    aes(x, y, xend = xend, yend = yend),
+    size = 1
+  ) +
+  geom_text(
+    data = shiloh_scale,
+    aes(0.5*(x+xend), y, label = label),
+    hjust = 0.5,
+    vjust = -0.5,
+    family = dviz_font_family,
+    size = 10/.pt
+  ) +
+  ggspatial::annotation_north_arrow(
+    width = grid::unit(1, "cm"),
+    height = grid::unit(1, "cm"),
+    pad_x = grid::unit(0.2, "cm"),
+    pad_y = grid::unit(0.2, "cm"),
+    style = ggspatial::north_arrow_fancy_orienteering(
+      line_width = 1,
+      text_size = 12,
+      text_family = dviz_font_family
+    ),
+    location ="bl"
+  ) +
+  xlab(label = NULL) +
+  ylab(label = NULL) +
+  scale_fill_viridis_d(
+    name = "건설 연도",
+    option = "A", end = .95, begin = 0.3, direction = -1,
+    guide = guide_legend(
+      order = 2,
+      reverse = FALSE,
+      override.aes = list(shape = 22, size = 4, stroke = 0))
+  ) +
+  scale_shape_manual(
+    name = "프로젝트명",
+    values = 21:25,
+    guide = guide_legend(
+      order = 1,
+      override.aes = list(
+        fill = "grey70",
+        size = 2
+      )
+    )
+  ) +
+  theme_dviz_map(12) +
+  theme(
+    legend.key.width = grid::unit(12, "pt")
+  )
+
+p2
+```
+
+
+## 단계 구분도 매핑 {#choropleth-mapping}
+
+어떤 양이 위치에 따라 어떻게 변하는지 보여주고자 하는 경우가 많습니다. 표시하려는 데이터 차원에 따라 지도의 개별 지역을 색칠하여 이를 수행할 수 있습니다. 이러한 지도를 *단계 구분도*라고 합니다.
+
+간단한 예로 미국 전역의 인구 밀도(제곱킬로미터당 인구 수)를 생각해 보십시오. 미국 각 카운티의 인구 수를 가져와 카운티의 면적으로 나눈 다음 각 카운티의 색상이 인구 수와 면적 사이의 비율에 해당하는 지도를 그립니다(그림 \@ref(fig:population-density-counties)). 동부 및 서부 해안의 주요 도시가 미국에서 가장 인구가 많은 지역이고 대평원과 서부 주는 인구 밀도가 낮으며 알래스카 주는 가장 인구가 적다는 것을 알 수 있습니다.
+
+(ref:population-density-counties) 미국의 모든 카운티의 인구 밀도를 단계 구분도로 표시했습니다. 인구 밀도는 제곱킬로미터당 인구 수로 보고됩니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+```{r population-density-counties, fig.asp = 0.73, fig.cap = '(ref:population-density-counties)'}
+# x 범위: -3683715  2258154
+# y 범위: -2839538  1558935
+
+US_counties_income <- mutate(US_counties_income, logdens = log(as.numeric(popdens)*1e6))
+
+p <- ggplot(US_counties_income) +
+  geom_sf(aes(color = logdens, fill = logdens), size = 0.1) +
+  geom_sf(data = US_states_geoms$albers_revised, fill = NA, color = "grey30", size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-4000000, 2300000)) +
+  scale_fill_continuous_sequential(
+    aesthetics = c("color", "fill"),
+    palette = "YlGnBu", rev = TRUE, cmax = 20, c2 = 20, p2 = 1.75,
+    name = "인구 밀도\n(명 / 제곱킬로미터)",
+    limits = log(c(0.01, 30000)),
+    breaks = log(c(0.01, 1, 100, 10000)),
+    labels = c("0.01", "1", "100", "10,000"),
+    guide = guide_colorbar(
+      frame.colour = "black",
+      ticks.colour = "white",
+      barwidth = grid::unit(15, "pt"),
+      barheight = grid::unit(90, "pt")
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+ggdraw(align_legend(p))
+```
+
+
+그림 \@ref(fig:population-density-counties)는 낮은 인구 밀도를 나타내는 데 밝은 색상을 사용하고 높은 밀도를 나타내는 데 어두운 색상을 사용하여 고밀도 대도시 지역이 밝은 색상 배경에 어두운 색상으로 두드러지도록 합니다. 그림의 배경색이 밝을 때 어두운 색상을 더 높은 강도와 연관시키는 경향이 있습니다. 그러나 높은 값은 어두운 배경에서 밝게 빛나는 색상 척도를 선택할 수도 있습니다(그림 \@ref(fig:population-density-counties2)). 밝은 색상이 빨간색-노란색 스펙트럼에 속하여 빛나는 것처럼 보이면 더 높은 강도를 나타내는 것으로 인식될 수 있습니다. 일반적인 원칙으로 그림을 흰색 용지에 인쇄하려는 경우 밝은 색상의 배경 영역(그림 \@ref(fig:population-density-counties)에서와 같이)이 일반적으로 더 잘 작동합니다. 온라인 보기나 어두운 배경에서는 어두운 색상의 배경 영역(그림 \@ref(fig:population-density-counties2)에서와 같이)이 더 바람직할 수 있습니다.
+
+(ref:population-density-counties2) 미국의 모든 카운티의 인구 밀도를 단계 구분도로 표시했습니다. 이 지도는 색상 척도에서 높은 인구 밀도에 밝은 색상을 사용하고 낮은 인구 밀도에 어두운 색상을 사용한다는 점을 제외하고는 그림 \@ref(fig:population-density-counties)와 동일합니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+```{r population-density-counties2, fig.asp = 0.73, fig.cap = '(ref:population-density-counties2)'}
+# x 범위: -3683715  2258154
+# y 범위: -2839538  1558935
+
+p <- ggplot(US_counties_income) +
+  geom_sf(aes(color = logdens, fill = logdens), size = 0.1) +
+  # 이 색상 척도에서는 주 경계가 잘 보이지 않습니다.
+  geom_sf(data = US_states_geoms$albers_revised, fill = NA, color = "black", size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-4000000, 2300000)) +
+  scale_fill_continuous_sequential(
+    aesthetics = c("color", "fill"),
+    palette = "Lajolla", rev = TRUE, p1 = 2, p2 = 1.3,
+    name = "인구 밀도\n(명 / 제곱킬로미터)",
+    limits = log(c(0.01, 30000)),
+    breaks = log(c(0.01, 1, 100, 10000)),
+    labels = c("0.01", "1", "100", "10,000"),
+    guide = guide_colorbar(
+      frame.colour = "black",
+      ticks.colour = "white",
+      barwidth = grid::unit(15, "pt"),
+      barheight = grid::unit(90, "pt")
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+ggdraw(align_legend(p))
+```
+
+
+(ref:median-income-counties) 미국의 모든 카운티의 중간 소득을 단계 구분도로 표시했습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+
+```{r median-income-counties, eval = FALSE, fig.asp = 0.73, fig.cap = '(ref:median-income-counties)'}
+# x 범위: -3683715  2258154
+# y 범위: -2839538  1558935
+
+p <- ggplot(US_counties_income) +
+  geom_sf(aes(color = median_income, fill = median_income), size = 0.1) +
+  geom_sf(data = US_states_geoms$albers_revised, fill = NA, color = "grey30", size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-4000000, 2300000)) +
+  scale_fill_continuous_sequential(
+    aesthetics = c("color", "fill"),
+    #palette = "Lajolla", rev = TRUE, p1 = 2, p2 = 1.3,
+    #palette = "BlueYellow", rev = TRUE, l1 = 15, p2 = 1.7,
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE,
+    name = "중간 소득",
+    limits = c(0, 130000),
+    breaks = c(0, 50000, 100000),
+    labels = c("$0", "$50,000", "$100,000"),
+    guide = guide_colorbar(
+      frame.colour = "black",
+      ticks.colour = "white",
+      barwidth = grid::unit(15, "pt"),
+      barheight = grid::unit(90, "pt")
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+ggdraw(align_legend(p))
+```
+
+단계 구분도는 색칠이 밀도(즉, 그림 \@ref(fig:population-density-counties) 및 \@ref(fig:population-density-counties2)에서와 같이 표면적으로 나눈 일부 양)를 나타낼 때 가장 잘 작동합니다. 우리는 더 큰 영역을 더 작은 영역보다 더 큰 양에 해당하는 것으로 인식하며(비례 잉크에 대한 장, 챕터 \@ref(proportional-ink) 참조), 밀도별 음영은 이 효과를 수정합니다. 그러나 실제로는 밀도가 아닌 일부 양에 따라 색칠된 단계 구분도를 종종 볼 수 있습니다. 예를 들어 그림 \@ref(fig:map-Texas-income)에서는 텍사스 카운티의 연간 중간 소득 단계 구분도를 보여주었습니다. 이러한 단계 구분도 지도는 신중하게 준비하면 적절할 수 있습니다. 밀도가 아닌 양을 색상으로 매핑할 수 있는 두 가지 조건이 있습니다. 첫째, 색칠하는 모든 개별 영역이 거의 동일한 크기와 모양을 갖는 경우 일부 영역이 크기만으로 불균형한 주의를 끄는 것에 대해 걱정할 필요가 없습니다. 둘째, 색칠하는 개별 영역이 지도의 전체 크기에 비해 상대적으로 작고 색상이 나타내는 양이 개별 색칠된 영역보다 큰 규모로 변경되는 경우 다시 일부 영역이 크기만으로 불균형한 주의를 끄는 것에 대해 걱정할 필요가 없습니다. 이러한 조건은 모두 그림 \@ref(fig:map-Texas-income)에서 대략적으로 충족됩니다.
+
+단계 구분도 매핑에서 연속적인 색상 척도와 이산적인 색상 척도의 효과를 고려하는 것도 중요합니다. 연속적인 색상 척도는 시각적으로 매력적으로 보이는 경향이 있지만(예: 그림 \@ref(fig:population-density-counties) 및 \@ref(fig:population-density-counties2)), 읽기 어려울 수 있습니다. 우리는 특정 색상 값을 인식하고 연속적인 척도와 일치시키는 데 능숙하지 않습니다. 따라서 데이터를 뚜렷한 색상으로 표현되는 이산적인 그룹으로 나누는 것이 종종 적절합니다. 4~6개의 구간이 좋은 선택입니다. 구간화는 일부 정보를 희생하지만 반대로 구간화된 색상은 고유하게 인식될 수 있습니다. 예를 들어 그림 \@ref(fig:median-income-counties-binned)은 텍사스 카운티의 중간 소득 지도(그림 \@ref(fig:map-Texas-income))를 미국 전체 카운티로 확장하고 5개의 뚜렷한 소득 구간으로 구성된 색상 척도를 사용합니다.
+
+(ref:median-income-counties-binned) 미국의 모든 카운티의 중간 소득을 단계 구분도로 표시했습니다. 중간 소득 값은 5개의 뚜렷한 그룹으로 구간화되었는데, 이는 구간화된 색상 척도가 일반적으로 연속적인 색상 척도보다 읽기 쉽기 때문입니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+```{r median-income-counties-binned, fig.asp = 0.73, fig.cap = '(ref:median-income-counties-binned)'}
+# x 범위: -3683715  2258154
+# y 범위: -2839538  1558935
+
+US_counties_income <- mutate(
+  US_counties_income,
+  income_bins = cut(
+      ifelse(is.na(median_income), 35000, median_income), # 누락된 값 숨기기
+      breaks = c(0, 30000, 55000, 80000, 105000, 150000),
+      labels = c("< $30k", "$30k ~ $60k", "$60k ~ $85k", "$85k ~ $105k", "> $105k"),
+      right = FALSE
+    )
+  )
+
+p <- ggplot(US_counties_income) +
+  geom_sf(aes(color = income_bins, fill = income_bins), size = 0.1) +
+  geom_sf(data = US_states_geoms$albers_revised, fill = NA, color = "grey30", size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-4000000, 2300000)) +
+  scale_fill_discrete_sequential(
+    aesthetics = c("color", "fill"),
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE,
+    name = "중간 소득",
+    nmax = 6,
+    order = 2:6,
+    guide = guide_legend(
+      override.aes = list(colour = "white", size = 1),
+      reverse = TRUE
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    legend.key.width = grid::unit(18, "pt"),
+    legend.key.height = grid::unit(15, "pt"),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+p
+```
+
+미국 전체에서 카운티가 텍사스 내에서만큼 균일한 크기와 모양을 갖지는 않지만 그림 \@ref(fig:median-income-counties-binned)은 여전히 단계 구분도 지도로서 작동한다고 생각합니다. 어떤 개별 카운티도 지도를 지나치게 지배하지 않습니다. 그러나 주 수준에서 유사한 지도를 그릴 때 상황이 달라집니다(그림 \@ref(fig:median-income-states)). 그러면 알래스카가 단계 구분도를 지배하고 크기 때문에 중간 소득이 7만 달러 이상인 것이 일반적임을 시사합니다. 그러나 알래스카는 인구 밀도가 매우 낮으며(그림 \@ref(fig:population-density-counties) 및 \@ref(fig:population-density-counties2) 참조) 따라서 알래스카의 소득 수준은 미국 인구의 작은 부분에만 적용됩니다. 알래스카 카운티보다 인구가 훨씬 많은 미국 카운티의 대부분은 중간 소득이 6만 달러 미만입니다.
+
+(ref:median-income-states) 미국의 모든 주의 중간 소득을 단계 구분도로 표시했습니다. 이 지도는 중간 소득은 높지만 인구 밀도는 매우 낮은 알래스카 주가 시각적으로 지배합니다. 동시에 동부 해안의 인구 밀도가 높은 고소득 주는 이 지도에서 그다지 두드러지지 않습니다. 종합적으로 이 지도는 미국의 소득 분포를 제대로 시각화하지 못하므로 "나쁨"으로 표시했습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+
+```{r median-income-states, fig.asp = 0.73, fig.cap = '(ref:median-income-states)'}
+# x 범위: -3683715  2258154
+# y 범위: -2839538  1558935
+
+US_income <- mutate(
+  US_income,
+  income_bins = cut(
+      ifelse(is.na(median_income), 25000, median_income), # 누락된 값 숨기기
+      breaks = c(0, 40000, 50000, 60000, 70000, 80000),
+      labels = c("< $40k", "$40k ~ $50k", "$50k ~ $60k", "$60k ~ $70k", "> $70k"),
+      right = FALSE
+    )
+  )
+
+p <- ggplot(US_income, aes(fill = income_bins)) +
+  geom_sf(color = "grey30", size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-4000000, 2300000)) +
+  scale_fill_discrete_sequential(
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE,
+    name = "중간 소득",
+    nmax = 7,
+    order = 2:6,
+    guide = guide_legend(
+      override.aes = list(colour = "white", size = 1),
+      reverse = TRUE
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    legend.key.width = grid::unit(18, "pt"),
+    legend.key.height = grid::unit(15, "pt"),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+stamp_bad(p)
+```
+
+
+## 카토그램
+
+모든 지도와 유사한 시각화가 유용하기 위해 지리적으로 정확해야 하는 것은 아닙니다. 예를 들어 그림 \@ref(fig:median-income-states)의 문제는 일부 주는 비교적 넓은 면적을 차지하지만 인구 밀도가 낮은 반면 다른 주는 작은 면적을 차지하지만 많은 주민이 있다는 것입니다. 주의 면적을 주민 수에 비례하도록 변형하면 어떻게 될까요? 이러한 수정된 지도를 *카토그램*이라고 하며 그림 \@ref(fig:median-income-cartogram)은 중간 소득 데이터 세트에 대해 어떻게 보일 수 있는지 보여줍니다. 개별 주를 여전히 인식할 수 있지만 인구 수에 대한 조정이 중요한 수정을 가져왔다는 것도 알 수 있습니다. 동부 해안 주, 플로리다, 캘리포니아는 크기가 많이 커졌지만 다른 서부 주와 알래스카는 축소되었습니다.
+
+(ref:median-income-cartogram) 미국의 모든 주의 중간 소득을 카토그램으로 표시했습니다. 개별 주의 모양은 면적이 주민 수에 비례하도록 수정되었습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+```{r median-income-cartogram, fig.asp = 0.73, fig.cap = '(ref:median-income-cartogram)'}
+# 구간화된 데이터를 복사하고 두 데이터 프레임의 순서는 동일합니다.
+US_income_cartogram$income_bins <- US_income$income_bins
+
+p <- ggplot(US_income_cartogram, aes(fill = income_bins)) +
+  geom_sf(color = "grey30", size = 0.2) + coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-3900000, 2500000)) +
+  scale_fill_discrete_sequential(
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE,
+    name = "중간 소득",
+    nmax = 7,
+    order = 2:6,
+    guide = guide_legend(
+      override.aes = list(colour = "white", size = 1),
+      reverse = TRUE
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    legend.key.width = grid::unit(18, "pt"),
+    legend.key.height = grid::unit(15, "pt"),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+
+p
+```
+
+왜곡된 모양의 카토그램 대신 각 주를 색칠된 정사각형으로 나타내는 훨씬 간단한 *카토그램 히트맵*을 그릴 수도 있습니다(그림 \@ref(fig:median-income-statebins)). 이 표현은 각 주의 인구 수를 보정하지 않으므로 인구가 더 많은 주를 과소 표현하고 인구가 적은 주를 과대 표현하지만 적어도 모든 주를 동등하게 취급하고 모양이나 크기에 따라 임의로 가중치를 부여하지 않습니다.
+
+(ref:median-income-statebins) 미국의 모든 주의 중간 소득을 카토그램 히트맵으로 표시했습니다. 각 주는 동일한 크기의 정사각형으로 표시되며 정사각형은 다른 주에 대한 각 주의 대략적인 위치에 따라 배열됩니다. 이 표현은 각 주에 동일한 시각적 가중치를 부여합니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
+
+```{r median-income-statebins, fig.asp = 0.62, fig.cap = '(ref:median-income-statebins)'}
+filter(US_income, name != "푸에르토리코", GEOID != "11") %>% # 푸에르토리코와 DC 제거
+  ggplot(aes(state = name, fill = income_bins)) +
+  geom_statebins(family = dviz.supp::dviz_font_family,
+                 lbl_size = 14/.pt) +
+  expand_limits(x = -1.3) + # 범례 공간 확보
+  coord_equal(expand = FALSE) +
+   scale_fill_discrete_sequential(
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE,
+    name = "중간 소득",
+    nmax = 7,
+    order = 2:6,
+    guide = guide_legend(
+      override.aes = list(colour = "white", size = 1),
+      reverse = TRUE
+    )
+  ) +
+  theme_dviz_map(12, rel_small = 1) +
+  theme(
+    #plot.background = element_rect(fill = "cornsilk"),
+    legend.background = element_blank(),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    legend.key.width = grid::unit(18, "pt"),
+    legend.key.height = grid::unit(15, "pt")
+  )
+```
+
+마지막으로 각 주의 위치에 개별 플롯을 배치하여 더 복잡한 카토그램을 그릴 수 있습니다. 예를 들어 각 주의 시간 경과에 따른 실업률 변화를 시각화하려는 경우 각 주에 대해 개별 그래프를 그린 다음 주들의 대략적인 상대적 위치에 따라 그래프를 배열하는 것이 도움이 될 수 있습니다(그림 \@ref(fig:unemployment-geofacet)). 미국 지리에 익숙한 사람에게는 이 배열이 예를 들어 알파벳순으로 배열하는 것보다 특정 주의 그래프를 더 쉽게 찾을 수 있도록 할 수 있습니다. 또한 이웃한 주는 유사한 패턴을 보일 것으로 예상되며 그림 \@ref(fig:unemployment-geofacet)은 실제로 그렇다는 것을 보여줍니다.
+
+(ref:unemployment-geofacet) 2008년 금융 위기 전후의 주별 실업률. 각 패널은 2007년 1월부터 2013년 5월까지 한 주(컬럼비아 특별구(DC) 포함)의 실업률을 보여줍니다. 수직 격자선은 2008년, 2010년, 2012년 1월을 표시합니다. 지리적으로 가까운 주는 실업률에서 유사한 추세를 보이는 경향이 있습니다. 데이터 출처: 미국 노동 통계국
+
+```{r unemployment-geofacet, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:unemployment-geofacet)'}
+adjust_labels <- as_labeller(
+  function(x) {
+    case_when(
+      x == "뉴햄프셔" ~ "N. 햄프셔",
+      x == "컬럼비아 특별구" ~ "DC",
+      TRUE ~ x
+    )
+  }
+)
+
+house_prices %>%
+  filter(
+    date >= ymd("2007-01-01"),
+    date <= ymd("2013-05-31")
+  ) %>%
+  ggplot(aes(date, unemploy_perc)) +
+  geom_area(fill = "#56B4E9", alpha = 0.7) +
+  geom_line() +
+  scale_y_continuous(
+    name = "실업률",
+    limits = c(0, 16), expand = c(0, 0),
+    breaks = c(0, 5, 10, 15),
+    labels = c("0%", "5%", "10%", "15%")
+  ) +
+  scale_x_date(
+    name = NULL,
+    breaks = ymd(c("2008-01-01", "2010-01-01", "2012-01-01")),
+    labels = c("'08", "'10", "'12"),
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(clip = "off") +
+  facet_geo(~state, grid = "us_state_grid1", labeller = adjust_labels) +
+  theme_dviz_grid(12, dviz_font_family_condensed, rel_small = 10/12) +
+  theme(
+    strip.text = element_text(
+      family = dviz_font_family_condensed,
+      margin = margin(3, 3, 3, 3)
+    ),
+    axis.line.x = element_blank(),
+    panel.spacing.x = grid::unit(5, "pt"),
+    panel.spacing.y = grid::unit(5, "pt"),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.background = element_rect(fill = "gray90")
+  ) -> p
+
+p
+```

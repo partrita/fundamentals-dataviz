@@ -1,0 +1,44 @@
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+library(ggforce)
+library(ggrepel)
+library(ggridges)
+library(ggthemes)
+library(ggmap)
+library(gridExtra)
+library(treemapify)
+library(hexbin)
+library(magick)
+library(plot3D)
+library(geofacet)
+library(ggspatial)
+library(rgeos)
+library(maptools)
+library(sf)
+library(statebins)
+library(maps)
+library(tidybayes)
+library(broom)
+library(mgcv)
+library(emmeans)
+library(ungeviz)
+library(gganimate)
+library(RColorBrewer)
+library(gapminder)
+library(nycflights13)
+```
+
+# 기술 참고 사항 {-}
+
+이 책 전체는 **bookdown**, **rmarkdown**, **knitr** 패키지를 사용하여 R 마크다운으로 작성되었습니다. 모든 그림은 **ggplot2**로 만들어졌으며 추가 기능 패키지 **cowplot**, **egg**, **ggforce**, **ggrepel**, **ggridges**, **sf**, **treemapify**의 도움을 받았습니다. 색상 조작은 **colorspace** 및 **colorblindr** 패키지를 사용하여 수행되었습니다. 이러한 패키지 중 다수는 책의 모든 부분을 컴파일하려면 현재 개발 버전이 필요합니다.
+
+이 책의 소스 코드는 https://github.com/clauswilke/dataviz에서 확인할 수 있습니다. 이 책에는 지원 R 패키지인 **dviz.supp**도 필요하며 해당 코드는 https://github.com/clauswilke/dviz.supp에서 확인할 수 있습니다.
+
+이 책은 다음 환경을 사용하여 마지막으로 컴파일되었습니다.
+```{r}
+sessionInfo()
+```

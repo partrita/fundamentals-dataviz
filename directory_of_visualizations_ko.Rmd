@@ -1,0 +1,1053 @@
+```{r echo = FALSE, message = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+
+library(dplyr)
+library(tidyr)
+library(ggforce)
+library(ggridges)
+library(treemapify)
+library(forcats)
+library(statebins)
+library(sf)
+library(ungeviz)
+```
+
+# 시각화 디렉토리 {#directory-of-visualizations}
+
+이 장에서는 데이터를 시각화하는 데 일반적으로 사용되는 다양한 플롯과 차트에 대한 간략한 시각적 개요를 제공합니다. 이름을 모를 수 있는 특정 시각화를 찾는 경우 목차 역할을 하기도 하고, 일상적으로 만드는 그림의 대안을 찾아야 하는 경우 영감의 원천이 되기도 합니다.
+
+```{r}
+## 일반 설정 코드
+
+# line_size = 0.6
+
+# 테마
+theme_plot_icon <- function(bg_color = "#F5F8EA", line_color = "#243400",
+                            line_size = .5, font_size = 14) {
+  theme_dviz_open() %+replace% theme(
+    axis.text.x       = element_blank(),
+    axis.text.y       = element_blank(),
+    axis.title.x      = element_blank(),
+    axis.title.y      = element_blank(),
+    #axis.line.x       = element_blank(),
+    #axis.line.y       = element_blank(),
+    #axis.ticks        = element_blank(),
+    axis.line.x       = element_line(size = line_size, color = line_color),
+    axis.line.y       = element_line(size = line_size, color = line_color),
+    axis.ticks        = element_line(size = line_size, color = line_color),
+    axis.ticks.length = grid::unit(4, "pt"),
+    legend.position   = "none",
+    plot.margin       = margin(
+      font_size*8/14, font_size, font_size*10/14, font_size
+    ),
+    plot.title        = element_text(
+      hjust = 0.5,
+      #family = dviz_font_family_bold,
+      family = dviz_font_family_condensed,
+      color = line_color,
+      size = font_size,
+      margin = margin(0, 0, font_size*6/14, 0)
+    ),
+    plot.background   = element_rect(fill = bg_color)
+  )
+}
+
+theme_plot_icon_hgrid <- function(bg_color = "#F5F8EA", line_color = "#243400",
+                                  line_size = .5, font_size = 14) {
+  theme_plot_icon(bg_color, line_color, line_size, font_size) %+replace% theme(
+      # 격자선 만들기
+      #panel.grid.major.y   = element_line(colour = paste0(line_color, "30"),
+      #                                    size = 0.5),
+
+      # x축 제거
+      axis.ticks.x        = element_blank(),
+      axis.line.x         = element_blank()
+  )
+}
+
+theme_plot_icon_vgrid <- function(bg_color = "#F5F8EA", line_color = "#243400",
+                                  line_size = .5, font_size = 14) {
+  theme_plot_icon(bg_color, line_color, line_size, font_size) %+replace% theme(
+      # 격자선 만들기
+      #panel.grid.major.x   = element_line(colour = paste0(line_color, "30"),
+      #                                    size = 0.5),
+
+      # y축 제거
+      axis.ticks.y        = element_blank(),
+      axis.line.y         = element_blank()
+  )
+}
+
+theme_plot_icon_blank <- function(bg_color = "#F5F8EA", line_color = "#243400",
+                                  line_size = .5, font_size = 14) {
+  theme_plot_icon(bg_color, line_color, line_size, font_size) %+replace% theme(
+      axis.ticks          = element_blank(),
+      axis.line.x         = element_blank(),
+      axis.line.y         = element_blank(),
+      axis.ticks.length    = grid::unit(0, "pt")
+  )
+}
+
+# 데이터 세트
+set.seed(5142)
+
+n <- 15
+x <- rnorm(n)
+y <- .4*x + .6*rnorm(n)
+df_scatter_xy <- data.frame(x, y)
+
+df_one_dist <- data.frame(x = c(rnorm(1000, 1., 1.6), rnorm(300, 4, .4)))
+
+df_one_normal <- data.frame(x = rnorm(20))
+
+df_fractions <- data.frame(y = c(.3, .39, .48, .6, .25, .13, .22, .24, .45, .48, .3, .16),
+                 x = factor(rep(1:4, 3)),
+                 type = rep(c("A", "B", "C"), each = 4))
+
+
+set.seed(2474)
+
+n <- 8
+x <- rnorm(n)
+y <- .4*x + .6*rnorm(n)
+z <- .5*x + .3*rnorm(n)
+z <- (z - min(z) + 0.1)^2
+df_scatter_xyz <- data.frame(x, y, z)
+
+
+set.seed(5012)
+df_multi_amounts <- mutate(df_fractions,
+                           y = c(1.0, 1.1, 1.4, 1.2)[x]*y)
+
+n <- 70
+df_multi_dist <- data.frame(y = c(rnorm(n, 1, .8), rnorm(n, 2, .7), rnorm(n, 0, .5)),
+                 type = rep(c("A", "B", "C"), each = n),
+                 number = rep(c(2, 1, 3), each = n))
+
+
+df_props = data.frame(value = c(55, 30, 15),
+                      group = c("A", "B", "C"))
+
+df_multi_props <- data.frame(
+  var1 = rep(c("C", "B", "A"), 3),
+  var2 = rep(c("A", "B", "C"), each = 3),
+  count = c(4, 1, 2, 12, 9, 5, 4, 5, 4)
+) %>% group_by(var2) %>%
+  mutate(group_count = sum(count))
+
+df_multi_props2 <- data.frame(
+  var1 = rep(c("B", "A"), 9),
+  var2 = rep(c("E", "E", "D", "D", "C", "C"), 3),
+  var3 = rep(c("H", "G", "F"), each = 6),
+  count = c(5, 8, 0, 0, 0, 0, 0, 3, 2, 7, 0, 0, 4, 0, 4, 2, 7, 4)
+)
+
+df_sets <- gather_set_data(df_multi_props2, 1:3)
+
+df_one_line <- data.frame(
+  x = 1:5,
+  y = c(3.1, 3.3, 4.0, 3.8, 4.4)
+)
+
+set.seed(9681)
+n1 <- 1500/5
+n2 <- 800/5
+x1 <- rnorm(n1, 0, .7)
+y1 <- 2 * x1 + rnorm(n1, 0, .8)
+
+x2 <- rnorm(n2, 0, 0.4)
+y2 <- 1.5 * x2 + rnorm(n2, .5, .8)
+
+df_dense_scatter <- na.omit(
+  data.frame(
+    x = scales::censor(c(x1, x2 + 2.2), c(-2, 4)),
+    y = scales::censor(c(y1, y2 + 1.5), c(-3.5, 4.5))
+  )
+)
+
+y1 <- 2 * x1 + rnorm(n1, 0, 1.6)
+y2 <- 1.5 * x2 + rnorm(n2, .5, 1.6)
+df_dense_scatter_sample <- na.omit(
+  data.frame(
+    x = scales::censor(c(x1, x2 + 2.2), c(-2, 4)),
+    y = scales::censor(c(y1, y2 + 1.5), c(-3.5, 4.5))
+  )
+) %>% sample_n(50)
+
+df_connected_scatter <- data.frame(
+  x = c(1.9, 1.5, 2.2, 3, 3.3, 2.7, 1.7, 1),
+  y = c(0.3, -1, -2.0, -0.9, .6, 1.8, 2, 0.7),
+  t = 1:8
+)
+
+df_paired <- data.frame(
+  y = c(6, 5.3, 3.8, 2.8, 2,
+        4.3, 6.1, 5.1, 3.3, 2.4),
+  x = rep(c("A", "B"), each = 5),
+  group = rep(1:5, 2)
+)
+
+df_uncertain <- data.frame(
+  type = c("A", "B", "C"),
+  x = c(1.5, 2.2, 3.4),
+  y = c(3.2, 5.1, 3.9),
+  dx = c(.25, .3, .35),
+  dy = c(.5, .4, .6)
+)
+
+
+# 팔레트
+
+npal <- 5
+# 어스 브라운 (양)
+pal_earth_brown <- sequential_hcl(n = npal, h1 = 71, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 브라운-그린 (비율)
+pal_brown_green <- sequential_hcl(n = npal, h1 = 86, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 그린-브라운 (지리 공간 데이터)
+pal_green_brown <- sequential_hcl(n = npal, h1 = -265, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 버건디-레드
+pal_red_brown <- sequential_hcl(n = npal, h1 = 28, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 브라운-레드 (불확실성)
+pal_brown_red <- sequential_hcl(n = npal, h1 = 41, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 오션 블루 (분포)
+pal_ocean_blue <- sequential_hcl(n = npal, h1 = 241, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+
+# 스틸 블루 (x-y 관계)
+pal_steel_blue <- sequential_hcl(n = npal, h1 = 257, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+pal_steel_blue_inv <- sequential_hcl(n = npal, h1 = 257-180, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5)
+```
+
+## 양
+
+```{r amounts, fig.width = 5*6/4.2, fig.asp = 1/4}
+palette <- pal_earth_brown
+
+p1 <- ggplot(df_props, aes(x = group, y = value)) +
+  geom_col(
+    position="identity", color = palette[npal],
+    fill = palette[3], width = 0.8
+  ) +
+  scale_y_continuous(limits = c(0, 66), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p2 <- ggplot(df_props, aes(x = fct_rev(group), y = value)) +
+  geom_col(position="identity", color = palette[npal], fill = palette[3],
+           width = .8) +
+  scale_y_continuous(limits = c(0, 66), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  coord_flip() +
+  labs(title = "막대 그래프") +
+  theme_plot_icon_vgrid(palette[npal], palette[1])
+
+p3 <- ggplot(filter(df_multi_amounts, x!=4), aes(x, y,
+                                   fill=factor(type, levels = c("A", "C", "B")))) +
+  geom_col(position="dodge", color = palette[npal],
+           width = .7) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, .7)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "그룹 막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p4 <- ggplot(filter(df_multi_amounts, x!=4), aes(x, y,
+                                   fill=factor(type, levels = c("B", "C", "A")))) +
+  geom_col(position="dodge", color = palette[npal],
+           width = .7) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, .7)) +
+  scale_fill_manual(values = rev(palette[2:4])) +
+  coord_flip() +
+  labs(title = "그룹 막대 그래프") +
+  theme_plot_icon_vgrid(palette[npal], palette[1])
+
+p5 <- ggplot(df_multi_amounts, aes(x, y, fill=factor(type, levels = c("B", "C", "A")))) +
+  geom_col(position="stack", color = palette[npal]) +
+  scale_y_continuous(limits = c(0, 1.55),
+                     expand = c(0, 0)) +
+  scale_fill_manual(values = rev(palette[2:4])) +
+  labs(title = "누적 막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p6 <- p5 + coord_flip() + theme_plot_icon_vgrid(palette[npal], palette[1])
+
+p7 <- ggplot(df_props, aes(x = fct_rev(group), y = value)) +
+  geom_point(color = palette[2], size = 2) +
+  scale_y_continuous(limits = c(0, 66), expand = c(0, 0)) +
+  coord_flip() +
+  labs(title = "점 그래프") +
+  theme_plot_icon_vgrid(palette[npal], palette[1])
+
+p8 <- ggplot(filter(df_multi_amounts, x != 1), aes(x, y = factor(type, levels = c("A", "C", "B")), fill = y)) +
+  geom_tile(color = palette[5], size = 1.5) +
+  scale_fill_continuous_sequential(
+    h1 = 71, c1 = 80, c2 = 10, l1 = 18, l2 = 97, p1 = 1.5,
+    begin = 0.2, end = 0.75,
+    rev = FALSE
+  ) +
+  labs(title = "히트맵") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+plot_grid(p1, p2, p7, ncol = 4, scale = .9)
+```
+
+양(즉, 일부 범주 집합에 대해 표시되는 수치 값)을 시각화하는 가장 일반적인 방법은 수직 또는 수평으로 배열된 막대를 사용하는 것입니다(챕터 \@ref(visualizing-amounts)). 그러나 막대를 사용하는 대신 해당 막대가 끝나는 위치에 점을 배치할 수도 있습니다(챕터 \@ref(visualizing-amounts)).
+
+```{r amounts_multi, fig.width = 5*6/4.2, fig.asp = 1/2}
+plot_grid(p3, p4, p5, p6,
+          p8, ncol = 4, scale = .9)
+```
+
+양을 표시하려는 범주 집합이 두 개 이상인 경우 막대를 그룹화하거나 누적할 수 있습니다(챕터 \@ref(visualizing-amounts)). 또한 범주를 *x* 축과 *y* 축에 매핑하고 히트맵을 통해 색상으로 양을 표시할 수도 있습니다(챕터 \@ref(visualizing-amounts)).
+
+
+## 분포
+
+```{r single-distributions, fig.width = 5*6/4.2, fig.asp = 1/4}
+
+palette <- pal_ocean_blue
+
+p1 <- ggplot(df_one_dist, aes(x)) +
+  geom_histogram(fill = palette[3], color = palette[npal], binwidth = 1, center = 0) +
+  scale_x_continuous(limits = c(-4.8, 6.8), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 350),
+                     expand = c(0, 0)) +
+  labs(title = "히스토그램") +
+  theme_plot_icon(palette[npal], palette[1])
+
+
+p2 <- ggplot(df_one_dist, aes(x)) +
+  geom_density(fill = palette[3], color = palette[npal], bw = .35) +
+  scale_x_continuous(limits = c(-4.8, 6.8), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, .27), expand = c(0, 0)) +
+  labs(title = "밀도 그림") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p3 <- ggplot(df_one_normal, aes(x)) +
+  stat_ecdf(color = palette[2], size = .7) +
+  scale_x_continuous(expand = c(0.05, 0)) +
+  scale_y_continuous(limits = c(0, 1.08), expand = c(0, 0)) +
+  labs(title = "누적 밀도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p4 <- ggplot(df_one_normal, aes(sample = x)) +
+  geom_abline(intercept = 0, slope = 1, color = palette[3]) +
+  geom_qq(color = palette[1], size = 0.8) +
+  labs(title = "분위수-분위수 그림") +
+  theme_plot_icon(palette[npal], palette[1])
+
+plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
+```
+
+히스토그램과 밀도 그림(챕터 \@ref(histograms-density-plots))은 분포의 가장 직관적인 시각화를 제공하지만 둘 다 임의의 매개변수 선택이 필요하며 오해의 소지가 있을 수 있습니다. 누적 밀도와 분위수-분위수(q-q) 그림(챕터 \@ref(ecdf-qq))은 항상 데이터를 충실하게 나타내지만 해석하기 더 어려울 수 있습니다.
+
+
+```{r multiple-distributions, fig.width = 5*6/4.2, fig.asp = 1/2}
+palette <- pal_ocean_blue
+
+p1 <- ggplot(df_multi_dist, aes(x = type, y = y)) +
+  geom_boxplot(color = palette[1], fill = palette[4]) +
+  labs(title = "상자 그림") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p2 <- ggplot(df_multi_dist, aes(x = type, y = y)) +
+  geom_violin(color = palette[npal], fill = palette[2], size = 0) +
+  labs(title = "바이올린 그림") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+df_multi_dist_small <- group_by(df_multi_dist, type) %>%
+  sample_n(50)
+
+p3 <- ggplot(df_multi_dist_small, aes(x = type, y = y)) +
+  geom_jitter(color = palette[1], width = 0.15, height = 0, size = .3) +
+  labs(title = "스트립 차트") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p4 <- ggplot(df_multi_dist_small, aes(x = type, y = y)) +
+  dviz.supp::stat_sina(color = palette[1], size = 0.3) +
+  labs(title = "시나 그림") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p5 <- ggplot(df_multi_dist, aes(x = y, fill = factor(type, levels = c("C", "A", "B")))) +
+  geom_histogram(color = palette[npal], binwidth = 0.5, center = 0) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "누적 히스토그램") +
+  scale_x_continuous() +
+  scale_y_continuous(limits = c(0, 49), expand = c(0, 0)) +
+  theme_plot_icon(palette[npal], palette[1])
+
+p6 <- ggplot(df_multi_dist, aes(x = y, fill = factor(type, levels = c("C", "A", "B")))) +
+  geom_density(alpha = 0.7, color = palette[npal]) +
+  scale_fill_manual(values = palette[1:3]) +
+  labs(title = "중첩 밀도") +
+  scale_x_continuous() +
+  scale_y_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
+  theme_plot_icon(palette[npal], palette[1])
+
+p7 <- ggplot(df_multi_dist, aes(x = y, y = number, group = number)) +
+  geom_density_ridges(alpha = 0.7, color = palette[npal], fill = palette[2], scale = 2.5) +
+  labs(title = "능선 그림") +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(limits = c(1, 6.5), expand = c(0, 0)) +
+  theme_plot_icon(palette[npal], palette[1])
+
+
+plot_grid(p1, p2, p3, p4,
+          p5, p6, p7, ncol = 4, scale = .9)
+```
+
+상자 그림, 바이올린, 스트립 차트, 시나 그림은 한 번에 많은 분포를 시각화하거나 분포 간의 전반적인 변화에 주로 관심이 있을 때 유용합니다(챕터 \@ref(boxplots-violins-vertical)). 누적 히스토그램과 중첩 밀도는 더 적은 수의 분포를 더 심층적으로 비교할 수 있지만 누적 히스토그램은 해석하기 어려울 수 있으며 피하는 것이 가장 좋습니다(챕터 \@ref(multiple-histograms-densities)). 능선 그림은 바이올린 그림의 유용한 대안이 될 수 있으며 매우 많은 수의 분포를 시각화하거나 시간 경과에 따른 분포 변화를 시각화할 때 종종 유용합니다(챕터 \@ref(boxplots-violins-horizontal)).
+
+## 비율
+
+```{r proportions, fig.width = 5*6/4.2, fig.asp = 1/4}
+palette <- pal_brown_green
+
+p1_main <- ggplot(df_props, aes(x = 1, y = value, fill = group)) +
+  geom_col(position = "stack", color = palette[npal]) +
+  coord_polar(theta = "y") +
+  scale_y_continuous(breaks = NULL, name = "") +
+  scale_x_continuous(breaks = NULL, name = "") +
+  scale_fill_manual(values = palette[2:4]) +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(plot.margin = margin(0, 0, 0, 0))
+
+# 다른 그림과 마찬가지로 그림 배경이 완전히 채워졌는지 확인합니다.
+p1 <- ggdraw(p1_main) +
+  labs(title = "원형 차트") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+p2 <- ggplot(df_props, aes(x = factor(1), y = value, fill = group)) +
+  geom_col(position = position_stack(reverse = TRUE), width = .45, color = palette[npal]) +
+  scale_y_continuous(limits = c(0, 108), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "누적 막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p3 <- ggplot(df_props, aes(x = factor(1), y = value, fill = group)) +
+  geom_col(position = position_stack(reverse = TRUE), width = .45, color = palette[npal]) +
+  #scale_y_continuous(limits = c(0, 110), expand = c(0, 0), position = "right") +
+  scale_y_continuous(limits = c(0, 110), expand = c(0, 0)) +
+  coord_flip() +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "누적 막대 그래프") +
+  theme_plot_icon_vgrid(palette[npal], palette[1])
+
+p4 <- ggplot(df_props, aes(x = group, y = value, fill = group)) +
+  geom_col(position="identity", color = palette[npal],
+           width = .8) +
+  scale_y_continuous(limits = c(0, 66), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p5 <- ggplot(df_props, aes(x = fct_rev(group), y = value, fill = group)) +
+  geom_col(position="identity", color = palette[npal],
+           width = .8) +
+  scale_y_continuous(limits = c(0, 66), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  coord_flip() +
+  labs(title = "막대 그래프") +
+  theme_plot_icon_vgrid(palette[npal], palette[1])
+
+
+plot_grid(p1, p4, p5, p2, ncol = 4, scale = .9)
+```
+
+비율은 원형 차트, 나란히 놓인 막대 또는 누적 막대로 시각화할 수 있으며(챕터 \@ref(visualizing-proportions)), 양의 경우와 마찬가지로 막대는 수직 또는 수평으로 배열할 수 있습니다. 원형 차트는 개별 부분이 전체를 구성하고 단순한 분수를 강조한다는 점을 강조합니다. 그러나 개별 조각은 나란히 놓인 막대에서 더 쉽게 비교할 수 있습니다. 누적 막대는 단일 비율 집합에 대해 어색해 보이지만 여러 비율 집합을 비교할 때 유용할 수 있습니다(아래 참조).
+
+
+```{r proportions-comp, fig.width = 5*6/4.2, fig.asp = 1/4}
+p5 <- ggplot(filter(df_fractions, x!=4), aes(x, y,
+                                   fill=factor(type, levels = c("A", "C", "B")))) +
+  geom_col(position="dodge", color = palette[npal],
+           width = .7) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, .58)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "그룹 막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p6 <- ggplot(df_fractions, aes(x, y, fill=type)) +
+  geom_col(position="stack", color = palette[npal]) +
+  scale_y_continuous(limits = c(0, 1.08), expand = c(0, 0)) +
+  scale_fill_manual(values = palette[2:4]) +
+  labs(title = "누적 막대 그래프") +
+  theme_plot_icon_hgrid(palette[npal], palette[1])
+
+p7 <- ggplot(df_multi_dist, aes(x = y, fill = factor(type, levels = c("C", "A", "B")))) +
+  geom_density(color = palette[npal], position = "fill") +
+  scale_fill_manual(values = palette[2:4]) +
+  scale_x_continuous(expand = c(0.04, 0)) +
+  scale_y_continuous(limits = c(0, 1.08), expand = c(0, 0)) +
+  labs(title = "누적 밀도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p8_a <- ggplot(filter(df_fractions, x==1), aes(x = 1, y = y, fill = type)) +
+  geom_col(position = "stack", color = palette[npal]) +
+  coord_polar(theta = "y") +
+  scale_y_continuous(breaks = NULL, name = "") +
+  scale_x_continuous(breaks = NULL, name = "") +
+  scale_fill_manual(values = palette[c(2, 1, 3)]) +
+  theme_plot_icon_blank(palette[npal], palette[1], font_size = 5) +
+  theme(
+    plot.background = element_blank(),
+    plot.margin = margin(0, 0, 0, 0)
+  )
+
+p8_b <- ggplot(filter(df_fractions, x==2), aes(x = 1, y = y, fill = type)) +
+  geom_col(position = "stack", color = palette[npal]) +
+  coord_polar(theta = "y") +
+  scale_y_continuous(breaks = NULL, name = "") +
+  scale_x_continuous(breaks = NULL, name = "") +
+  scale_fill_manual(values = palette[c(2, 1, 3)]) +
+  theme_plot_icon_blank(palette[npal], palette[1], font_size = 5) +
+  theme(
+    plot.background = element_blank(),
+    plot.margin = margin(0, 0, 0, 0)
+  )
+
+p8_c <- ggplot(filter(df_fractions, x==3), aes(x = 1, y = y, fill = type)) +
+  geom_col(position = "stack", color = palette[npal]) +
+  coord_polar(theta = "y") +
+  scale_y_continuous(breaks = NULL, name = "") +
+  scale_x_continuous(breaks = NULL, name = "") +
+  scale_fill_manual(values = palette[c(2, 1, 3)]) +
+  theme_plot_icon_blank(palette[npal], palette[1], font_size = 5) +
+  theme(
+    plot.background = element_blank(),
+    plot.margin = margin(0, 0, 0, 0)
+  )
+
+
+# 결합
+p8 <- plot_grid(p8_a, p8_b, p8_c, ncol = 3, scale = 1.1) +
+      labs(title = "다중 원형 차트") +
+      theme_plot_icon_blank(palette[npal], palette[1])
+
+plot_grid(p8, p5, p6, p7, ncol = 4, scale = .9)
+```
+
+여러 비율 집합을 시각화하거나 조건에 따른 비율 변화를 시각화할 때 원형 차트는 공간 효율성이 떨어지고 관계를 모호하게 만드는 경향이 있습니다. 그룹화된 막대는 비교하는 조건 수가 적당한 한 잘 작동하며 누적 막대는 많은 수의 조건에 대해 작동할 수 있습니다. 누적 밀도(챕터 \@ref(visualizing-proportions))는 비율이 연속 변수를 따라 변할 때 적합합니다.
+
+```{r proportions-multi, fig.width = 5*6/4.2, fig.asp = 1/4}
+p1 <- ggplot(df_multi_props, aes(x = var2, y = count, fill = var1, width = group_count)) +
+  geom_bar(stat = "identity", position = "fill", colour = palette[npal], size = 0.5) +
+  facet_grid(~var2, scales = "free_x", space = "free_x") +
+  scale_x_discrete(name = NULL, breaks = NULL) +
+  scale_y_continuous(name = NULL, breaks = NULL, expand = c(0, 0)) +
+  scale_fill_manual(values = palette[4:2], guide = "none") +
+  coord_cartesian(clip = "off") +
+  labs(title = "모자이크 그림") +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(
+    strip.text = element_blank(),
+    panel.spacing.x = unit(0, "pt")
+  )
+
+p2 <- ggplot(df_multi_props, aes(area = count, subgroup = var2, fill = var2)) +
+  geom_treemap(color = palette[npal], size = 0.5*.pt, alpha = NA) +
+  geom_treemap_subgroup_border(color = palette[npal], size = 1.5*.pt) +
+  scale_fill_manual(values = palette[4:2], guide = "none") +
+  coord_cartesian(clip = "off") +
+  labs(title = "트리맵") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+p3 <- ggplot(df_sets, aes(x, id = id, split = y, value = count)) +
+  geom_parallel_sets(aes(fill = var1), alpha = 0.7, axis.width = 0.15) +
+  geom_parallel_sets_axes(axis.width = 0.06, fill = palette[2], color = palette[2]) +
+  scale_x_discrete(
+    name = NULL,
+    breaks = NULL,
+    expand = c(0, 0.15/2)
+  ) +
+  scale_y_continuous(breaks = NULL, expand = c(0, 0)) +
+  scale_fill_manual(values = c(palette[3], palette[2]), guide = "none") +
+  labs(title = "병렬 집합") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+plot_grid(p1, p2, p3, ncol = 4, scale = .9)
+```
+
+비율이 여러 그룹화 변수에 따라 지정되는 경우 모자이크 그림, 트리맵 또는 병렬 집합이 유용한 시각화 접근 방식입니다.
+(챕터 \@ref(nested-proportions)). 모자이크 그림은 한 그룹화 변수의 모든 수준이 다른 그룹화 변수의 모든 수준과 결합될 수 있다고 가정하는 반면 트리맵은 이러한 가정을 하지 않습니다. 트리맵은 한 그룹의 하위 구분이 다른 그룹의 하위 구분과 완전히 다른 경우에도 잘 작동합니다. 병렬 집합은 그룹화 변수가 두 개 이상인 경우 모자이크 그림이나 트리맵보다 더 잘 작동합니다.
+
+
+## *x*--*y* 관계
+
+```{r basic-scatter, fig.width = 5*6/4.2, fig.asp = 1/4}
+palette <- pal_steel_blue
+
+p1 <- ggplot(df_scatter_xy, aes(x, y)) +
+  geom_point(fill = palette[2], color = palette[npal], pch = 21, size = 2.4) +
+  scale_x_continuous(expand = c(.2, 0)) +
+  scale_y_continuous(expand = c(.2, 0)) +
+  labs(title = "산점도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p2 <- ggplot(df_scatter_xyz, aes(x, y, size = z)) +
+  geom_point(fill = palette[2], color = palette[npal], pch = 21, alpha = 0.7) +
+  scale_x_continuous(expand = c(.2, 0)) +
+  scale_y_continuous(expand = c(.2, 0)) +
+  scale_radius(range = c(2, 8)) +
+  labs(title = "버블 차트") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p3 <- ggplot(spread(df_paired, x, y), aes(A, B)) +
+  geom_abline(slope = 1, intercept = 0, color = palette[3], size = 0.3) +
+  geom_point(
+    shape = 21, size = 2.4, stroke = 1,
+    fill = palette[2], color = palette[npal]
+  ) +
+  scale_x_continuous(limits = c(1.5, 6.5)) +
+  scale_y_continuous(limits = c(1.5, 6.5)) +
+  labs(title = "쌍을 이룬 산점도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p4 <- ggplot(df_paired, aes(x, y, group = group)) +
+  geom_line(color = palette[1]) +
+  geom_point(
+    shape = 21, size = 2.4, stroke = 1,
+    fill = palette[2], color = palette[npal]
+  ) +
+  scale_x_discrete(expand = c(0, 0.4)) +
+  scale_y_continuous(limits = c(1.5, 6.5)) +
+  labs(title = "경사 그래프") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
+```
+
+
+산점도는 한 정량적 변수를 다른 정량적 변수와 비교하여 표시할 때 전형적인 시각화를 나타냅니다(챕터 \@ref(associations-scatterplots)). 세 개의 정량적 변수가 있는 경우 점 크기에 하나를 매핑하여 버블 차트라는 산점도의 변형을 만들 수 있습니다. *x* 축과 *y* 축을 따른 변수가 동일한 단위로 측정되는 쌍을 이룬 데이터의 경우 일반적으로 *x* = *y*를 나타내는 선을 추가하는 것이 도움이 됩니다(챕터 \@ref(associations-paired-data)). 쌍을 이룬 데이터는 직선으로 연결된 쌍을 이룬 점의 경사 그래프로 표시할 수도 있습니다(챕터 \@ref(associations-paired-data)).
+
+```{r xy-binning, fig.width = 5*6/4.2, fig.asp = 1/4}
+p5 <- ggplot(df_dense_scatter, aes(x, y)) +
+  geom_density2d(binwidth = 0.02, color = palette[1]) +
+  scale_x_continuous(limits = c(-2, 3.6), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(-4, 5), expand = c(0, 0)) +
+  labs(title = "밀도 등고선") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p6 <- ggplot(df_dense_scatter, aes(x, y)) +
+  geom_bin2d(bins = 12, color = palette[npal], size = 0.5) +
+  scale_x_continuous(limits = c(-2, 3.6), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(-4, 5), expand = c(0, 0)) +
+  scale_fill_gradientn(colors = palette[1:(npal-1)]) +
+  labs(title = "2D 구간") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p7 <- ggplot(df_dense_scatter, aes(x, y)) +
+  geom_hex(bins = 12, color = palette[npal], size = 0.5) +
+  scale_x_continuous(limits = c(-2, 3.6), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(-4, 5), expand = c(0, 0)) +
+  scale_fill_gradientn(colors = palette[1:(npal-1)]) +
+  labs(title = "육각 구간") +
+  theme_plot_icon(palette[npal], palette[1])
+
+cm <- cor(select(mtcars, mpg, hp, drat, wt, qsec))
+df_wide <- as.data.frame(cm)
+df_long <- stack(df_wide)
+names(df_long) <- c("cor", "var1")
+df_long <- cbind(df_long, var2 = rep(rownames(cm), length(rownames(cm))))
+clust <- hclust(as.dist(1-cm), method="average")
+levels <- clust$labels[clust$order]
+df_long$var1 <- factor(df_long$var1, levels = levels)
+df_long$var2 <- factor(df_long$var2, levels = levels)
+p8 <- ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
+       aes(var1, var2, fill=cor, size = abs(cor))) +
+  geom_point(shape = 21, stroke = 0) +
+  scale_x_discrete(position = "top", name = NULL, expand = c(0, 0.5)) +
+  scale_y_discrete(name = NULL, expand = c(0, 0.5)) +
+  scale_size_area(max_size = 8, limits = c(0, 0.9), guide = "none") +
+  scale_fill_gradient2(high = palette[2], mid = palette[npal], low = pal_steel_blue_inv[2], guide = "none") +
+  labs(title = "상관도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+
+plot_grid(p5, p6, p7, p8, ncol = 4, scale = .9)
+```
+
+많은 수의 점에 대해 일반 산점도는 중복 플로팅으로 인해 정보를 제공하지 못할 수 있습니다. 이 경우 등고선, 2D 구간 또는 육각 구간이 대안을 제공할 수 있습니다(챕터 \@ref(overlapping-points)). 반면에 두 개 이상의 양을 시각화하려는 경우 기본 원시 데이터 대신 상관 계수를 상관도 형태로 플로팅하도록 선택할 수 있습니다(챕터 \@ref(associations-correlograms)).
+
+```{r xy-lines, fig.width = 5*6/4.2, fig.asp = 1/4}
+p1 <- ggplot(df_one_line, aes(x, y)) +
+  geom_line(color = palette[1]) +
+  geom_point(
+    shape = 21, size = 2.4, stroke = 1,
+    fill = palette[2], color = palette[npal]
+  ) +
+  scale_x_continuous(limits = c(0.5, 5.5), breaks = c(1, 3, 5)) +
+  scale_y_continuous(limits = c(2.8, 4.8)) +
+  labs(title = "선 그래프") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p2 <- ggplot(df_connected_scatter, aes(x, y, color = t, fill = t)) +
+  geom_path() +
+  geom_point(
+    shape = 21, size = 2.4, stroke = 1,
+    color = palette[npal]
+  ) +
+  scale_color_gradientn(
+    aesthetics = c("colour", "fill"),
+    colors = palette[(npal-2):1]
+  ) +
+  scale_x_continuous(limits = c(0.3, 3.7)) +
+  scale_y_continuous(limits = c(-2.5, 2.5)) +
+  labs(title = "연결된 산점도") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p3 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
+  geom_point(color = palette[2], size = 0.3, alpha = 1/2) +
+  geom_smooth(
+    color = palette[1],
+    fill = palette[npal-2],
+    size = 0.5,
+    se = FALSE
+  ) +
+  scale_y_continuous(limits = c(-5, 5)) +
+  labs(title = "평활 선 그래프") +
+  theme_plot_icon(palette[npal], palette[1])
+
+plot_grid(p1, p2, p3, ncol = 4, scale = .9)
+```
+
+*x* 축이 시간 또는 치료 용량과 같이 엄격하게 증가하는 양을 나타낼 때 일반적으로 선 그래프를 그립니다(챕터 \@ref(time-series)). 두 반응 변수의 시간적 순서가 있는 경우 두 반응 변수를 산점도에 먼저 플로팅한 다음 인접한 시간 지점에 해당하는 점을 연결하는 연결된 산점도를 그릴 수 있습니다(챕터 \@ref(time-series-connected-scatter)). 더 큰 데이터 세트의 추세를 나타내기 위해 평활선을 사용할 수 있습니다(챕터 \@ref(visualizing-trends)).
+
+
+## 지리 공간 데이터 {#directory-geospatial-data}
+
+```{r geospatial, fig.width = 5*6/4.2, fig.asp = 1/4}
+palette <- pal_green_brown
+
+lower48 <- mutate(
+  US_income,
+  income_bins = cut(
+    ifelse(is.na(median_income), 25000, median_income), # 누락된 값 숨기기
+    breaks = c(0, 40000, 50000, 60000, 70000, 80000)
+  )
+) %>% filter(!name %in% c("알래스카", "하와이", "컬럼비아 특별구"))
+
+
+p1_main <- ggplot(lower48) +
+  geom_sf(color = palette[1], fill = palette[4], size = 0.3) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-2500000, 100000)) +
+  scale_y_continuous(limits = c(-900000, 1558935)) +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(
+    plot.margin = margin(2, 5, 3, 5)
+  )
+
+# 다른 그림과 마찬가지로 그림 배경이 완전히 채워졌는지 확인합니다.
+p1 <- ggdraw(p1_main) +
+  labs(title = "지도") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+
+p2_main <- ggplot(lower48, aes(fill = income_bins)) +
+  geom_sf(color = palette[1], size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-2500000, 100000)) +
+  scale_y_continuous(limits = c(-900000, 1558935)) +
+  scale_fill_manual(values = palette) +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(
+    plot.margin = margin(2, 5, 3, 5)
+  )
+
+p2 <- ggdraw(p2_main) +
+  labs(title = "단계 구분도") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+lower48_carto <- mutate(
+  US_income_cartogram,
+  income_bins = cut(
+    ifelse(is.na(median_income), 25000, median_income), # 누락된 값 숨기기
+    breaks = c(0, 40000, 50000, 60000, 70000, 80000)
+  )
+) %>% filter(!name %in% c("알래스카", "하와이", "컬럼비아 특별구"))
+
+p3_main <- ggplot(lower48_carto, aes(fill = income_bins)) +
+  geom_sf(color = palette[1], size = 0.2) +
+  coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-2500000, 100000)) +
+  scale_y_continuous(limits = c(-1000000, 1458935)) +
+  scale_fill_manual(values = palette) +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(
+    plot.margin = margin(2, 5, 3, 5)
+  )
+
+p3 <- ggdraw(p3_main) +
+  labs(title = "카토그램") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+lower48_small <- filter(lower48, GEOID %in% c(
+  "04", "06", "08", "16", "20", "30", "31", "32", "35", "38", "41", "46", "49", "53", "56"))
+
+p4_main <- ggplot(lower48_small, aes(state = name, fill = income_bins)) +
+  geom_statebins(
+    family = dviz.supp::dviz_font_family,
+    lbl_size = 8/.pt,
+    border_size = 1.,
+    border_col = palette[npal]
+  ) +
+  coord_equal(xlim = c(1.5, 5.5), ylim = c(-2.5, -6.5), expand = FALSE, clip = "off") +
+  scale_fill_manual(values = palette[2:5]) +
+  theme_plot_icon_blank(palette[npal], palette[1]) +
+  theme(
+    plot.margin = margin(2, 0, 0, 7)
+  )
+
+p4 <- ggdraw(p4_main) + labs(title = "카토그램 히트맵") +
+  theme_plot_icon_blank(palette[npal], palette[1])
+
+plot_grid(p1, p2, p3, p4, scale = 0.9, nrow = 1)
+```
+
+지리 공간 데이터를 표시하는 주요 방법은 지도 형태입니다(챕터 \@ref(geospatial-data)). 지도는 지구상의 좌표를 가져와 평평한 표면에 투영하여 지구상의 모양과 거리가 2D 표현의 모양과 거리로 대략적으로 표현되도록 합니다. 또한 데이터에 따라 해당 지역을 색칠하여 다른 지역의 데이터 값을 표시할 수 있습니다. 이러한 지도를 단계 구분도라고 합니다(챕터 \@ref(choropleth-mapping)). 경우에 따라 다른 양(예: 인구 수)에 따라 다른 지역을 왜곡하거나 각 지역을 정사각형으로 단순화하는 것이 도움이 될 수 있습니다. 이러한 시각화를 카토그램이라고 합니다.
+
+## 불확실성 {#directory-uncertainty}
+
+```{r errorbars, fig.width = 5*6/4.2, fig.asp = 1/4}
+palette <- pal_brown_red
+
+p1 <- ggplot(df_uncertain, aes(y, type)) +
+  geom_errorbarh(
+    aes(xmin = y-dy, xmax = y+dy),
+    color = palette[1], height = 0.2, size = 0.5
+  ) +
+  geom_point(
+    color = palette[1],
+    size = 2
+  ) +
+  labs(title = "오차 막대") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p2 <- ggplot(df_uncertain, aes(type, y)) +
+  geom_col(fill = palette[3], width = 0.8) +
+  geom_segment(
+    aes(xend = type, y = y-dy, yend = y+dy),
+    color = palette[1],
+    size = 0.7
+  ) +
+  scale_y_continuous(limits = c(0, 6), expand = c(0, 0)) +
+  labs(title = "오차 막대") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+p3 <- ggplot(df_uncertain, aes(y, type)) +
+  geom_errorbarh(
+    aes(xmin = y-2.58*dy, xmax = y+2.58*dy), # 99% CI
+    color = palette[3], height = 0, size = 0.5
+  ) +
+  geom_errorbarh(
+    aes(xmin = y-1.96*dy, xmax = y+1.96*dy), # 95% CI
+    color = palette[2], height = 0, size = 1
+  ) +
+  geom_errorbarh(
+    aes(xmin = y-1.28*dy, xmax = y+1.28*dy), # 80% CI
+    color = palette[1], height = 0, size = 1.5
+  ) +
+  #geom_errorbarh(
+  #  aes(xmin = y-dy, xmax = y+dy),
+  #  color = palette[1], height = 0.1, size = 0.5
+  #) +
+  geom_point(
+    color = palette[1],
+    size = 2
+  ) +
+  labs(title = "등급 오차 막대") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p4 <- ggplot(df_uncertain, aes(x, y)) +
+  geom_point(color = palette[1], size = 2) +
+  geom_segment(
+    aes(xend = x, y = y-dy, yend = y+dy),
+    color = palette[1],
+    size = 0.7
+  ) +
+  geom_segment(
+    aes(yend = y, x = x-dx, xend = x+dx),
+    color = palette[1],
+    size = 0.7
+  ) +
+  scale_x_continuous(limits = c(1, 4)) +
+  scale_y_continuous(limits = c(2, 6)) +
+  labs(title = "2D 오차 막대") +
+  theme_plot_icon(palette[npal], palette[1])
+
+
+
+plot_grid(p1, p2, p4, p3, ncol = 4, scale = .9)
+
+```
+
+오차 막대는 일부 추정치 또는 측정값에 대한 가능한 값의 범위를 나타냅니다. 추정치 또는 측정값을 나타내는 일부 참조점에서 수평 및/또는 수직으로 확장됩니다(챕터 \@ref(visualizing-uncertainty)). 참조점은 점이나 막대와 같은 다양한 방식으로 표시할 수 있습니다. 등급 오차 막대는 동시에 여러 범위를 표시하며 각 범위는 다른 신뢰도 수준에 해당합니다. 사실상 서로 다른 선 두께를 가진 여러 오차 막대를 서로 겹쳐 그린 것입니다.
+
+```{r confidence-dists, fig.width = 5*6/4.2, fig.asp = 1/4}
+
+p1 <- ggplot(df_uncertain, aes(y, type)) +
+  stat_confidence_density(aes(moe = dy), fill = palette[3], height = 0.6, confidence = 0.68) +
+  scale_x_continuous(limits = c(1.6, 6.4), expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 1)) +
+  labs(title = "신뢰 구간") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+
+p2 <- ggplot(df_uncertain, aes(y, type)) +
+  geom_ribbon(
+    data = filter(df_uncertain, type == "A"),
+    aes(moe = dy, ymin = 1 - .5*stat(density), ymax = 1 + .5*stat(density)),
+    stat = "confidence_density",
+    fill = palette[3], color = NA, alpha = NA, confidence = 0.68
+  ) +
+  geom_ribbon(
+    data = filter(df_uncertain, type == "B"),
+    aes(moe = dy, ymin = 2 - .5*stat(density), ymax = 2 + .5*stat(density)),
+    stat = "confidence_density",
+    fill = palette[3], color = NA, alpha = NA, confidence = 0.68
+  ) +
+  geom_ribbon(
+    data = filter(df_uncertain, type == "C"),
+    aes(moe = dy, ymin = 3 - .5*stat(density), ymax = 3 + .5*stat(density)),
+    stat = "confidence_density",
+    fill = palette[3], color = NA, alpha = NA, confidence = 0.68
+  ) +
+  geom_errorbarh(
+    aes(xmin = y-1.28*dy, xmax = y+1.28*dy),
+    color = palette[1], height = 0, size = 0.5
+  ) +
+  geom_point(
+    color = palette[1],
+    size = 2
+  ) +
+  scale_x_continuous(limits = c(1.6, 6.4), expand = c(0, 0)) +
+  scale_y_discrete(expand = expand_scale(add = c(0.8, 0.8))) +
+  labs(title = "눈 모양 그림") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p3 <- ggplot(df_uncertain, aes(y, type)) +
+  stat_confidence_density(
+    aes(moe = dy, height = .9*stat(density)),
+    geom = "ridgeline",
+    fill = palette[3], color = NA, alpha = NA, confidence = 0.68
+  ) +
+  geom_errorbarh(
+    aes(xmin = y-1.28*dy, xmax = y+1.28*dy),
+    color = palette[1], height = 0, size = 0.5
+  ) +
+  geom_point(
+    color = palette[1],
+    size = 2
+  ) +
+  scale_x_continuous(limits = c(1.6, 6.4), expand = c(0, 0)) +
+  scale_y_discrete(expand = expand_scale(add = c(0.2, 0.8))) +
+  labs(title = "반쪽 눈 모양 그림") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+df_norm <- data.frame(
+  x = seq(-3, 3, length.out = 100),
+  y = dnorm(seq(-3, 3, length.out = 100))
+)
+df_q <- data.frame(x = qnorm(ppoints(20)))
+
+p4 <- ggplot(df_q, aes(x)) +
+  geom_line(data = df_norm, aes(x, .36*y), color = palette[1], na.rm = FALSE, size = 0.25) + # 계수 .36은 수동으로 결정됨
+  geom_dotplot(binwidth = .4, fill = palette[3], color = palette[1]) +
+  scale_x_continuous(
+    limits = c(-2.8, 2.8),
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    expand = c(0.02, 0),
+    limits = c(0, 0.4)
+  ) +
+  labs(title = "분위수 점 그림") +
+  theme_plot_icon(palette[npal], palette[1]) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
+
+```
+
+오차 막대 또는 등급 오차 막대로 가능한 것보다 더 자세한 시각화를 얻으려면 실제 신뢰 구간 또는 사후 분포를 시각화할 수 있습니다(챕터 \@ref(visualizing-uncertainty)). 신뢰 구간은 불확실성에 대한 명확한 시각적 감각을 제공하지만 정확하게 읽기 어렵습니다. 눈 모양 그림과 반쪽 눈 모양 그림은 오차 막대와 분포 시각화 접근 방식(각각 바이올린 및 능선 그림)을 결합하여 일부 신뢰 수준에 대한 정확한 범위와 전체 불확실성 분포를 모두 보여줍니다. 분위수 점 그림은 불확실성 분포의 대안적인 시각화 역할을 할 수 있습니다(챕터 \@ref(frequency-framing)). 분포를 이산 단위로 표시함으로써 분위수 점 그림은 바이올린 또는 능선 그림으로 표시되는 연속 분포만큼 정확하지는 않지만 읽기 더 쉬울 수 있습니다.
+
+```{r confidence-bands, fig.width = 5*6/4.2, fig.asp = 1/4}
+p1 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
+  geom_smooth(
+    color = palette[1],
+    fill = palette[npal-2],
+    size = 0.5,
+    level = 0.95
+  ) +
+  scale_y_continuous(limits = c(-5, 5)) +
+  labs(title = "신뢰대") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p2 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
+  geom_smooth(color = NA, fill = palette[npal-1], level = 0.99) +
+  geom_smooth(color = NA, fill = palette[npal-2], level = 0.95) +
+  geom_smooth(
+    color = palette[1],
+    fill = palette[npal-3],
+    size = 0.5,
+    level = 0.8
+  ) +
+  scale_y_continuous(limits = c(-5, 5)) +
+  labs(title = "등급 신뢰대") +
+  theme_plot_icon(palette[npal], palette[1])
+
+p3 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
+  stat_smooth_draws(
+    times = 8,
+    aes(group = stat(.draw)),
+    color = palette[1],
+    size = 0.15
+  ) +
+  scale_y_continuous(limits = c(-5, 5)) +
+  labs(title = "적합된 추출") +
+  theme_plot_icon(palette[npal], palette[1])
+
+plot_grid(p1, p2, p3, ncol = 4, scale = .9)
+```
+
+평활 선 그래프의 경우 오차 막대에 해당하는 것은 신뢰대입니다(챕터 \@ref(uncertainty-curve-fits)). 주어진 신뢰 수준에서 선이 통과할 수 있는 값의 범위를 보여줍니다. 오차 막대의 경우와 마찬가지로 여러 신뢰 수준을 한 번에 표시하는 등급 신뢰대를 그릴 수 있습니다. 신뢰대 대신 또는 신뢰대에 추가하여 개별 적합된 추출을 표시할 수도 있습니다.
