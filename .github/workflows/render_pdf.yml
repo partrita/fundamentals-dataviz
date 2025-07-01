@@ -17,11 +17,18 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Render QMD to PDF
+      - name: Render QMD to PDF and move to artifacts
         run: |
           mkdir -p artifacts
           for file in translated_korean_files/*.qmd; do
-            quarto render "$file" --to pdf -o "artifacts/$(basename "${file%.qmd}").pdf"
+            # Render the QMD file. Quarto will by default place the PDF
+            # in the same directory as the source QMD file.
+            quarto render "$file" --to pdf
+            # After rendering, move the generated PDF to the artifacts directory.
+            # The basename command extracts just the filename, and ${file%.qmd}
+            # removes the .qmd extension to correctly name the PDF.
+            mv "${file%.qmd}.pdf" "artifacts/$(basename "${file%.qmd}").pdf"
+          done
 
       - name: Create Release and Upload PDFs
         uses: softprops/action-gh-release@v1
