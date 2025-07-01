@@ -22,7 +22,6 @@ jobs:
           mkdir -p artifacts
           for file in translated_korean_files/*.qmd; do
             quarto render "$file" --to pdf -o "artifacts/$(basename "${file%.qmd}").pdf"
-          done
 
       - name: Create Release and Upload PDFs
         uses: softprops/action-gh-release@v1
