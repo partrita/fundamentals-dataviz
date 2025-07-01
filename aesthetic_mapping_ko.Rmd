@@ -1,0 +1,296 @@
+```{r echo = FALSE, message = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+
+library(forcats)
+library(patchwork)
+library(lubridate)
+```
+
+
+# (PART\*) 1부: 데이터에서 시각화까지 {-}
+
+
+# 데이터 시각화: 데이터를 미학적 요소에 매핑하기 {#aesthetic-mapping}
+
+데이터를 시각화할 때마다 데이터 값을 체계적이고 논리적인 방식으로 변환하여 최종 그래픽을 구성하는 시각적 요소로 만듭니다. 다양한 유형의 데이터 시각화가 있고 언뜻 보기에는 산점도, 파이 차트, 히트맵이 공통점이 많아 보이지 않지만, 이러한 모든 시각화는 데이터 값이 종이 위의 잉크 덩어리나 화면의 색상 픽셀로 변환되는 방식을 포착하는 공통 언어로 설명할 수 있습니다. 핵심 통찰력은 다음과 같습니다. 모든 데이터 시각화는 데이터 값을 결과 그래픽의 정량화 가능한 특징에 매핑합니다. 이러한 특징을 *미학적 요소*라고 합니다.
+
+## 미학적 요소와 데이터 유형
+
+미학적 요소는 주어진 그래픽 요소의 모든 측면을 설명합니다. 그림 \@ref(fig:common-aesthetics)에 몇 가지 예가 나와 있습니다. 모든 그래픽 요소의 중요한 구성 요소는 물론 요소가 위치하는 위치를 설명하는 *위치*입니다. 표준 2D 그래픽에서는 *x*와 *y* 값으로 위치를 설명하지만 다른 좌표계와 1차원 또는 3차원 시각화도 가능합니다. 다음으로 모든 그래픽 요소에는 *모양*, *크기*, *색상*이 있습니다. 흑백 그림을 준비하는 경우에도 그래픽 요소는 배경이 흰색이면 검은색, 배경이 검은색이면 흰색과 같이 보이도록 색상이 있어야 합니다. 마지막으로 데이터를 시각화하기 위해 선을 사용하는 경우 이러한 선은 너비나 점선 패턴이 다를 수 있습니다. 그림 \@ref(fig:common-aesthetics)에 표시된 예 외에도 데이터 시각화에서 접할 수 있는 다른 많은 미학적 요소가 있습니다. 예를 들어 텍스트를 표시하려면 글꼴 모음, 글꼴 면, 글꼴 크기를 지정해야 할 수 있으며 그래픽 개체가 겹치는 경우 부분적으로 투명한지 여부를 지정해야 할 수 있습니다.
+
+(ref:common-aesthetics) 데이터 시각화에서 일반적으로 사용되는 미학적 요소: 위치, 모양, 크기, 색상, 선 너비, 선 유형. 이러한 미학적 요소 중 일부는 연속 데이터와 이산 데이터를 모두 나타낼 수 있지만(위치, 크기, 선 너비, 색상) 다른 요소는 일반적으로 이산 데이터만 나타낼 수 있습니다(모양, 선 유형).
+
+```{r common-aesthetics, fig.width = 6, fig.asp = 0.45, fig.cap = '(ref:common-aesthetics)'}
+aes_pos <- ggdraw() +
+  geom_segment(data = data.frame(x = c(0, 0.5),
+                                 xend = c(1, 0.5),
+                                 y = c(0.5, 0),
+                                 yend = c(0.5, 1)),
+                aes(x = x, y = y, xend = xend, yend = yend),
+                arrow = arrow(length = grid::unit(12, "pt")), size = .75) +
+  draw_text("y", .5, 1, size = 12, vjust = 1, hjust = 2.5, family = dviz_font_family) +
+  draw_text("x", 1, .5, size = 12, vjust = 2, hjust = 1, family = dviz_font_family) +
+  coord_cartesian(xlim = c(-.2, 1.2), ylim = c(-.2, 1.2))
+
+aes_color <- ggdraw() +
+  geom_tile(data = data.frame(x = 0.15 + .2333*(0:3)),
+            aes(x, y = .5, fill = factor(x)), width = .2, height = .6) +
+  scale_fill_OkabeIto(guide = "none")
+
+aes_shape <- ggdraw() +
+  geom_point(data = data.frame(x = (.5 + 0:3)/4),
+             aes(x, y = .5, shape = factor(x)), size = 8, fill = "grey80") +
+  scale_shape_manual(values = 21:24)
+
+aes_size <- ggdraw() +
+  geom_point(data = data.frame(x = (.5 + 0:3)/4),
+             aes(x, y = .5, size = factor(x)), shape = 21, fill = "grey80") +
+  scale_size_manual(values = c(2, 5, 8, 11))
+
+aes_lwd <- ggdraw() +
+  geom_segment(data = data.frame(x = rep(0.05, 4),
+                                 xend = rep(0.95, 4),
+                                 y = (1.5 + 0:3)/6,
+                                 yend = (1.5 + 0:3)/6,
+                                 size = 4:1),
+               aes(x = x, y = y, xend = xend, yend = yend, size = size)) +
+  scale_size_identity()
+
+aes_ltp <- ggdraw() +
+  geom_segment(data = data.frame(x = rep(0.05, 4),
+                                 xend = rep(0.95, 4),
+                                 y = (1.5 + 0:3)/6,
+                                 yend = (1.5 + 0:3)/6,
+                                 linetype = 4:1),
+               aes(x = x, y = y, xend = xend, yend = yend, linetype = linetype), size = 1) +
+  scale_linetype_identity()
+
+
+plot_grid(aes_pos, aes_shape, aes_size,
+          aes_color, aes_lwd, aes_ltp,
+          ncol = 3,
+          labels = c("위치", "모양", "크기", "색상", "선 너비", "선 유형"),
+          label_x = 0.05, label_y = 0.95, hjust = 0, vjust = 1)
+```
+
+
+모든 미학적 요소는 연속적인 데이터를 나타낼 수 있는 요소와 그렇지 않은 요소의 두 그룹 중 하나에 속합니다. 연속적인 데이터 값은 임의로 미세한 중간 값이 존재하는 값입니다. 예를 들어 시간 지속 시간은 연속적인 값입니다. 임의의 두 지속 시간(예: 50초와 51초) 사이에는 50.5초, 50.51초, 50.50001초 등과 같이 임의로 많은 중간 값이 있습니다. 반대로 방 안의 사람 수는 이산적인 값입니다. 방에는 5명 또는 6명이 있을 수 있지만 5.5명은 있을 수 없습니다. 그림 \@ref(fig:common-aesthetics)의 예에서 위치, 크기, 색상 및 선 너비는 연속적인 데이터를 나타낼 수 있지만 모양과 선 유형은 일반적으로 이산적인 데이터만 나타낼 수 있습니다.
+
+다음으로 시각화에서 나타내고자 하는 데이터 유형을 고려해 보겠습니다. 데이터를 숫자로 생각할 수 있지만 숫자 값은 우리가 접할 수 있는 여러 데이터 유형 중 두 가지에 불과합니다. 연속적이고 이산적인 숫자 값 외에도 데이터는 이산적인 범주, 날짜 또는 시간 형식, 텍스트 형식으로 제공될 수 있습니다(표 \@ref(tab:basic-data-types)). 데이터가 숫자일 때 이를 *정량적*이라고도 하며 범주형일 때 *정성적*이라고 합니다. 정성적 데이터를 보유하는 변수는 *요인*이며 다른 범주는 *수준*이라고 합니다. 요인의 수준은 대부분 순서가 없지만(표 \@ref(tab:basic-data-types)의 "개", "고양이", "물고기" 예에서와 같이) 요인의 수준 사이에 고유한 순서가 있는 경우 요인을 정렬할 수도 있습니다(표 \@ref(tab:basic-data-types)의 "좋음", "보통", "나쁨" 예에서와 같이).
+
+표: (\#tab:basic-data-types) 일반적인 데이터 시각화 시나리오에서 접하는 변수 유형.
+
+---------------------------------------------------------------------------------------------------------------------
+변수 유형         예시              적절한 척도       설명
+------------------------ --------------------- ----------------------- ----------------------------------------------
+정량적/수치적   1.3, 5.7, 83,         연속적              임의의 수치 값. 정수,
+연속적               1.5x10^-2^                                    유리수 또는 실수일 수 있습니다.
+
+정량적/수치적   1, 2, 3, 4            이산적                이산 단위의 숫자. 가장
+이산적                                                               일반적으로 정수이지만 반드시 그런 것은 아닙니다.
+                                                                       예를 들어 숫자 0.5, 1.0, 1.5는
+                                                                       주어진 데이터 세트에 중간 값이
+                                                                       존재할 수 없는 경우 이산적으로 처리될 수도 있습니다.
+
+정성적/범주형  개, 고양이, 물고기        이산적                순서 없는 범주. 고유한
+정렬되지 않음                                                               순서가 없는 이산적이고 고유한
+                                                                       범주입니다. 이러한 변수는
+                                                                       *요인*이라고도 합니다.
+
+정성적/범주형  좋음, 보통, 나쁨      이산적                순서 있는 범주. 순서가 있는
+정렬됨                                                                이산적이고 고유한 범주입니다. 예를 들어
+                                                                       "보통"은 항상 "좋음"과
+                                                                       "나쁨" 사이에 있습니다. 이러한 변수는
+                                                                       *정렬된 요인*이라고도 합니다.
+
+날짜 또는 시간             2018년 1월 5일, 오전 8:03   연속적 또는 이산적  특정 날짜 및/또는 시간. 또한
+                                                                       7월 4일 또는 12월 25일과 같은
+                                                                       일반적인 날짜(연도 없음).
+
+텍스트                     빠른 갈색 여우가   없음 또는 이산적       자유 형식 텍스트. 필요한 경우
+                         게으른 개를 뛰어넘습니다.                           범주형으로 처리할 수 있습니다.
+---------------------------------------------------------------------------------------------------------------------
+
+이러한 다양한 데이터 유형의 구체적인 예를 살펴보려면 표 \@ref(tab:data-example)를 살펴보십시오. 이 표는 미국 4개 지역의 일일 기온 정상값(30년 동안의 일일 평균 기온)을 제공하는 데이터 세트의 처음 몇 행을 보여줍니다. 이 표에는 월, 일, 위치, 관측소 ID, 기온(화씨)의 5가지 변수가 포함되어 있습니다. 월은 정렬된 요인, 일은 이산적인 수치 값, 위치는 정렬되지 않은 요인, 관측소 ID도 마찬가지로 정렬되지 않은 요인이며 기온은 연속적인 수치 값입니다.
+
+표: (\#tab:data-example) 4개 기상 관측소의 일일 기온 정상값을 나열하는 데이터 세트의 처음 12개 행. 데이터 출처: NOAA.
+
+ 월   일  위치      관측소 ID   기온
+------- ----- ------------ ------------ -------------
+  1월     1   시카고      USW00014819        25.6
+  1월     1   샌디에이고    USW00093107        55.2
+  1월     1   휴스턴      USW00012918        53.9
+  1월     1   데스밸리 USC00042319        51.0
+  1월     2   시카고      USW00014819        25.5
+  1월     2   샌디에이고    USW00093107        55.3
+  1월     2   휴스턴      USW00012918        53.8
+  1월     2   데스밸리 USC00042319        51.2
+  1월     3   시카고      USW00014819        25.3
+  1월     3   샌디에이고    USW00093107        55.3
+  1월     3   데스밸리 USC00042319        51.3
+  1월     3   휴스턴      USW00012918        53.8
+
+
+
+## 척도는 데이터 값을 미학적 요소에 매핑합니다.
+
+데이터 값을 미학적 요소에 매핑하려면 어떤 데이터 값이 어떤 특정 미학적 값에 해당하는지 지정해야 합니다. 예를 들어 그래픽에 *x* 축이 있는 경우 어떤 데이터 값이 이 축을 따라 특정 위치에 해당하는지 지정해야 합니다. 마찬가지로 어떤 데이터 값이 특정 모양이나 색상으로 표현되는지 지정해야 할 수도 있습니다. 데이터 값과 미학적 값 사이의 이러한 매핑은 *척도*를 통해 생성됩니다. 척도는 데이터와 미학적 요소 간의 고유한 매핑을 정의합니다(그림 \@ref(fig:basic-scales-example)). 중요하게도 척도는 일대일이어야 하므로 각 특정 데이터 값에 대해 정확히 하나의 미학적 값이 있고 그 반대의 경우도 마찬가지입니다. 척도가 일대일이 아니면 데이터 시각화가 모호해집니다.
+
+(ref:basic-scales-example) 척도는 데이터 값을 미학적 요소에 연결합니다. 여기서는 숫자 1부터 4까지를 위치 척도, 모양 척도, 색상 척도에 매핑했습니다. 각 척도에 대해 각 숫자는 고유한 위치, 모양 또는 색상에 해당하며 그 반대의 경우도 마찬가지입니다.
+
+```{r basic-scales-example, fig.width = 5.5, fig.asp = 0.3, fig.cap = '(ref:basic-scales-example)'}
+df <- data.frame(x = c(1:4))
+
+scale_num <- ggplot(df, aes(x)) +
+  geom_point(size = 3, color = "#0072B2", y = 1) +
+  scale_y_continuous(limits = c(0.8, 1.2), expand = c(0, 0), breaks = 1, label = "위치  ") +
+  scale_x_continuous(limits = c(.7, 4.4), breaks = 1:5, labels = c("1", "2", "3", "4", "5"), name = NULL, position = "top") +
+  theme_dviz_grid() +
+  theme(axis.ticks.length = grid::unit(0, "pt"),
+        axis.text = element_text(size = 14),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+scale_color <- ggplot(df, aes(x, color = factor(x), fill = factor(x))) +
+  geom_point(size = 5, shape = 22, y = 1) +
+  scale_y_continuous(limits = c(0.8, 1.2), expand = c(0, 0), breaks = 1, label = "색상  ") +
+  scale_x_continuous(limits = c(.7, 4.4), breaks = NULL) +
+  scale_color_manual(values = darken(c("#0082A6", "#4EBBB9", "#9CDFC2", "#D8F0CD"), .1), guide = "none") +
+  scale_fill_manual(values = c("#0082A6", "#4EBBB9", "#9CDFC2", "#D8F0CD"), guide = "none") +
+  theme_dviz_grid() +
+  theme(axis.ticks.length = grid::unit(0, "pt"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank())
+
+scale_shape <- ggplot(df, aes(x, shape = factor(x))) +
+  geom_point(size = 4, color = "grey30", y = 1, fill = "grey80") +
+  scale_y_continuous(limits = c(0.8, 1.2), expand = c(0, 0), breaks = 1, label = "모양  ") +
+  scale_x_continuous(limits = c(.7, 4.4), breaks = NULL) +
+  scale_shape_manual(values = 21:24, guide = "none") +
+  theme_dviz_grid() +
+  theme(axis.ticks.length = grid::unit(0, "pt"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank())
+
+scale_num + scale_shape + scale_color + plot_layout(ncol = 1)
+```
+
+실제로 적용해 보겠습니다. 표 \@ref(tab:data-example)에 표시된 데이터 세트를 가져와서 온도를 *y* 축에, 연중 날짜를 *x* 축에, 위치를 색상에 매핑하고 이러한 미학적 요소를 실선으로 시각화할 수 있습니다. 결과는 연중 4개 지역의 기온 정상값이 어떻게 변하는지 보여주는 표준 꺾은선 그래프입니다(그림
+\@ref(fig:temp-normals-vs-time)).
+
+(ref:temp-normals-vs-time) 미국 내 선택된 4개 지역의 일일 기온 정상값. 기온은 *y* 축에, 연중 날짜는 *x* 축에, 위치는 선 색상에 매핑됩니다. 데이터 출처: NOAA.
+
+```{r temp-normals-vs-time, fig.cap = '(ref:temp-normals-vs-time)'}
+temps_long <- filter(ncdc_normals,
+                station_id %in% c(
+                  "USW00014819", # 시카고, IL 60638
+                  #"USC00516128", # 호놀룰루, HI 96813
+                  #"USW00027502", # 배로, AK 99723, 미국에서 가장 추운 지점
+                  "USC00042319", # 데스밸리, CA 92328 미국에서 가장 더운 지점
+                  "USW00093107", # 샌디에이고, CA 92145
+                  #"USC00427606"  # 솔트레이크시티, UT 84103
+                  "USW00012918" # 휴스턴, TX 77061
+                )) %>%
+  mutate(location = fct_recode(factor(station_id),
+                               "시카고" = "USW00014819",
+                               #"호놀룰루, HI" = "USC00516128",
+                               #"배로, AK" = "USW00027502",
+                               "데스밸리" = "USC00042319",
+                               "샌디에이고" = "USW00093107",
+                               #"솔트레이크시티, UT" = "USC00427606",
+                               "휴스턴" = "USW00012918")) %>%
+  mutate(location = factor(location, levels = c("데스밸리", "휴스턴", "샌디에이고", "시카고")))
+
+ggplot(temps_long, aes(x = date, y = temperature, color = location)) +
+  geom_line(size = 1) +
+  scale_x_date(name = "월", limits = c(ymd("0000-01-01"), ymd("0001-01-04")),
+               breaks = c(ymd("0000-01-01"), ymd("0000-04-01"), ymd("0000-07-01"),
+                          ymd("0000-10-01"), ymd("0001-01-01")),
+               labels = c("1월", "4월", "7월", "10월", "1월"), expand = c(1/366, 0)) +
+  scale_y_continuous(limits = c(19.9, 107),
+                     breaks = seq(20, 100, by = 20),
+                     name = "기온 (°F)") +
+  scale_color_OkabeIto(order = c(1:3, 7), name = NULL) +
+  theme_dviz_grid() +
+  theme(legend.title.align = 0.5)
+```
+
+그림 \@ref(fig:temp-normals-vs-time)은 기온 곡선에 대한 상당히 표준적인 시각화이며 대부분의 데이터 과학자가 직관적으로 가장 먼저 선택할 가능성이 높은 시각화입니다. 그러나 어떤 변수를 어떤 척도에 매핑할지는 우리에게 달려 있습니다. 예를 들어 온도를 *y* 축에 매핑하고 위치를 색상에 매핑하는 대신 반대로 할 수 있습니다. 이제 주요 관심 변수(온도)가 색상으로 표시되므로 색상이 유용한 정보를 전달하려면 충분히 큰 색상 영역을 표시해야 합니다[@Stone_et_al_2014]. 따라서 이 시각화에서는 선 대신 각 월과 위치에 대해 하나씩 정사각형을 선택하고 각 월의 평균 기온 정상값으로 색상을 지정했습니다(그림 \@ref(fig:four-locations-temps-by-month)).
+
+(ref:four-locations-temps-by-month) 미국 4개 지역의 월별 정상 평균 기온. 데이터 출처: NOAA
+
+```{r four-locations-temps-by-month, fig.width = 5.5*6/4.2, fig.asp = .3, fig.cap = '(ref:four-locations-temps-by-month)'}
+month_names <- c("01" = "1월", "02" = "2월", "03" = "3월", "04" = "4월", "05" = "5월", "06" = "6월",
+                   "07" = "7월", "08" = "8월", "09" = "9월", "10" = "10월", "11" = "11월", "12" = "12월")
+
+
+mean_temps <- temps_long %>%
+  group_by(location, month) %>%
+  summarize(mean = mean(temperature)) %>%
+  ungroup() %>%
+  mutate(month = month_names[month]) %>%
+  mutate(month = factor(month, levels = unname(month_names)))
+
+p <- ggplot(mean_temps, aes(x = month, y = location, fill = mean)) +
+  geom_tile(width = .95, height = 0.95) +
+  scale_fill_viridis_c(option = "B", begin = 0.15, end = 0.98,
+                       name = "기온 (°F)") +
+  scale_y_discrete(name = NULL) +
+  coord_fixed(expand = FALSE) +
+  theme_dviz_open() +
+  theme(axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        #axis.text.y = element_text(size = 14),
+        legend.title = element_text(size = 12)
+        )
+
+# 범례 수정 (가운데 정렬)
+ggdraw(align_legend(p))
+```
+
+그림 \@ref(fig:four-locations-temps-by-month)은 두 개의 위치 척도(*x* 축을 따른 월과 *y* 축을 따른 위치)를 사용하지만 어느 것도 연속적인 척도가 아니라는 점을 강조하고 싶습니다. 월은 12개 수준을 가진 정렬된 요인이고 위치는 4개 수준을 가진 정렬되지 않은 요인입니다. 따라서 두 위치 척도는 모두 이산적입니다. 이산적인 위치 척도의 경우 일반적으로 요인의 다른 수준을 축을 따라 같은 간격으로 배치합니다. 요인이 정렬된 경우(여기서 월의 경우와 같이) 수준을 적절한 순서로 배치해야 합니다. 요인이 정렬되지 않은 경우(여기서 위치의 경우와 같이) 순서는 임의적이며 원하는 순서를 선택할 수 있습니다. 저는 전체적으로 가장 추운 곳(시카고)부터 전체적으로 가장 더운 곳(데스밸리)까지 위치를 정렬하여 색상이 보기 좋게 엇갈리도록 했습니다. 그러나 다른 순서를 선택했더라도 그림은 똑같이 유효했을 것입니다.
+
+그림 \@ref(fig:temp-normals-vs-time)과 \@ref(fig:four-locations-temps-by-month)은 모두 총 3개의 척도, 즉 2개의 위치 척도와 1개의 색상 척도를 사용했습니다. 이것은 기본 시각화에 대한 일반적인 척도 수이지만 한 번에 3개 이상의 척도를 사용할 수 있습니다. 그림 \@ref(fig:mtcars-five-scale)은 5개의 척도, 즉 2개의 위치 척도, 1개의 색상 척도, 1개의 크기 척도, 1개의 모양 척도를 사용하며 모든 척도는 데이터 세트의 다른 변수를 나타냅니다.
+
+
+(ref:mtcars-five-scale) 32개 자동차(1973-74년 모델)의 연비 대 배기량. 이 그림은 데이터를 나타내기 위해 5개의 개별 척도를 사용합니다. (i) *x* 축(배기량); (ii) *y* 축(연비); (iii) 데이터 포인트의 색상(마력); (iv) 데이터 포인트의 크기(무게); (v) 데이터 포인트의 모양(실린더 수). 표시된 5개 변수 중 4개(배기량, 연비, 마력, 무게)는 수치적 연속 변수입니다. 나머지 하나(실린더 수)는 수치적 이산 변수 또는 정성적 순서 변수로 간주할 수 있습니다. 데이터 출처: *Motor Trend*, 1974.
+
+```{r mtcars-five-scale, fig.width = 6, fig.asp = .8, fig.cap = '(ref:mtcars-five-scale)'}
+p_mtcars <- ggplot(mtcars, aes(disp, mpg, fill = hp, shape = factor(cyl), size = wt)) +
+  geom_point(color = "white") +
+  scale_shape_manual(values = c(23, 24, 21), name = "실린더") +
+  scale_fill_continuous_sequential(
+    palette = "Emrld", name = "마력 (hp)",
+    breaks = c(100, 200, 300),
+    rev = FALSE
+  ) +
+  xlab("배기량 (cu. in.)") +
+  ylab("연비 (mpg)") +
+  guides(
+    shape = guide_legend(override.aes = list(size = 4, fill = "#329D84")),
+    size = guide_legend(override.aes = list(shape = 21, fill = "#329D84"),
+    title = "무게 (1000 lbs)")
+  ) +
+  theme_dviz_open() + background_grid() +
+  theme(
+    #legend.title = element_text(size = 12),
+    legend.box.background = element_rect(fill = "white", color = "white"),
+    legend.position = "top",
+    legend.direction = "vertical",
+    legend.justification = "center",
+    legend.box.margin = margin(7, 7, 7, 7)
+  )
+
+legend <- get_legend(align_legend(p_mtcars))
+
+ggdraw() +
+  draw_plot(p_mtcars + theme(legend.position = "none")) +
+  draw_grob(legend, x = .36, y = .7, width = .7, height = .3)
+```

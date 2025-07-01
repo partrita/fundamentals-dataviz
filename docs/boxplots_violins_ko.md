@@ -1,0 +1,138 @@
+# 한 번에 많은 분포 시각화하기 {#boxplots-violins}
+
+동시에 여러 분포를 시각화하려는 시나리오가 많습니다. 예를 들어 날씨 데이터를 생각해 보십시오. 월별 온도 변화를 시각화하면서 각 월 내 관측된 온도의 분포도 함께 보여주고 싶을 수 있습니다. 이 시나리오에서는 각 월에 대해 하나씩, 총 12개의 온도 분포를 한 번에 보여주어야 합니다. 챕터 \@ref(histograms-density-plots) 또는 \@ref(ecdf-qq)에서 논의된 시각화는 이 경우에 잘 작동하지 않습니다. 대신 상자 그림, 바이올린 그림, 능선 그림과 같은 실행 가능한 접근 방식이 있습니다.
+
+많은 분포를 다룰 때는 항상 반응 변수와 하나 이상의 그룹화 변수 측면에서 생각하는 것이 도움이 됩니다. 반응 변수는 분포를 보여주고자 하는 변수입니다. 그룹화 변수는 반응 변수의 뚜렷한 분포를 가진 데이터의 하위 집합을 정의합니다. 예를 들어 월별 온도 분포의 경우 반응 변수는 온도이고 그룹화 변수는 월입니다. 이 장에서 논의된 모든 기법은 한 축을 따라 반응 변수를 그리고 다른 축을 따라 그룹화 변수를 그립니다. 다음에서는 먼저 수직 축을 따라 반응 변수를 보여주는 접근 방식을 설명한 다음 수평 축을 따라 반응 변수를 보여주는 접근 방식을 설명합니다. 논의된 모든 경우에 축을 뒤집어 대안적이고 실행 가능한 시각화를 얻을 수 있습니다. 여기서는 다양한 시각화의 정식 형식을 보여줍니다.
+
+
+## 수직 축을 따라 분포 시각화하기 {#boxplots-violins-vertical}
+
+한 번에 많은 분포를 보여주는 가장 간단한 방법은 평균 또는 중앙값을 점으로 표시하고 평균 또는 중앙값 주위의 변동을 오차 막대로 표시하는 것입니다. 그림 \@ref(fig:lincoln-temp-points-errorbars)는 2016년 네브래스카 주 링컨의 월별 온도 분포에 대한 이 접근 방식을 보여줍니다. 이 접근 방식에는 여러 가지 문제가 있기 때문에 이 그림에 "나쁨"이라고 표시했습니다. 첫째, 각 분포를 단 하나의 점과 두 개의 오차 막대로만 표현함으로써 데이터에 대한 많은 정보를 잃게 됩니다. 둘째, 대부분의 독자는 점이 평균 또는 중앙값을 나타낸다고 추측하겠지만 점이 무엇을 나타내는지 즉시 명확하지 않습니다. 셋째, 오차 막대가 무엇을 나타내는지 확실히 명확하지 않습니다. 데이터의 표준 편차, 평균의 표준 오차, 95% 신뢰 구간 또는 전혀 다른 것을 나타냅니까? 일반적으로 인정되는 표준은 없습니다. 그림 \@ref(fig:lincoln-temp-points-errorbars)의 그림 캡션을 읽으면 여기서는 일일 평균 온도의 표준 편차의 두 배를 나타내며 대략 95%의 데이터를 포함하는 범위를 나타내는 것을 알 수 있습니다. 그러나 오차 막대는 표준 오차(또는 95% 신뢰 구간의 경우 표준 오차의 두 배)를 시각화하는 데 더 일반적으로 사용되며 독자가 표준 오차를 표준 편차와 혼동하기 쉽습니다. 표준 오차는 평균 추정치의 정확도를 정량화하는 반면 표준 편차는 평균 주위 데이터의 분산 정도를 추정합니다. 데이터 세트가 평균의 표준 오차는 매우 작고 표준 편차는 매우 클 수 있습니다. 넷째, 데이터에 왜도가 있는 경우 대칭 오차 막대는 오해의 소지가 있으며, 이는 여기의 경우와 실제 데이터 세트의 경우 거의 항상 그렇습니다.
+
+(ref:lincoln-temp-points-errorbars) 2016년 네브래스카 주 링컨의 일일 평균 기온. 점은 각 월의 일일 평균 기온을 월의 모든 날에 대해 평균한 값을 나타내며, 오차 막대는 각 월 내 일일 평균 기온의 표준 편차의 두 배를 나타냅니다. 이 그림은 오차 막대가 일반적으로 추정치의 불확실성을 시각화하는 데 사용되고 모집단의 변동성을 시각화하는 데 사용되지 않기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Weather Underground
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-points-errorbars-1.png" alt="(ref:lincoln-temp-points-errorbars)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-points-errorbars)(ref:lincoln-temp-points-errorbars)</p>
+</div>
+
+그림 \@ref(fig:lincoln-temp-points-errorbars)의 네 가지 단점을 모두 해결하기 위해 분포를 시각화하는 전통적이고 일반적으로 사용되는 방법인 상자 그림을 사용할 수 있습니다. 상자 그림은 데이터를 사분위수로 나누고 표준화된 방식으로 시각화합니다(그림 \@ref(fig:boxplot-schematic)).
+
+(ref:boxplot-schematic) 상자 그림의 해부학. 점 구름(왼쪽)과 해당 상자 그림(오른쪽)이 표시됩니다. 상자 그림에는 점의 *y* 값만 시각화됩니다. 상자 그림 중앙의 선은 중앙값을 나타내고 상자는 데이터의 중간 50%를 둘러쌉니다. 위쪽 및 아래쪽 수염은 데이터의 최대값과 최소값까지 또는 상자 높이의 1.5배 내에 있는 최대값 또는 최소값까지 확장되며, 어느 쪽이든 더 짧은 수염을 만듭니다. 어느 방향으로든 상자 높이의 1.5배 거리를 위쪽 및 아래쪽 울타리라고 합니다. 울타리를 벗어나는 개별 데이터 포인트는 이상치라고 하며 일반적으로 개별 점으로 표시됩니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/boxplot-schematic-1.png" alt="(ref:boxplot-schematic)" width="685.714285714286" />
+<p class="caption">(\#fig:boxplot-schematic)(ref:boxplot-schematic)</p>
+</div>
+
+상자 그림은 간단하면서도 유익하며 한 번에 많은 분포를 시각화하기 위해 나란히 그릴 때 잘 작동합니다. 링컨 온도 데이터의 경우 상자 그림을 사용하면 그림 \@ref(fig:lincoln-temp-boxplots)가 됩니다. 이 그림에서 이제 12월에는 온도가 매우 왜곡되어 있고(대부분의 날은 적당히 춥고 며칠은 극도로 추움) 다른 일부 달(예: 7월)에는 전혀 왜곡되지 않았음을 알 수 있습니다.
+
+(ref:lincoln-temp-boxplots) 네브래스카 주 링컨의 일일 평균 기온을 상자 그림으로 시각화했습니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-boxplots-1.png" alt="(ref:lincoln-temp-boxplots)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-boxplots)(ref:lincoln-temp-boxplots)</p>
+</div>
+
+상자 그림은 1970년대 초 통계학자 존 튜키가 발명했으며, 당시 대부분의 데이터 시각화가 손으로 그려졌기 때문에 정보를 많이 제공하면서도 손으로 그리기 쉬워 빠르게 인기를 얻었습니다. 그러나 현대적인 컴퓨팅 및 시각화 기능을 사용하면 손으로 쉽게 그릴 수 있는 것에 국한되지 않습니다. 따라서 최근에는 상자 그림이 바이올린 그림으로 대체되는 것을 볼 수 있습니다. 바이올린 그림은 챕터 \@ref(histograms-density-plots)에서 논의된 밀도 추정치와 동일하지만 90도 회전한 다음 미러링한 것입니다(그림 \@ref(fig:violin-schematic)). 바이올린은 상자 그림을 사용할 수 있는 모든 경우에 사용할 수 있으며 데이터에 대한 훨씬 더 미묘한 그림을 제공합니다. 특히 바이올린 그림은 이봉형 데이터를 정확하게 나타내는 반면 상자 그림은 그렇지 않습니다.
+
+
+(ref:violin-schematic) 바이올린 그림의 해부학. 점 구름(왼쪽)과 해당 바이올린 그림(오른쪽)이 표시됩니다. 바이올린 그림에는 점의 *y* 값만 시각화됩니다. 주어진 *y* 값에서 바이올린의 너비는 해당 *y* 값의 점 밀도를 나타냅니다. 기술적으로 바이올린 그림은 밀도 추정치를 90도 회전한 다음 미러링한 것입니다. 따라서 바이올린은 대칭입니다. 바이올린은 각각 최소값과 최대값 데이터 값에서 시작하고 끝납니다. 바이올린의 가장 두꺼운 부분은 데이터 세트에서 가장 높은 점 밀도에 해당합니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/violin-schematic-1.png" alt="(ref:violin-schematic)" width="685.714285714286" />
+<p class="caption">(\#fig:violin-schematic)(ref:violin-schematic)</p>
+</div>
+
+<div class="rmdtip">
+<p>바이올린을 사용하여 분포를 시각화하기 전에 각 그룹에 점 밀도를 부드러운 선으로 표시할 만큼 충분한 데이터 포인트가 있는지 확인하십시오.</p>
+</div>
+
+
+링컨 온도 데이터를 바이올린으로 시각화하면 그림 \@ref(fig:lincoln-temp-violins)를 얻을 수 있습니다. 이제 일부 달에는 적당히 이봉형 데이터가 있음을 알 수 있습니다. 예를 들어 11월에는 화씨 50도와 35도 부근에 두 개의 온도 클러스터가 있었던 것으로 보입니다.
+
+
+(ref:lincoln-temp-violins) 네브래스카 주 링컨의 일일 평균 기온을 바이올린 그림으로 시각화했습니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-violins-1.png" alt="(ref:lincoln-temp-violins)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-violins)(ref:lincoln-temp-violins)</p>
+</div>
+
+
+바이올린 플롯은 밀도 추정치에서 파생되기 때문에 유사한 단점이 있습니다(챕터 \@ref(histograms-density-plots)). 특히 데이터가 없는 곳에 데이터가 있는 것처럼 보이거나 실제로는 매우 희소한데 데이터 세트가 매우 조밀한 것처럼 보일 수 있습니다. 개별 데이터 포인트를 점으로 직접 플로팅하여 이러한 문제를 해결하려고 시도할 수 있습니다(그림 \@ref(fig:lincoln-temp-all-points)). 이러한 그림을 *스트립 차트*라고 합니다. 스트립 차트는 너무 많은 포인트를 서로 겹쳐서 플로팅하지 않도록 주의하는 한 원칙적으로 괜찮습니다. 중복 플로팅에 대한 간단한 해결책은 *x* 차원에 임의의 노이즈를 추가하여 포인트를 *x* 축을 따라 약간 분산시키는 것입니다(그림 \@ref(fig:lincoln-temp-jittered)). 이 기법을 *지터링*이라고도 합니다.
+
+(ref:lincoln-temp-all-points) 네브래스카 주 링컨의 일일 평균 기온을 스트립 차트로 시각화했습니다. 각 점은 하루의 평균 기온을 나타냅니다. 이 그림은 너무 많은 점이 서로 겹쳐 그려져 각 달에 어떤 온도가 가장 흔했는지 확인할 수 없기 때문에 "나쁨"으로 표시되었습니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-all-points-1.png" alt="(ref:lincoln-temp-all-points)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-all-points)(ref:lincoln-temp-all-points)</p>
+</div>
+
+
+(ref:lincoln-temp-jittered) 네브래스카 주 링컨의 일일 평균 기온을 스트립 차트로 시각화했습니다. 각 온도 값에서 점의 밀도를 더 잘 보여주기 위해 점을 *x* 축을 따라 지터링했습니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-jittered-1.png" alt="(ref:lincoln-temp-jittered)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-jittered)(ref:lincoln-temp-jittered)</p>
+</div>
+
+<div class="rmdtip">
+<p>데이터 세트가 너무 희소하여 바이올린 시각화를 정당화할 수 없는 경우 원시 데이터를 개별 점으로 플로팅할 수 있습니다.</p>
+</div>
+
+
+마지막으로, 주어진 *y* 좌표에서 점 밀도에 비례하여 점을 분산시켜 두 가지 장점을 결합할 수 있습니다. *시나 플롯*[@Sidiropoulos_et_al_2018]이라고 하는 이 방법은 바이올린 플롯과 지터링된 점의 하이브리드로 생각할 수 있으며, 각 개별 점을 보여주면서 분포도 시각화합니다. 여기서는 이 두 접근 방식 간의 관계를 강조하기 위해 바이올린 위에 시나 플롯을 그렸습니다(그림 \@ref(fig:lincoln-temp-sina)).
+
+(ref:lincoln-temp-sina) 네브래스카 주 링컨의 일일 평균 기온을 시나 플롯(개별 점과 바이올린의 조합)으로 시각화했습니다. 점은 각 온도에서 점 밀도에 비례하여 *x* 축을 따라 지터링되었습니다. *시나 플롯*이라는 이름은 덴마크 코펜하겐 대학교 학생인 시나 하디 소히를 기리기 위한 것으로, 그는 대학 연구원들이 이러한 플롯을 만드는 데 사용한 코드의 첫 번째 버전을 작성했습니다(프레데릭 O. 배거, 개인적인 소통).
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/lincoln-temp-sina-1.png" alt="(ref:lincoln-temp-sina)" width="576" />
+<p class="caption">(\#fig:lincoln-temp-sina)(ref:lincoln-temp-sina)</p>
+</div>
+
+
+## 수평 축을 따라 분포 시각화하기 {#boxplots-violins-horizontal}
+
+챕터 \@ref(histograms-density-plots)에서는 히스토그램과 밀도 그림을 사용하여 수평 축을 따라 분포를 시각화했습니다. 여기서는 수직 방향으로 분포 그림을 엇갈리게 배치하여 이 아이디어를 확장합니다. 결과 시각화를 능선 그림이라고 하는데, 이 그림이 산등성이처럼 보이기 때문입니다. 능선 그림은 시간 경과에 따른 분포 추세를 보여주고자 할 때 특히 잘 작동하는 경향이 있습니다.
+
+표준 능선 그림은 밀도 추정치를 사용합니다(그림 \@ref(fig:temp-ridgeline)). 바이올린 그림과 매우 밀접하게 관련되어 있지만 데이터에 대한 더 직관적인 이해를 불러일으키는 경우가 많습니다. 예를 들어 11월에 화씨 35도와 50도 부근의 두 온도 클러스터는 그림 \@ref(fig:lincoln-temp-violins)보다 그림 \@ref(fig:temp-ridgeline)에서 훨씬 더 명확합니다.
+
+(ref:temp-ridgeline) 2016년 네브래스카 주 링컨의 기온을 능선 그림으로 시각화했습니다. 각 월에 대해 화씨로 측정된 일일 평균 기온의 분포를 보여줍니다. 원본 그림 개념: @Wehrwein-Lincoln-weather.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/temp-ridgeline-1.png" alt="(ref:temp-ridgeline)" width="576" />
+<p class="caption">(\#fig:temp-ridgeline)(ref:temp-ridgeline)</p>
+</div>
+
+*x* 축은 반응 변수를 나타내고 *y* 축은 그룹화 변수를 나타내므로 능선 그림에는 밀도 추정치를 위한 별도의 축이 없습니다. 밀도 추정치는 그룹화 변수와 함께 표시됩니다. 이는 바이올린 그림과 다르지 않으며, 바이올린 그림에서도 밀도는 별도의 명시적인 척도 없이 그룹화 변수와 함께 표시됩니다. 두 경우 모두 그림의 목적은 특정 밀도 값을 표시하는 것이 아니라 그룹 간 밀도 모양과 상대적 높이를 쉽게 비교할 수 있도록 하는 것입니다.
+
+
+원칙적으로 능선 시각화에서 밀도 그림 대신 히스토그램을 사용할 수 있습니다. 그러나 결과 그림은 종종 보기 좋지 않습니다(그림 \@ref(fig:temp-binline)). 문제는 누적 또는 중첩 히스토그램의 문제와 유사합니다(챕터 \@ref(histograms-density-plots)). 이러한 능선 히스토그램의 수직선은 항상 정확히 동일한 *x* 값에 나타나므로 다른 히스토그램의 막대가 혼란스러운 방식으로 서로 정렬됩니다. 제 생각에는 이러한 중첩 히스토그램을 그리지 않는 것이 좋습니다.
+
+(ref:temp-binline) 2016년 네브래스카 주 링컨의 기온을 히스토그램의 능선 그림으로 시각화했습니다. 개별 히스토그램이 시각적으로 잘 분리되지 않으며 전체 그림이 매우 복잡하고 혼란스럽습니다.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/temp-binline-1.png" alt="(ref:temp-binline)" width="576" />
+<p class="caption">(\#fig:temp-binline)(ref:temp-binline)</p>
+</div>
+
+
+
+능선 그림은 매우 많은 수의 분포로 확장됩니다. 예를 들어 그림 \@ref(fig:movies-ridgeline)은 1913년부터 2005년까지 영화 길이 분포를 보여줍니다. 이 그림에는 거의 100개의 서로 다른 분포가 포함되어 있지만 읽기가 매우 쉽습니다. 1920년대에는 영화 길이가 매우 다양했지만 1960년경부터 영화 길이는 약 90분으로 표준화되었음을 알 수 있습니다.
+
+(ref:movies-ridgeline) 시간에 따른 영화 길이의 진화. 1960년대 이후 대부분의 영화는 약 90분 길이입니다. 데이터 출처: 인터넷 영화 데이터베이스, IMDB
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/movies-ridgeline-1.png" alt="(ref:movies-ridgeline)" width="480" />
+<p class="caption">(\#fig:movies-ridgeline)(ref:movies-ridgeline)</p>
+</div>
+
+능선 그림은 시간 경과에 따른 두 가지 추세를 비교하려는 경우에도 잘 작동합니다. 이는 두 정당 구성원의 투표 패턴을 분석하려는 경우 흔히 발생하는 시나리오입니다. 시간별로 분포를 수직으로 엇갈리게 배치하고 각 시점에서 두 정당을 나타내는 두 가지 다른 색상의 분포를 그려 이 비교를 수행할 수 있습니다(그림 \@ref(fig:dw-nominate-ridgeline)).
+
+(ref:dw-nominate-ridgeline) 미국 하원의 투표 패턴이 점점 더 양극화되고 있습니다. DW-NOMINATE 점수는 정당 간 및 시간 경과에 따른 의원들의 투표 패턴을 비교하는 데 자주 사용됩니다. 여기서는 1963년부터 2013년까지 각 의회에 대해 민주당과 공화당에 대해 별도로 점수 분포를 보여줍니다. 각 의회는 첫해로 표시됩니다. 원본 그림 개념: @McDonald-DW-NOMINATE.
+
+<div class="figure" style="text-align: center">
+<img src="boxplots_violins_files/figure-html/dw-nominate-ridgeline-1.png" alt="(ref:dw-nominate-ridgeline)" width="754.285714285714" />
+<p class="caption">(\#fig:dw-nominate-ridgeline)(ref:dw-nominate-ridgeline)</p>
+</div>
