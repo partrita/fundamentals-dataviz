@@ -1,0 +1,38 @@
+name: Render Korean PDFs
+
+on:
+  push:
+    branches:
+      - main # Or your preferred branch
+    paths:
+      - 'translated_korean_files/**.qmd'
+
+jobs:
+  render_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render QMD to PDF
+        run: |
+          mkdir -p artifacts
+          for file in translated_korean_files/*.qmd; do
+            quarto render "$file" --to pdf
+            mv "${file%.qmd}.pdf" "artifacts/$(basename "${file%.qmd}").pdf"
+          done
+
+      - name: Create Release and Upload PDFs
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*.pdf
+          tag_name: korean-pdfs-${{ github.sha }}
+          name: Korean Translated PDFs ${{ github.sha }}
+          body: |
+            Automated release of Korean translated PDF files.
+            Commit: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
