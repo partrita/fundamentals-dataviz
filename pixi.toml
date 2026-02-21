@@ -2,7 +2,7 @@
 authors = ["fkt <deepthought@postech.ac.kr>"]
 channels = ["conda-forge"]
 name = "mybook"
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
 
 [tasks]
@@ -55,3 +55,26 @@ r-rcppparallel = "*"
 r-rstan = "*"
 r-brms = "*"
 r-rstanarm = "*"
+r-rworldmap = "*"
+r-ggmap = "*"
+r-statebins = "*"
+r-geofacet = "*"
+r-colorspace = "*"
+r-scales = "*"
+r-ggstance = "*"
+r-magick = "*"
+r-lwgeom = "*"
+r-reshape2 = "*"
+r-MASS = "*"
+r-RColorBrewer = "*"
+r-ggspatial = "*"
+r-gapminder = "*"
+r-ggplot2movies = "*"
+r-gtable = "*"
+r-hexbin = "*"
+r-maptools = "*"
+r-nycflights13 = "*"
+r-plot3D = "*"
+r-rgeos = "*"
+r-treemapify = "*"
+r-egg = "*"
