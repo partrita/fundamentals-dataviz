@@ -51,8 +51,8 @@ titanic %>% mutate(surv = ifelse(survived == 0, "사망", "생존")) %>%
 
 (ref:movie-rankings) 1906년부터 2005년까지 영화의 평균 순위 대 투표 수. 점은 개별 영화를 나타내고 선은 각 영화의 평균 순위를 영화가 받은 투표 수의 로그에 대한 선형 회귀를 나타냅니다. 대부분의 해에 투표 수가 많은 영화일수록 평균적으로 평균 순위가 높습니다. 그러나 이 추세는 20세기 말에 약화되었으며 2000년대 초반에 개봉된 영화에서는 음의 관계를 볼 수 있습니다. 데이터 출처: 인터넷 영화 데이터베이스(IMDB, http://imdb.com/)
 
-```{r fig-movie-rankings, fig.width = 5.5*6/4.2, fig.asp = 1, fig.cap = '(ref:movie-rankings)'}
-library(ggplot2movies)
+```{r fig-movie-rankings, eval = FALSE, fig.width = 5.5*6/4.2, fig.asp = 1, fig.cap = '(ref:movie-rankings)'}
+# library(ggplot2movies)
 
 ggplot(filter(movies, year > 1905), aes(y = rating, x = votes)) +
   geom_point(color = "#0072B250", size = 0.1) +

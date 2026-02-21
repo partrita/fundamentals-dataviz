@@ -264,7 +264,7 @@ stamp_ugly(p_binline)
 
 (ref:movies-ridgeline) 시간에 따른 영화 길이의 진화. 1960년대 이후 대부분의 영화는 약 90분 길이입니다. 데이터 출처: 인터넷 영화 데이터베이스, IMDB
 
-```{r fig-movies-ridgeline, fig.width = 5, fig.asp = 1, fig.cap = '(ref:movies-ridgeline)'}
+```{r fig-movies-ridgeline, eval = FALSE, fig.width = 5, fig.asp = 1, fig.cap = '(ref:movies-ridgeline)'}
 ggplot(movie_lengths, aes(x = length, y = year, group = year)) +
   geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03, fill = "grey85", na.rm = TRUE) +
   scale_x_continuous(limits = c(0, 200), expand = c(0, 0), name = "길이 (분)") +
