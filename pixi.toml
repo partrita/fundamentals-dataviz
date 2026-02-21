@@ -2,14 +2,14 @@
 authors = ["fkt <deepthought@postech.ac.kr>"]
 channels = ["conda-forge"]
 name = "mybook"
-platforms = ["linux-64", "osx-arm64"]
+platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
 install-deps = "Rscript -e 'if (!requireNamespace(\"colorblindr\", quietly = TRUE)) remotes::install_github(\"clauswilke/colorblindr\", upgrade = \"never\"); if (!requireNamespace(\"dviz.supp\", quietly = TRUE)) remotes::install_github(\"clauswilke/dviz.supp\", upgrade = \"never\"); if (!requireNamespace(\"ungeviz\", quietly = TRUE)) remotes::install_github(\"wilkelab/ungeviz\", upgrade = \"never\"); if (!requireNamespace(\"ggtextures\", quietly = TRUE)) remotes::install_github(\"clauswilke/ggtextures\", upgrade = \"never\")'"
 [dependencies]
 quarto = ">=1.8.27,<2"
-r-base = ">=4.5.2,<5"
+r-base = ">=4.4.2,<4.5"
 r-knitr = ">=1.51,<2"
 r-rmarkdown = ">=2.30,<3"
 r-remotes = ">=2.5.0,<3"
@@ -65,8 +65,8 @@ r-ggstance = "*"
 r-magick = "*"
 r-lwgeom = "*"
 r-reshape2 = "*"
-r-MASS = "*"
-r-RColorBrewer = "*"
+r-mass = "*"
+r-rcolorbrewer = "*"
 r-ggspatial = "*"
 r-gapminder = "*"
 r-ggplot2movies = "*"
@@ -74,7 +74,7 @@ r-gtable = "*"
 r-hexbin = "*"
 r-maptools = "*"
 r-nycflights13 = "*"
-r-plot3D = "*"
+r-plot3d = "*"
 r-rgeos = "*"
 r-treemapify = "*"
 r-egg = "*"
