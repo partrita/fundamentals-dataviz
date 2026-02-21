@@ -23,7 +23,7 @@ jobs:
           manifest-path: pixi.toml
 
       - name: Install dviz.supp and colorblindr
-        run: pixi run Rscript -e 'remotes::install_github("clauswilke/colorblindr"); remotes::install_github("clauswilke/dviz.supp")'
+        run: pixi run install-deps
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
