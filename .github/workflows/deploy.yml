@@ -33,6 +33,8 @@ jobs:
 
       - name: Install dviz.supp and colorblindr
         run: pixi run Rscript -e 'remotes::install_github("clauswilke/colorblindr"); remotes::install_github("clauswilke/dviz.supp")'
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Render Quarto Book
         run: pixi run quarto render
