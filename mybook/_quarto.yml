@@ -52,7 +52,7 @@ book:
 bibliography: bibliography.bib
 
 execute:
-  enabled: false
+  enabled: true
 
 format:
   html:
