@@ -31,6 +31,9 @@ jobs:
           pixi-version: v0.39.0
           manifest-path: mybook/pixi.toml
 
+      - name: Install dviz.supp and colorblindr
+        run: pixi run Rscript -e 'remotes::install_github("clauswilke/colorblindr"); remotes::install_github("clauswilke/dviz.supp")'
+
       - name: Render Quarto Book
         run: pixi run quarto render
 
