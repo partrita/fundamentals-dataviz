@@ -19,7 +19,7 @@ library(lubridate)
 
 (ref:corruption-development) 부패와 인간 개발: 가장 발전된 국가는 부패가 가장 적습니다. 이 그림은 @Economist-corruption의 게시물에서 영감을 받았습니다. 데이터 출처: 국제 투명성 기구 및 UN 인간 개발 보고서
 
-```{r fig-corruption-development, fig-width = 5*6/4.2, fig-asp = 0.7, fig-cap = '(ref:corruption-development)'}
+```{r fig-corruption-development, fig.width = 5*6/4.2, fig.asp = 0.7, fig.cap = '(ref:corruption-development)'}
 country_highlight <- c("독일", "노르웨이", "미국", "그리스", "싱가포르", "르완다", "러시아", "베네수엘라", "수단", "이라크", "가나", "니제르", "차드", "쿠웨이트", "카타르", "미얀마", "네팔", "칠레", "아르헨티나", "일본", "중국")
 
 
@@ -96,7 +96,7 @@ ggdraw() + draw_image("figures/corruption_plot_base.png")
 
 (ref:corruption-development-infographic) 그림 @fig-corruption-development의 인포그래픽 버전. 제목, 부제목 및 데이터 출처 설명이 그림에 통합되었습니다. 이 그림은 그대로 웹에 게시하거나 별도의 캡션 블록 없이 사용할 수 있습니다.
 
-```{r fig-corruption-development-infographic, fig-width = 5*6/4.2, fig-asp = 4.9*(0.12+1+.07)/7, fig-cap = '(ref:corruption-development-infographic)'}
+```{r fig-corruption-development-infographic, fig.width = 5*6/4.2, fig.asp = 4.9*(0.12+1+.07)/7, fig.cap = '(ref:corruption-development-infographic)'}
 plot_corrupt_title <- ggdraw() +
   labs(title = "부패와 인간 개발",
        subtitle = "가장 발전된 국가는 부패가 가장 적습니다.") +
@@ -135,7 +135,7 @@ plot_grid(
 
 (ref:blue-jays-scatter-bubbles2) 123마리 파랑어치의 머리 길이 대 체질량. 새의 성별은 색상으로, 새의 두개골 크기는 기호 크기로 표시됩니다. 머리 길이 측정에는 부리 길이가 포함되지만 두개골 크기 측정에는 포함되지 않습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r fig-blue-jays-scatter-bubbles2, fig-asp = 3/4, fig-cap='(ref:blue-jays-scatter-bubbles2)'}
+```{r fig-blue-jays-scatter-bubbles2, fig.asp = 3/4, fig.cap='(ref:blue-jays-scatter-bubbles2)'}
 blue_jays$sex <- ifelse(blue_jays$KnownSex == "F", "암컷 새", "수컷 새")
 blue_jays$sex <- factor(blue_jays$sex, levels = c("수컷 새", "암컷 새"))
 ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
@@ -189,7 +189,7 @@ ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
 
 (ref:tech-stocks-minimal-labeling) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 챕터 @sec-redundant-coding의 그림 @fig-tech-stocks-good-legend을 약간 수정한 버전입니다. 여기서 시간을 나타내는 *x* 축에는 제목이 없습니다. 2013, 2014 등의 숫자가 연도를 나타낸다는 것은 맥락에서 명확합니다.
 
-```{r fig-tech-stocks-minimal-labeling, fig-cap = '(ref:tech-stocks-minimal-labeling)'}
+```{r fig-tech-stocks-minimal-labeling, fig.cap = '(ref:tech-stocks-minimal-labeling)'}
 price_plot_base <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
   geom_line(na.rm = TRUE) +
   scale_color_manual(
@@ -216,7 +216,7 @@ price_plot_base + xlab(NULL) + ylab("주가, 지수화됨")
 
 (ref:tech-stocks-minimal-labeling-bad) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림 @fig-tech-stocks-minimal-labeling의 변형은 *y* 축에도 제목이 없고 *y* 축을 따라 표시된 값이 무엇을 나타내는지 맥락에서 즉시 명확하지 않기 때문에 "나쁨"으로 표시되었습니다.
 
-```{r fig-tech-stocks-minimal-labeling-bad, fig-cap = '(ref:tech-stocks-minimal-labeling-bad)'}
+```{r fig-tech-stocks-minimal-labeling-bad, fig.cap = '(ref:tech-stocks-minimal-labeling-bad)'}
 stamp_bad(
   price_plot_base + xlab(NULL) + ylab(NULL)
 )
@@ -226,7 +226,7 @@ stamp_bad(
 
 (ref:tech-stocks-labeling-ugly) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림 @fig-tech-stocks-minimal-labeling의 변형은 과도하게 레이블이 지정되어 "못생김"으로 표시되었습니다. 특히 *x* 축을 따른 값에 단위("서기 연도")를 제공하는 것은 어색합니다.
 
-```{r fig-tech-stocks-labeling-ugly, fig-cap = '(ref:tech-stocks-labeling-ugly)'}
+```{r fig-tech-stocks-labeling-ugly, fig.cap = '(ref:tech-stocks-labeling-ugly)'}
 stamp_ugly(
   price_plot_base + xlab("시간 (서기 연도)") + ylab("주가, 지수화됨\n(2012년 6월 1일 주가/100)") +
     scale_color_manual(
@@ -260,7 +260,7 @@ stamp_ugly(
 
 (ref:table-examples) 챕터 @sec-visualizing-amounts의 표 @tab-boxoffice-gross 데이터를 사용한 잘못된 서식 및 적절한 서식의 표 예. (a) 이 표는 세로선 사용, 데이터 행 사이의 가로선 사용, 가운데 정렬된 데이터 열 사용을 포함하여 적절한 표 서식의 여러 규칙을 위반합니다. (b) 이 표는 표 (a)의 모든 문제를 가지고 있으며, 또한 매우 어두운 행과 매우 밝은 행을 번갈아 사용하여 추가적인 시각적 노이즈를 만듭니다. 또한 표 머리글이 표 본문과 강력하게 시각적으로 구분되지 않습니다. (c) 이것은 최소한의 디자인으로 적절하게 서식이 지정된 표입니다. (d) 색상을 사용하여 데이터를 행으로 그룹화하는 데 효과적으로 사용할 수 있지만 색상 차이는 미묘해야 합니다. 표 머리글은 더 강한 색상을 사용하여 구분할 수 있습니다. 데이터 출처: Box Office Mojo (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
-```{r fig-table-examples, fig-width = 5*6/4.2, fig-asp = 0.51, fig-cap = '(ref:table-examples)'}
+```{r fig-table-examples, fig.width = 5*6/4.2, fig.asp = 0.51, fig.cap = '(ref:table-examples)'}
 boxoffice <- tibble(
   Rank = 1:5,
   Title = c("스타워즈: 라스트 제다이", "쥬만지: 새로운 세계    ", "피치 퍼펙트 3", "위대한 쇼맨", "페르디난드"),

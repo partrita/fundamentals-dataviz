@@ -43,7 +43,7 @@ knitr::kable(
 
 (ref:titanic-ages-hist1) 타이타닉호 승객 연령 히스토그램.
 
-```{r fig-titanic-ages-hist1, fig-cap='(ref:titanic-ages-hist1)'}
+```{r fig-titanic-ages-hist1, fig.cap='(ref:titanic-ages-hist1)'}
 age_hist <- cbind(age_hist, age = (1:15) * 5 - 2.5)
 h1 <- ggplot(age_hist, aes(x = age, y = count)) + geom_col(width = 4.7, fill = "#56B4E9")  +
   scale_y_continuous(expand = c(0, 0), breaks = 25 * (0:5)) +
@@ -63,7 +63,7 @@ h1
 
 (ref:titanic-ages-hist-grid) 히스토그램은 선택한 구간 너비에 따라 달라집니다. 여기서 동일한 타이타닉호 승객 연령 분포가 네 가지 다른 구간 너비로 표시됩니다. (a) 1년; (b) 3년; (c) 5년; (d) 15년.
 
-```{r fig-titanic-ages-hist-grid, fig-width=5.5*6/4.2, fig-cap='(ref:titanic-ages-hist-grid)'}
+```{r fig-titanic-ages-hist-grid, fig.width=5.5*6/4.2, fig.cap='(ref:titanic-ages-hist-grid)'}
 age_hist_1 <- data.frame(
   age = (1:75) - 0.5,
   count = hist(titanic$age, breaks = (0:75) + .01, plot = FALSE)$counts
@@ -131,7 +131,7 @@ plot_grid(
 
 (ref:titanic-ages-dens1) 타이타닉호 승객 연령 분포의 커널 밀도 추정치. 곡선의 높이는 곡선 아래 면적이 1이 되도록 조정됩니다. 밀도 추정은 가우시안 커널과 대역폭 2를 사용하여 수행되었습니다.
 
-```{r fig-titanic-ages-dens1, fig-cap='(ref:titanic-ages-dens1)'}
+```{r fig-titanic-ages-dens1, fig.cap='(ref:titanic-ages-dens1)'}
 ggplot(titanic, aes(x = age)) +
   geom_density_line(fill = "#56B4E9", color = darken("#56B4E9", 0.5), bw = 2, kernel = "gaussian") +
   scale_y_continuous(limits = c(0, 0.046), expand = c(0, 0), name = "밀도") +
@@ -148,7 +148,7 @@ ggplot(titanic, aes(x = age)) +
 
 (ref:titanic-ages-dens-grid) 커널 밀도 추정치는 선택한 커널과 대역폭에 따라 달라집니다. 여기서 동일한 타이타닉호 승객 연령 분포가 이러한 매개변수의 네 가지 다른 조합에 대해 표시됩니다. (a) 가우시안 커널, 대역폭 = 0.5; (b) 가우시안 커널, 대역폭 = 2; (c) 가우시안 커널, 대역폭 = 5; (d) 직사각형 커널, 대역폭 = 2.
 
-```{r fig-titanic-ages-dens-grid, fig-width=5.5*6/4.2, fig-cap='(ref:titanic-ages-dens-grid)'}
+```{r fig-titanic-ages-dens-grid, fig.width=5.5*6/4.2, fig.cap='(ref:titanic-ages-dens-grid)'}
 pdens1 <- ggplot(titanic, aes(x = age)) +
   geom_density_line(fill = "#56B4E9", color = darken("#56B4E9", 0.5), bw = .5, kernel = "gaussian") +
   scale_y_continuous(limits = c(0, 0.046), expand = c(0, 0), name = "밀도") +
@@ -211,7 +211,7 @@ plot_grid(
 
 (ref:titanic-ages-dens-negative) 커널 밀도 추정은 분포의 꼬리를 데이터가 없고 데이터가 존재할 가능성조차 없는 영역으로 확장할 수 있습니다. 여기서 밀도 추정은 음의 연령 범위로 확장되도록 허용되었습니다. 이것은 분명히 무의미하며 피해야 합니다.
 
-```{r fig-titanic-ages-dens-negative, fig-cap='(ref:titanic-ages-dens-negative)'}
+```{r fig-titanic-ages-dens-negative, fig.cap='(ref:titanic-ages-dens-negative)'}
 pdens_neg <- ggplot(titanic, aes(x = age)) +
   geom_density_line(fill = "#56B4E9", color = darken("#56B4E9", 0.5)) +
   scale_y_continuous(limits = c(0, 0.046), expand = c(0, 0), name = "밀도") +
@@ -238,7 +238,7 @@ stamp_wrong(pdens_neg)
 
 (ref:titanic-age-stacked-hist) 성별별로 계층화된 타이타닉호 승객 연령 히스토그램. 이 그림은 누적 히스토그램이 중첩 히스토그램과 쉽게 혼동될 수 있기 때문에 "나쁨"으로 표시되었습니다(그림 @fig-titanic-age-overlapping-hist 참조). 또한 여성 승객을 나타내는 막대의 높이를 서로 쉽게 비교할 수 없습니다.
 
-```{r fig-titanic-age-stacked-hist, fig-cap='(ref:titanic-age-stacked-hist)'}
+```{r fig-titanic-age-stacked-hist, fig.cap='(ref:titanic-age-stacked-hist)'}
 data.frame(
   age = (1:25)*3 - 1.5,
   male = hist(filter(titanic, sex == "male")$age, breaks = (0:25)*3 + .01, plot = FALSE)$counts,
@@ -272,7 +272,7 @@ stamp_bad(p_hist_stacked)
 
 (ref:titanic-age-overlapping-hist) 남성 및 여성 타이타닉호 승객의 연령 분포, 두 개의 중첩된 히스토그램으로 표시. 이 그림은 모든 파란색 막대가 0에서 시작한다는 명확한 시각적 표시가 없기 때문에 "나쁨"으로 표시되었습니다.
 
-```{r fig-titanic-age-overlapping-hist, fig-cap='(ref:titanic-age-overlapping-hist)'}
+```{r fig-titanic-age-overlapping-hist, fig.cap='(ref:titanic-age-overlapping-hist)'}
 p_hist_overlapped <- ggplot(gender_counts, aes(x = age, y = count, fill = gender)) +
   geom_col(position = "identity", alpha = 0.7) +
   scale_x_continuous(name = "연령 (세)", limits = c(0, 75), expand = c(0, 0)) +
@@ -300,7 +300,7 @@ stamp_bad(p_hist_overlapped)
 
 (ref:titanic-age-overlapping-dens) 남성 및 여성 타이타닉호 승객 연령의 밀도 추정치. 남성 승객이 여성 승객보다 많았음을 강조하기 위해 각 곡선 아래 면적이 알려진 연령의 남성 및 여성 승객 총 수(각각 468명 및 288명)에 해당하도록 밀도 곡선의 크기를 조정했습니다.
 
-```{r fig-titanic-age-overlapping-dens, fig-cap='(ref:titanic-age-overlapping-dens)'}
+```{r fig-titanic-age-overlapping-dens, fig.cap='(ref:titanic-age-overlapping-dens)'}
 titanic2 <- titanic
 titanic2$sex <- factor(titanic2$sex, levels = c("male", "female"))
 
@@ -326,7 +326,7 @@ ggplot(titanic2, aes(x = age, y = ..count.., fill = sex, color = sex)) +
 
 (ref:titanic-age-fractional-dens) 남성 및 여성 타이타닉호 승객의 연령 분포, 승객 총계의 비율로 표시. 색칠된 영역은 각각 남성 및 여성 승객 연령의 밀도 추정치를 나타내고 회색 영역은 전체 승객 연령 분포를 나타냅니다.
 
-```{r fig-titanic-age-fractional-dens, fig-width = 5.5*6/4.2, fig-asp = .45, fig-cap='(ref:titanic-age-fractional-dens)'}
+```{r fig-titanic-age-fractional-dens, fig.width = 5.5*6/4.2, fig.asp = .45, fig.cap='(ref:titanic-age-fractional-dens)'}
 ggplot(titanic2, aes(x = age, y = ..count..)) +
   geom_density_line(
     data = select(titanic, -sex), aes(fill = "모든 승객"),
@@ -362,7 +362,7 @@ ggplot(titanic2, aes(x = age, y = ..count..)) +
 
 (ref:titanic-age-pyramid) 연령 피라미드로 시각화된 남성 및 여성 타이타닉호 승객의 연령 분포.
 
-```{r fig-titanic-age-pyramid, fig-cap='(ref:titanic-age-pyramid)'}
+```{r fig-titanic-age-pyramid, fig.cap='(ref:titanic-age-pyramid)'}
 ggplot(gender_counts, aes(x = age, y = ifelse(gender == "male",-1, 1)*count, fill = gender)) +
   geom_col() +
   scale_x_continuous(name = "연령 (세)", limits = c(0, 75), expand = c(0, 0)) +
@@ -379,7 +379,7 @@ ggplot(gender_counts, aes(x = age, y = ifelse(gender == "male",-1, 1)*count, fil
 
 (ref:butterfat-densitites) 네 가지 소 품종 우유의 유지방 비율 밀도 추정치. 데이터 출처: 캐나다 순종 젖소 생산 능력 기록
 
-```{r fig-butterfat-densitites, fig-cap = '(ref:butterfat-densitites)'}
+```{r fig-butterfat-densitites, fig.cap = '(ref:butterfat-densitites)'}
 cows %>%
   mutate(breed = as.character(breed)) %>%
   filter(breed != "캐나다산") -> cows_filtered

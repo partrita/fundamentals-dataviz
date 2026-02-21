@@ -11,7 +11,7 @@ source("_common.R")
 
 (ref:Aus-athletes-small) 호주 남자 프로 운동선수의 키 대비 체지방률. (각 점은 한 명의 운동선수를 나타냅니다.) 이 그림은 텍스트 요소가 너무 작아서 거의 읽을 수 없다는 일반적인 문제점을 안고 있습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-small, fig-width = 6, fig-cap='(ref:Aus-athletes-small)'}
+```{r fig-Aus-athletes-small, fig.width = 6, fig.cap='(ref:Aus-athletes-small)'}
 male_Aus <- filter(Aus_athletes, sex == "m") %>%
     filter(sport %in% c("농구", "필드", "수영", "육상 (400m)",
                         "육상 (단거리)", "수구")) %>%
@@ -38,7 +38,7 @@ stamp_bad(p + geom_point(size = 1.5) +
 
 (ref:Aus-athletes-ugly) 남자 운동선수의 키 대비 체지방률. 이 그림은 그림 @fig-Aus-athletes-small보다 개선되었지만 텍스트 요소가 너무 작고 그림이 균형 잡히지 않았습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-ugly, fig-width = 6, fig-cap='(ref:Aus-athletes-ugly)'}
+```{r fig-Aus-athletes-ugly, fig.width = 6, fig.cap='(ref:Aus-athletes-ugly)'}
 stamp_ugly(p + geom_point(size = 1.5) +
              theme_dviz_grid(10) + theme(plot.margin = margin(7, 7, 3, 1.5)))
 ```
@@ -48,7 +48,7 @@ stamp_ugly(p + geom_point(size = 1.5) +
 
 (ref:Aus-athletes-good) 남자 운동선수의 키 대비 체지방률. 모든 그림 요소가 적절하게 크기가 조정되었습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-good, fig-width = 6, fig-cap='(ref:Aus-athletes-good)'}
+```{r fig-Aus-athletes-good, fig.width = 6, fig.cap='(ref:Aus-athletes-good)'}
 p + geom_point(size = 2.25) +
   theme_dviz_grid() + theme(plot.margin = margin(7, 7, 3, 1.5))
 ```
@@ -57,7 +57,7 @@ p + geom_point(size = 2.25) +
 
 (ref:Aus-athletes-big-ugly) 남자 운동선수의 키 대비 체지방률. 텍스트 요소가 상당히 크며 그림을 매우 작은 축척으로 재현하려는 경우 크기가 적절할 수 있습니다. 그러나 그림 전체가 균형 잡히지 않았습니다. 점이 텍스트 요소에 비해 너무 작습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-big-ugly, fig-width = 6, fig-cap='(ref:Aus-athletes-big-ugly)'}
+```{r fig-Aus-athletes-big-ugly, fig.width = 6, fig.cap='(ref:Aus-athletes-big-ugly)'}
 stamp_ugly(p + geom_point(size = 2.25) +
              theme_dviz_grid(19) + theme(plot.margin = margin(7, 7, 3, 1.5)))
 ```
@@ -65,7 +65,7 @@ stamp_ugly(p + geom_point(size = 2.25) +
 
 (ref:Aus-athletes-big-good) 남자 운동선수의 키 대비 체지방률. 모든 그림 요소는 그림이 균형을 이루고 작은 축척으로 재현될 수 있도록 크기가 조정되었습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-big-good, fig-width=6, fig-cap='(ref:Aus-athletes-big-good)'}
+```{r fig-Aus-athletes-big-good, fig.width=6, fig.cap='(ref:Aus-athletes-big-good)'}
 p + geom_point(size = 3.5) +
   theme_dviz_grid(19) + theme(plot.margin = margin(7, 7, 3, 1.5))
 ```

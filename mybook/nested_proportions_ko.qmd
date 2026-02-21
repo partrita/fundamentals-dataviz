@@ -19,7 +19,7 @@ library(treemapify)
 (ref:bridges-pie-wrong)  건설 자재(강철, 목재, 철) 및 건설 날짜(공예, 1870년 이전, 현대, 1940년 이후)별 피츠버그 다리 분석, 원형 차트로 표시. 숫자는 전체 다리 중 해당 유형의 다리 비율을 나타냅니다. 이 그림은 백분율이 100%를 초과하므로 유효하지 않습니다. 건설 자재와 건설 날짜 사이에 중복이 있습니다. 예를 들어 모든 현대 다리는 강철로 만들어졌으며 대부분의 공예 다리는 목재로 만들어졌습니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
 
-```{r fig-bridges-pie-wrong, fig-width = 5, fig-asp = 0.7, fig-cap = '(ref:bridges-pie-wrong)'}
+```{r fig-bridges-pie-wrong, fig.width = 5, fig.asp = 0.7, fig.cap = '(ref:bridges-pie-wrong)'}
 
 # 공예: 1870년 이전
 # 신흥: 1870년 -- 1889년
@@ -133,7 +133,7 @@ stamp_wrong(p_bridges_pie)
 (ref:bridges-bars-bad) 건설 자재(강철, 목재, 철) 및 건설 날짜(공예, 1870년 이전, 현대, 1940년 이후)별 피츠버그 다리 분석, 막대 그래프로 표시. 그림 @fig-bridges-pie-wrong과 달리 이 시각화는 막대 높이가 100%가 되어야 한다는 것을 의미하지 않으므로 기술적으로 잘못된 것은 아닙니다. 그러나 여러 그룹 간의 중복을 명확하게 나타내지 않으므로 "나쁨"으로 표시했습니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
 
-```{r fig-bridges-bars-bad, fig-cap = '(ref:bridges-bars-bad)'}
+```{r fig-bridges-bars-bad, fig.cap = '(ref:bridges-bars-bad)'}
 p_bridges_bars <- ggplot(bridges_material_erected) +
   aes(type, percent, fill = type) +
   geom_col() +
@@ -168,7 +168,7 @@ stamp_bad(p_bridges_bars)
 
 (ref:bridges-mosaic) 건설 자재(강철, 목재, 철) 및 건설 시대(공예, 신흥, 성숙, 현대)별 피츠버그 다리 분석, 모자이크 그림으로 표시. 각 사각형의 너비는 해당 시대에 건설된 다리 수에 비례하고 높이는 해당 자재로 건설된 다리 수에 비례합니다. 숫자는 각 범주 내 다리 수를 나타냅니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-mosaic, fig-cap = '(ref:bridges-mosaic)'}
+```{r fig-bridges-mosaic, fig.cap = '(ref:bridges-mosaic)'}
 select(bridges, MATERIAL, ERECTED) %>%
   table() %>%
   reshape2::melt() %>%
@@ -250,7 +250,7 @@ ggplot(bridges_tidy) +
 
 (ref:bridges-treemap) 건설 자재(강철, 목재, 철) 및 건설 시대(공예, 신흥, 성숙, 현대)별 피츠버그 다리 분석, 트리맵으로 표시. 각 사각형의 면적은 해당 유형의 다리 수에 비례합니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-treemap, fig-asp = 3/4, fig-cap = '(ref:bridges-treemap)'}
+```{r fig-bridges-treemap, fig.asp = 3/4, fig.cap = '(ref:bridges-treemap)'}
 filcols <- c("#D55E00D0", "#0072B2D0", "#009E73D0")
 filcols <- c(vapply(filcols, function(x) c(lighten(x, .9), lighten(x, .6), lighten(x, .3), x), character(4)))
 
@@ -287,7 +287,7 @@ ggplot(bridges_tidy, aes(area = count, subgroup = material, fill = interaction(e
 
 (ref:US-states-treemap) 트리맵으로 시각화된 미국의 주. 각 사각형은 하나의 주를 나타내며 각 사각형의 면적은 해당 주의 육지 면적에 비례합니다. 주는 서부, 북동부, 중서부, 남부의 4개 지역으로 그룹화됩니다. 색칠은 각 주의 주민 수에 비례하며 어두운 색일수록 주민 수가 많음을 나타냅니다. 데이터 출처: 2010년 미국 인구 조사
 
-```{r fig-US-states-treemap, fig-width = 5.5*6/4.2, fig-cap = '(ref:US-states-treemap)'}
+```{r fig-US-states-treemap, fig.width = 5.5*6/4.2, fig.cap = '(ref:US-states-treemap)'}
 population_df <- left_join(US_census, US_regions) %>%
     group_by(region, division, state) %>%
     summarize(
@@ -358,7 +358,7 @@ ggplot(population_df_color, aes(area = area, subgroup = region, fill = fill)) +
 
 (ref:bridges-nested-pie) 건설 자재(강철, 목재, 철, 내부 원) 및 건설 시대(공예, 신흥, 성숙, 현대, 외부 원)별 피츠버그 다리 분석. 숫자는 각 범주 내 다리 수를 나타냅니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-nested-pie, fig-asp = 3/4, fig-cap = '(ref:bridges-nested-pie)'}
+```{r fig-bridges-nested-pie, fig.asp = 3/4, fig.cap = '(ref:bridges-nested-pie)'}
 bridges_arranged <-
   ungroup(bridges_tidy) %>%
   mutate(material = factor(material, levels = c("목재", "철", "강철"))) %>%
@@ -468,7 +468,7 @@ stamp_ugly(bridges_nested_pie)
 
 (ref:bridges-nested-pie2) 건설 자재(강철, 목재, 철) 및 건설 시대(공예, 신흥, 성숙, 현대)별 피츠버그 다리 분석. 숫자는 각 범주 내 다리 수를 나타냅니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-nested-pie2, fig-asp = 3/4, fig-cap = '(ref:bridges-nested-pie2)'}
+```{r fig-bridges-nested-pie2, fig.asp = 3/4, fig.cap = '(ref:bridges-nested-pie2)'}
 rpie <- 1
 rpie1 <- 0
 rpie2 <- 1
@@ -537,7 +537,7 @@ bridges_nested_pie2
 
 (ref:bridges-parallel-sets1) 건설 자재, 길이, 건설 시대, 가로지르는 강별 피츠버그 다리 분석, 병렬 집합 그림으로 표시. 띠의 색칠은 여러 다리의 건설 자재를 강조 표시합니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-parallel-sets1, fig-width = 5*6/4.2, fig-cap = '(ref:bridges-parallel-sets1)'}
+```{r fig-bridges-parallel-sets1, fig.width = 5*6/4.2, fig.cap = '(ref:bridges-parallel-sets1)'}
 select(bridges, MATERIAL, ERECTED, RIVER, LENGTH) %>%
   filter(RIVER != "Y") %>%
   table() %>%
@@ -614,7 +614,7 @@ ggplot(data, aes(x, id = id, split = y, value = count)) +
 
 (ref:bridges-parallel-sets2) 건설 자재, 길이, 건설 시대, 가로지르는 강별 피츠버그 다리 분석. 이 그림은 그림 @fig-bridges-parallel-sets1과 유사하지만 이제 띠의 색칠은 여러 다리가 가로지르는 강을 강조 표시합니다. 이 그림은 그림 중앙의 색칠된 띠 배열이 매우 복잡하고 띠를 오른쪽에서 왼쪽으로 읽어야 하기 때문에 "못생김"으로 표시되었습니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-parallel-sets2, fig-width = 5*6/4.2, fig-cap = '(ref:bridges-parallel-sets2)'}
+```{r fig-bridges-parallel-sets2, fig.width = 5*6/4.2, fig.cap = '(ref:bridges-parallel-sets2)'}
 data$x <- factor(data$x, levels = c("material", "length", "erected", "river"))
 
 p_ugly <- ggplot(data, aes(x, id = id, split = y, value = count)) +
@@ -649,7 +649,7 @@ stamp_ugly(p_ugly)
 
 (ref:bridges-parallel-sets3) 강, 건설 시대, 길이, 건설 자재별 피츠버그 다리 분석. 이 그림은 병렬 집합의 순서만 그림 @fig-bridges-parallel-sets2와 다릅니다. 그러나 수정된 순서는 읽기 쉽고 덜 복잡한 그림을 만듭니다. 데이터 출처: 요람 라이히 및 스티븐 J. 펜베스, UCI 머신 러닝 저장소 경유[@UCI_repo_2017]
 
-```{r fig-bridges-parallel-sets3, fig-width = 5*6/4.2, fig-cap = '(ref:bridges-parallel-sets3)'}
+```{r fig-bridges-parallel-sets3, fig.width = 5*6/4.2, fig.cap = '(ref:bridges-parallel-sets3)'}
 #data$x <- factor(data$x, levels = c("river", "length", "material", "erected"))
 data$x <- factor(data$x, levels = rev(c("material", "length", "erected", "river")))
 data$x <- factor(data$x, levels = c("river", "length", "material", "erected"))

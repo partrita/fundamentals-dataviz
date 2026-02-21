@@ -17,7 +17,7 @@ library(tidyr)
 
 (ref:rotated-pie) 네 가지 다른 각도에서 본 동일한 3D 원형 차트. 원형 차트를 3차원으로 회전하면 앞쪽의 원형 조각이 실제보다 커 보이고 뒤쪽의 원형 조각이 작아 보입니다. 여기서 (a), (b), (c) 부분에서 데이터의 25%에 해당하는 파란색 조각은 시각적으로 원형 차트를 나타내는 영역의 25% 이상을 차지합니다. (d) 부분만이 데이터를 정확하게 나타냅니다.
 
-```{r fig-rotated-pie, fig-asp = 5.1/6, fig-cap = '(ref:rotated-pie)'}
+```{r fig-rotated-pie, fig.asp = 5.1/6, fig.cap = '(ref:rotated-pie)'}
 ggdraw() + draw_image("figures/3d/3d-pie-assembled.png")
 ```
 
@@ -25,7 +25,7 @@ ggdraw() + draw_image("figures/3d/3d-pie-assembled.png")
 
 (ref:titanic-3d) 3D 누적 막대 그래프로 표시된 1등석, 2등석, 3등석으로 여행한 타이타닉호의 여성 및 남성 승객 수. 1등석, 2등석, 3등석의 총 승객 수는 각각 322명, 279명, 711명입니다(그림 @fig-titanic-passengers-by-class-sex 참조). 그러나 이 플롯에서 1등석 막대는 300명 미만의 승객을 나타내는 것처럼 보이고 3등석 막대는 700명 미만의 승객을 나타내는 것처럼 보이며 2등석 막대는 실제 279명보다 210~220명에 더 가까워 보입니다. 또한 3등석 막대는 시각적으로 그림을 지배하여 3등석 승객 수가 실제보다 더 많은 것처럼 보이게 합니다.
 
-```{r fig-titanic-3d, fig-asp = 4.5/6, fig-cap = '(ref:titanic-3d)'}
+```{r fig-titanic-3d, fig.asp = 4.5/6, fig.cap = '(ref:titanic-3d)'}
 stamp_bad(ggdraw() + draw_image("figures/3d/titanic-3d-bars-assembled.png"))
 ```
 
@@ -39,7 +39,7 @@ stamp_bad(ggdraw() + draw_image("figures/3d/titanic-3d-bars-assembled.png"))
 (ref:mtcars-3d) 32개 자동차(1973~74년 모델)의 연비 대 배기량 및 마력. 각 점은 하나의 자동차를 나타내며 점 색상은 자동차의 실린더 수를 나타냅니다. 네 개의 패널 (a)~(d)는 정확히 동일한 데이터를 보여주지만 다른 관점을 사용합니다. 데이터 출처: *Motor Trend,* 1974.
 
 
-```{r fig-mtcars-3d, fig-width = 5*6/4.2, fig-asp = 1.1, fig-cap = '(ref:mtcars-3d)'}
+```{r fig-mtcars-3d, fig.width = 5*6/4.2, fig.asp = 1.1, fig.cap = '(ref:mtcars-3d)'}
 library(plot3D)
 library(cowplot)
 set_null_device("png")
@@ -97,7 +97,7 @@ plot_grid(pfun(30, 20), pfun(-30, 20),
 
 (ref:mtcars-3d-no-axes) 32개 자동차(1973~74년 모델)의 연비 대 배기량 및 마력. 네 개의 패널 (a)~(d)는 그림 @fig-mtcars-3d의 동일한 패널에 해당하며 깊이 단서를 제공하는 모든 격자선만 제거되었습니다. 데이터 출처: *Motor Trend,* 1974.
 
-```{r fig-mtcars-3d-no-axes, fig-width = 5*6/4.2, fig-asp = 1.1, fig-cap = '(ref:mtcars-3d-no-axes)'}
+```{r fig-mtcars-3d-no-axes, fig.width = 5*6/4.2, fig.asp = 1.1, fig.cap = '(ref:mtcars-3d-no-axes)'}
 pfun2 <- function(theta = 30, phi = 20) {
   function() {
     par(
@@ -134,7 +134,7 @@ plot_grid(
 
 (ref:mtcars-2d-multiple) 연비 대 배기량 (a) 및 마력 (b). 데이터 출처: *Motor Trend,* 1974.
 
-```{r fig-mtcars-2d-multiple, fig-width = 5*6/4.2, fig-asp = .45, fig-cap = '(ref:mtcars-2d-multiple)'}
+```{r fig-mtcars-2d-multiple, fig.width = 5*6/4.2, fig.asp = .45, fig.cap = '(ref:mtcars-2d-multiple)'}
 p1 <- ggplot(mtcars, aes(x = disp, y = mpg, color = factor(cyl))) +
   geom_point(size = 1.5) +
   scale_color_manual(values = colors, name = "실린더", guide = "none") +
@@ -161,7 +161,7 @@ plot_grid(p1, align_legend(p2), labels = "auto")
 
 (ref:mtcars-2d-size) 32개 자동차의 마력 대 배기량, 연비는 점 크기로 표시. 데이터 출처: *Motor Trend,* 1974.
 
-```{r fig-mtcars-2d-size, fig-width = 5.5, fig-asp = 0.75, fig-cap = '(ref:mtcars-2d-size)'}
+```{r fig-mtcars-2d-size, fig.width = 5.5, fig.asp = 0.75, fig.cap = '(ref:mtcars-2d-size)'}
 p <- ggplot(mtcars, aes(x = disp, y = hp, size = mpg, fill = factor(cyl))) +
   geom_point(color = "white", pch = 21) +
   scale_fill_manual(
@@ -190,7 +190,7 @@ ggdraw(align_legend(p))
 
 (ref:VA-death-rates-3d) 3D 막대 그래프로 시각화된 1940년 버지니아 사망률. 사망률은 네 그룹의 사람(도시 및 농촌 여성 및 남성)과 다섯 가지 연령 범주(50~54세, 55~59세, 60~64세, 65~69세, 70~74세)에 대해 표시되며 1000명당 사망자 수 단위로 보고됩니다. 이 그림은 3D 관점으로 인해 플롯을 읽기 어렵기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: @Molyneaux-et-al-1947
 
-```{r fig-VA-death-rates-3d, fig-width = 5, fig-asp = 0.8, fig-cap = '(ref:VA-death-rates-3d)'}
+```{r fig-VA-death-rates-3d, fig.width = 5, fig.asp = 0.8, fig.cap = '(ref:VA-death-rates-3d)'}
 pfun3 <- function() {
 
   par(xpd = NA,
@@ -236,7 +236,7 @@ stamp_bad(ggdraw() +  draw_image("figures/VA-deaths.png"))
 
 (ref:VA-death-rates-Trellis) 1940년 버지니아 사망률, 격자 그림으로 시각화. 사망률은 네 그룹의 사람(도시 및 농촌 여성 및 남성)과 다섯 가지 연령 범주(50~54세, 55~59세, 60~64세, 65~69세, 70~74세)에 대해 표시되며 1000명당 사망자 수 단위로 보고됩니다. 데이터 출처: @Molyneaux-et-al-1947
 
-```{r fig-VA-death-rates-Trellis, fig-width = 5*6/4.2, fig-cap = '(ref:VA-death-rates-Trellis)'}
+```{r fig-VA-death-rates-Trellis, fig.width = 5*6/4.2, fig.cap = '(ref:VA-death-rates-Trellis)'}
 df <- data.frame(VADeaths)
 df$age <- row.names(df)
 row.names(df) <- NULL
@@ -265,7 +265,7 @@ ggplot(df_long, aes(age, rate)) +
 
 (ref:corsica-relief) 지중해 코르시카 섬의 기복. 데이터 출처: 코페르니쿠스 토지 모니터링 서비스
 
-```{r fig-corsica-relief, fig-cap = '(ref:corsica-relief)'}
+```{r fig-corsica-relief, fig.cap = '(ref:corsica-relief)'}
 # rayshader로 렌더링된 그림; R 마크다운을 렌더링하는 동안 너무 느립니다.
 knitr::include_graphics("figures/3d/Corsica.png", auto_pdf = FALSE)
 ```
@@ -273,7 +273,7 @@ knitr::include_graphics("figures/3d/Corsica.png", auto_pdf = FALSE)
 
 (ref:protein-3d) 단백질의 진화적 변이 패턴. 색칠된 튜브는 박테리아 *대장균*의 단백질 엑소뉴클레아제 III의 골격을 나타냅니다(단백질 데이터 뱅크 식별자: 1AKO). 색칠은 이 단백질의 개별 부위의 진화적 보존을 나타내며 어두운 색은 보존된 아미노산을 나타내고 밝은 색은 가변적인 아미노산을 나타냅니다. 데이터 출처: @Marcos-Echave-2015
 
-```{r fig-protein-3d, fig-width = 4.5, fig-asp = (16+4)/19, fig-cap = '(ref:protein-3d)'}
+```{r fig-protein-3d, fig.width = 4.5, fig.asp = (16+4)/19, fig.cap = '(ref:protein-3d)'}
 # ggplot2를 통해 범례 만들기
 df <- data.frame(x = 1:10,
                  fill = runif(10))

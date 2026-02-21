@@ -19,7 +19,7 @@ library(sf)
 
 (ref:qualitative-scales) 예시적인 정성적 색상 척도. 오카베 이토 척도는 이 책 전체에서 사용되는 기본 척도입니다[@Okabe-Ito-CUD]. ColorBrewer Dark2 척도는 ColorBrewer 프로젝트에서 제공합니다[@ColorBrewer]. ggplot2 색조 척도는 널리 사용되는 플로팅 소프트웨어 ggplot2의 기본 정성적 척도입니다.
 
-```{r fig-qualitative-scales, fig-width=5*6/4.2, fig-asp=3*.14, fig-cap = '(ref:qualitative-scales)'}
+```{r fig-qualitative-scales, fig.width=5*6/4.2, fig.asp=3*.14, fig.cap = '(ref:qualitative-scales)'}
 p1 <- gg_color_swatches(7, title_family = dviz_font_family) +
   scale_fill_OkabeIto() + ggtitle("오카베 이토") +
   theme(plot.margin = margin(7, 1.5, 7, 1.5))
@@ -36,7 +36,7 @@ plot_grid(p1, p2, p3, ncol = 1)
 
 (ref:popgrowth-US) 2000년부터 2010년까지 미국의 인구 증가. 서부와 남부의 주들이 가장 큰 증가를 보인 반면, 중서부와 북동부의 주들은 훨씬 적은 증가를 보이거나 미시간주의 경우 심지어 감소했습니다. 데이터 출처: 미국 인구 조사국
 
-```{r fig-popgrowth-US, fig-width = 6, fig-asp = 1.2, fig-cap = '(ref:popgrowth-US)'}
+```{r fig-popgrowth-US, fig.width = 6, fig.asp = 1.2, fig.cap = '(ref:popgrowth-US)'}
 popgrowth_df <- left_join(US_census, US_regions) %>%
     group_by(region, division, state) %>%
     summarize(pop2000 = sum(pop2000, na.rm = TRUE),
@@ -82,7 +82,7 @@ ggplot(popgrowth_df, aes(x = state, y = 100*popgrowth, fill = region)) +
 
 (ref:sequential-scales) 예시 순차적 색상 척도. ColorBrewer Blues 척도는 어두운 파란색에서 밝은 파란색으로 변하는 단색 척도입니다. Heat 및 Viridis 척도는 각각 어두운 빨간색에서 밝은 노란색으로, 어두운 파란색에서 녹색을 거쳐 밝은 노란색으로 변하는 다중 색조 척도입니다.
 
-```{r fig-sequential-scales, fig-width=5*6/4.2, fig-asp=3*.14, fig-cap = '(ref:sequential-scales)'}
+```{r fig-sequential-scales, fig.width=5*6/4.2, fig.asp=3*.14, fig.cap = '(ref:sequential-scales)'}
 p1 <- gg_color_swatches(7, title_family = dviz_font_family) +
   scale_fill_brewer(type = "seq", palette = "Blues", direction = -1) + ggtitle("ColorBrewer Blues") +
   theme(plot.margin = margin(7, 1.5, 7, 1.5))
@@ -100,7 +100,7 @@ plot_grid(p1, p2, p3, ncol = 1)
 (ref:map-Texas-income) 텍사스 카운티의 연간 중간 소득. 가장 높은 중간 소득은 주요 텍사스 대도시 지역, 특히 휴스턴과 댈러스 근처에서 나타납니다. 서부 텍사스의 러빙 카운티에 대한 중간 소득 추정치는 없으므로 해당 카운티는 회색으로 표시됩니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
 
-```{r fig-map-Texas-income, fig-width = 6, fig-asp = 0.75, fig-cap = '(ref:map-Texas-income)'}
+```{r fig-map-Texas-income, fig.width = 6, fig.asp = 0.75, fig.cap = '(ref:map-Texas-income)'}
 # B19013_001: 지난 12개월간 가구 중간 소득 (2015년 물가 조정 달러 기준)
 
 # EPSG:3083
@@ -143,7 +143,7 @@ texas_income %>% st_transform(crs = texas_crs) %>%
 
 (ref:diverging-scales) 예시 발산 색상 척도. 발산 척도는 공통 중간 색상에서 함께 꿰맨 두 개의 순차적 척도로 생각할 수 있습니다. 발산 척도에 대한 일반적인 색상 선택에는 갈색에서 녹청색, 분홍색에서 황록색, 파란색에서 빨간색이 포함됩니다.
 
-```{r fig-diverging-scales, fig-width=5*6/4.2, fig-asp=3*.14, fig-cap = '(ref:diverging-scales)'}
+```{r fig-diverging-scales, fig.width=5*6/4.2, fig.asp=3*.14, fig.cap = '(ref:diverging-scales)'}
 p1 <- gg_color_swatches(7, title_family = dviz_font_family) +
   scale_fill_discrete_divergingx(palette = "Earth") + ggtitle("CARTO Earth") +
   theme(plot.margin = margin(7, 1.5, 7, 1.5))
@@ -160,7 +160,7 @@ plot_grid(p1, p2, p3, ncol = 1)
 
 (ref:map-Texas-race) 텍사스 카운티에서 백인으로 식별되는 사람들의 비율. 백인은 북부 및 동부 텍사스에서 다수이지만 남부 또는 서부 텍사스에서는 그렇지 않습니다. 데이터 출처: 2010년 미국 인구 조사
 
-```{r fig-map-Texas-race, fig-width = 6, fig-asp = 0.75, fig-cap = '(ref:map-Texas-race)'}
+```{r fig-map-Texas-race, fig.width = 6, fig.asp = 0.75, fig.cap = '(ref:map-Texas-race)'}
 texas_race %>% st_sf() %>%
   st_transform(crs = texas_crs) %>%
   filter(variable == "백인") %>%
@@ -198,7 +198,7 @@ texas_race %>% st_sf() %>%
 
 (ref:accent-scales) 예시 강조 색상 척도, 각각 4개의 기본 색상과 3개의 강조 색상 포함. 강조 색상 척도는 여러 가지 방법으로 파생될 수 있습니다. (상단) 기존 색상 척도(예: 오카베 이토 척도, 그림 @fig-qualitative-scales)를 가져와 일부 색상을 밝게 하거나 부분적으로 채도를 낮추고 다른 색상을 어둡게 합니다. (중간) 회색 값을 가져와 색상과 쌍을 이룹니다. (하단) 기존 강조 색상 척도(예: ColorBrewer 프로젝트의 척도)를 사용합니다.
 
-```{r fig-accent-scales, fig-width=5*6/4.2, fig-asp=3*.14, fig-cap = '(ref:accent-scales)'}
+```{r fig-accent-scales, fig.width=5*6/4.2, fig.asp=3*.14, fig.cap = '(ref:accent-scales)'}
 accent_OkabeIto <- palette_OkabeIto[c(1, 2, 7, 4, 5, 3, 6)]
 accent_OkabeIto[1:4] <- desaturate(lighten(accent_OkabeIto[1:4], .4), .8)
 accent_OkabeIto[5:7] <- darken(accent_OkabeIto[5:7], .3)
@@ -220,7 +220,7 @@ plot_grid(p1, p2, p3, ncol = 1)
 
 (ref:popgrowth-US-highlight) 2000년부터 2010년까지 이웃한 남부 주인 텍사스와 루이지애나는 미국 전역에서 가장 높은 인구 증가율과 가장 낮은 인구 증가율을 경험했습니다. 데이터 출처: 미국 인구 조사국
 
-```{r fig-popgrowth-US-highlight, fig-width = 6, fig-asp = 1.2, fig-cap = '(ref:popgrowth-US-highlight)'}
+```{r fig-popgrowth-US-highlight, fig.width = 6, fig.asp = 1.2, fig.cap = '(ref:popgrowth-US-highlight)'}
 popgrowth_hilight <- left_join(US_census, US_regions) %>%
     group_by(region, division, state) %>%
     summarize(pop2000 = sum(pop2000, na.rm = TRUE),
@@ -273,7 +273,7 @@ ggplot(popgrowth_hilight, aes(x = state, y = 100*popgrowth, fill = region)) +
 
 (ref:Aus-athletes-track) 육상 선수는 인기 있는 스포츠에 참여하는 남자 프로 선수 중 가장 키가 작고 마른 편에 속합니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-track, fig-width = 6, fig-cap='(ref:Aus-athletes-track)'}
+```{r fig-Aus-athletes-track, fig.width = 6, fig.cap='(ref:Aus-athletes-track)'}
 male_Aus <- filter(Aus_athletes, sex=="m") %>%
   filter(sport %in% c("농구", "필드", "수영", "육상 (400m)",
                       "육상 (단거리)", "수구")) %>%

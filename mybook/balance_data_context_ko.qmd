@@ -23,7 +23,7 @@ library(ggrepel)
 
 (ref:Aus-athletes-grid-bad) 호주 남자 프로 운동선수의 키 대비 체지방률. 각 점은 한 명의 운동선수를 나타냅니다. 이 그림은 비데이터에 너무 많은 잉크를 사용합니다. 전체 그림, 플롯 패널, 범례 주위에 불필요한 프레임이 있습니다. 좌표 격자가 매우 두드러지며 그 존재는 데이터 포인트에서 주의를 분산시킵니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-grid-bad, fig-cap='(ref:Aus-athletes-grid-bad)'}
+```{r fig-Aus-athletes-grid-bad, fig.cap='(ref:Aus-athletes-grid-bad)'}
 male_Aus <- filter(Aus_athletes, sex=="m") %>%
     filter(sport %in% c("농구", "필드", "수영", "육상 (400m)",
                         "육상 (단거리)", "수구")) %>%
@@ -63,7 +63,7 @@ stamp_ugly(ggdraw() + draw_plot(p, x = 1/434, y = 1/268, width = 426/434, height
 
 (ref:Aus-athletes-grid-good) 호주 남자 프로 운동선수의 키 대비 체지방률. 이 그림은 그림 @fig-Aus-athletes-grid-bad의 정리된 버전입니다. 불필요한 프레임이 제거되었고, 보조 격자선이 제거되었으며, 주 격자선은 데이터 포인트에 비해 뒤로 물러나도록 밝은 회색으로 그려졌습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-grid-good, fig-cap='(ref:Aus-athletes-grid-good)'}
+```{r fig-Aus-athletes-grid-good, fig.cap='(ref:Aus-athletes-grid-good)'}
 p_Aus_base +
   theme_dviz_grid()# + panel_border(colour = "grey70") + theme(axis.ticks = element_line(colour = "grey70"))
 ```
@@ -72,7 +72,7 @@ p_Aus_base +
 
 (ref:Aus-athletes-min-bad) 호주 남자 프로 운동선수의 키 대비 체지방률. 이 예에서는 비데이터 잉크 제거 개념이 너무 멀리 나갔습니다. 축 눈금 레이블과 제목이 너무 희미해서 거의 보이지 않습니다. 데이터 포인트가 공간에 떠 있는 것처럼 보입니다. 범례의 포인트가 데이터 포인트와 충분히 분리되지 않아 부주의한 관찰자는 이를 데이터의 일부라고 생각할 수 있습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-min-bad, fig-cap='(ref:Aus-athletes-min-bad)'}
+```{r fig-Aus-athletes-min-bad, fig.cap='(ref:Aus-athletes-min-bad)'}
 axis_col <- "grey70"
 title_col <- "grey70"
 
@@ -94,7 +94,7 @@ stamp_ugly(p)
 
 (ref:Aus-athletes-grid-good-frame) 호주 남자 프로 운동선수의 키 대비 체지방률. 이 그림은 그림 @fig-Aus-athletes-grid-good의 플롯 패널 주위에 프레임을 추가하며, 이 프레임은 범례를 데이터와 분리하는 데 도움이 됩니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r fig-Aus-athletes-grid-good-frame, fig-cap='(ref:Aus-athletes-grid-good-frame)'}
+```{r fig-Aus-athletes-grid-good-frame, fig.cap='(ref:Aus-athletes-grid-good-frame)'}
 p_Aus_base +
   theme_dviz_grid() + panel_border(colour = "grey70") + theme(axis.ticks = element_line(colour = "grey70"))
 ```
@@ -104,7 +104,7 @@ p_Aus_base +
 
 (ref:titanic-survival-by-gender-class-bad) 타이타닉호 승객의 생존 여부를 성별과 계급별로 분류했습니다. 이 작은 다중 그림 플롯은 너무 미니멀합니다. 개별 패싯에 프레임이 없어 그림의 어느 부분이 어느 패싯에 속하는지 보기 어렵습니다. 또한 개별 막대는 명확한 기준선에 고정되어 있지 않고 떠 있는 것처럼 보입니다.
 
-```{r fig-titanic-survival-by-gender-class-bad, fig-width = 5, fig-asp = 3/4, fig-cap = '(ref:titanic-survival-by-gender-class-bad)'}
+```{r fig-titanic-survival-by-gender-class-bad, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:titanic-survival-by-gender-class-bad)'}
 titanic %>% mutate(surv = ifelse(survived == 0, "사망", "생존")) %>%
   ggplot(aes(sex, fill = sex)) + geom_bar() +
     facet_grid(class ~ surv, scales = "free_x") +
@@ -125,7 +125,7 @@ stamp_ugly(p)
 
 (ref:titanic-survival-by-gender-class) 타이타닉호 승객의 생존 여부를 성별과 계급별로 분류했습니다. 이것은 그림 @fig-titanic-survival-by-gender-class-bad의 개선된 버전입니다. 각 패싯의 회색 배경은 이 플롯을 구성하는 6개 그룹(1등석, 2등석 또는 3등석에서 생존 또는 사망)을 명확하게 구분합니다. 배경의 얇은 수평선은 막대 높이에 대한 참조를 제공하고 패싯 간 막대 높이 비교를 용이하게 합니다.
 
-```{r fig-titanic-survival-by-gender-class, fig-width = 5, fig-asp = 3/4, fig-cap = '(ref:titanic-survival-by-gender-class)'}
+```{r fig-titanic-survival-by-gender-class, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:titanic-survival-by-gender-class)'}
 colors <- desaturate(lighten(c("#56B4E9", "#56B4E9"), c(.8, -.4)), .8)
 
 titanic %>% mutate(surv = ifelse(survived == 0, "사망", "생존")) %>%
@@ -161,7 +161,7 @@ R 소프트웨어 ggplot2는 회색 배경에 흰색 선으로 된 상당히 눈
 
 (ref:price-plot-ggplot-default) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 ggplot2 기본 모양을 모방하여 회색 배경에 흰색 주 격자선과 보조 격자선을 사용합니다. 이 특정 예에서 격자선이 데이터 선을 압도하여 균형이 잘 맞지 않고 데이터에 충분한 강조를 두지 않는 그림이 되었다고 생각합니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-plot-ggplot-default, fig-cap='(ref:price-plot-ggplot-default)'}
+```{r fig-price-plot-ggplot-default, fig.cap='(ref:price-plot-ggplot-default)'}
 price_plot <- ggplot(tech_stocks, aes(x=date, y=price_indexed, color=ticker)) +
   geom_line(size = 0.66, na.rm = TRUE) +
   scale_color_manual(
@@ -199,7 +199,7 @@ stamp_ugly(price_plot)
 
 (ref:price-plot-no-grid) 4개 주요 기술 회사의 시간에 따른 지수화된 주가. 그림 @fig-price-plot-ggplot-default의 이 변형에서는 데이터 선이 충분히 고정되지 않았습니다. 이로 인해 해당 기간 말에 지수 값 100에서 어느 정도 벗어났는지 확인하기 어렵습니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-plot-no-grid, fig-cap='(ref:price-plot-no-grid)'}
+```{r fig-price-plot-no-grid, fig.cap='(ref:price-plot-no-grid)'}
 stamp_bad(
   price_plot +
     theme_dviz_open() +
@@ -211,7 +211,7 @@ stamp_bad(
 
 (ref:price-plot-refline) 4개 주요 기술 회사의 시간에 따른 지수화된 주가. 그림 @fig-price-plot-no-grid에 지수 값 100에 얇은 수평선을 추가하면 플롯이涵盖하는 전체 기간 동안 중요한 참조를 제공하는 데 도움이 됩니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-plot-refline, fig-cap='(ref:price-plot-refline)'}
+```{r fig-price-plot-refline, fig.cap='(ref:price-plot-refline)'}
 price_plot2 <- ggplot(tech_stocks, aes(x=date, y=price_indexed, color=ticker)) +
   geom_hline(yintercept = 100, size = 0.5, color="grey70") +
   geom_line(size = 0.66, na.rm = TRUE) +
@@ -240,7 +240,7 @@ price_plot2
 
 (ref:price-plot-hgrid) 4개 주요 기술 회사의 시간에 따른 지수화된 주가. 모든 주요 *y* 축 눈금에 얇은 수평선을 추가하면 그림 @fig-price-plot-refline의 단일 수평선보다 더 나은 참조점 집합을 제공합니다. 이 디자인은 또한 균일한 간격의 수평선이 플롯 패널에 대한 시각적 프레임을 생성하므로 눈에 띄는 *x* 및 *y* 축선이 필요하지 않습니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-plot-hgrid, fig-cap='(ref:price-plot-hgrid)'}
+```{r fig-price-plot-hgrid, fig.cap='(ref:price-plot-hgrid)'}
 price_plot +
   theme_dviz_hgrid() +
   theme(plot.margin = margin(7, 7, 3, 1.5))
@@ -250,7 +250,7 @@ price_plot +
 
 (ref:price-increase) 2012년 6월부터 2017년 6월까지 4개 주요 기술 회사의 주가 상승률. 막대가 수평으로 이어지므로 여기서는 수직 격자선이 적절합니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-increase, fig-cap='(ref:price-increase)'}
+```{r fig-price-increase, fig.cap='(ref:price-increase)'}
 perc_increase <- filter(tech_stocks, date == ymd("2017-06-01")) %>%
   mutate(perc=100*(price-index_price)/index_price,
          label=paste(as.character(round(perc)), "%", sep="")) %>%
@@ -287,7 +287,7 @@ perc_plot
 
 (ref:price-increase-tufte) 2012년 6월부터 2017년 6월까지 4개 주요 기술 회사의 주가 상승률. 막대 위의 흰색 격자선은 독자가 막대의 상대적인 길이를 인식하는 데 도움이 될 수 있습니다. 동시에 막대가 무너져 내리는 듯한 인상을 줄 수도 있습니다. 데이터 출처: Yahoo Finance
 
-```{r fig-price-increase-tufte, fig-cap='(ref:price-increase-tufte)'}
+```{r fig-price-increase-tufte, fig.cap='(ref:price-increase-tufte)'}
 perc_plot2 <- ggplot(perc_increase, aes(x = ticker, y = perc)) +
   geom_col(fill = "#56B4E9", width = 0.8) +
   geom_hline(yintercept = c(100, 200, 300, 400), color = "white", size = 1) +
@@ -330,7 +330,7 @@ perc_plot2
 
 (ref:gene-expression) 야생형에 대한 돌연변이 박테리오파지 T7의 유전자 발현 수준. 유전자 발현 수준은 mRNA 풍부도(TPM)로 측정됩니다. 각 점은 하나의 유전자에 해당합니다. 돌연변이 박테리오파지 T7에서는 유전자 *9* 앞의 프로모터가 삭제되었으며, 이로 인해 유전자 *9*와 인접 유전자 *8* 및 *10A*(강조 표시됨)의 mRNA 풍부도가 감소했습니다. 데이터 출처: @Paffetal2018
 
-```{r fig-gene-expression, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:gene-expression)'}
+```{r fig-gene-expression, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:gene-expression)'}
 df_segment <- data.frame(
   x = c(3.2e-4, 2e-4),
   xend = c(3.2e-1, 2e-4),
@@ -380,7 +380,7 @@ gene_expression_plot
 
 (ref:gene-expression-bad) 야생형에 대한 돌연변이 박테리오파지 T7의 유전자 발현 수준. 이 데이터 세트를 대각선 대신 배경 격자에 대해 플로팅하면 돌연변이에서 야생형 박테리오파지보다 어떤 유전자가 더 높거나 낮은지 모호하게 만듭니다. 데이터 출처: @Paffetal2018
 
-```{r fig-gene-expression-bad, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:gene-expression-bad)'}
+```{r fig-gene-expression-bad, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:gene-expression-bad)'}
 gene_expression %>%
   filter(strain == "phi9v2" & background == "wt") %>%
   ggplot(aes(x=tpm_wt, y=tpm_mutant)) +
@@ -421,7 +421,7 @@ stamp_bad(gene_expression_plot_bad)
 
 (ref:gene-expression-ugly) 야생형에 대한 돌연변이 박테리오파지 T7의 유전자 발현 수준. 이 그림은 그림 @fig-gene-expression-bad의 배경 격자와 그림 @fig-gene-expression의 대각선을 결합합니다. 제 생각에는 이 그림이 그림 @fig-gene-expression에 비해 시각적으로 너무 복잡하며 그림 @fig-gene-expression을 선호합니다. 데이터 출처: @Paffetal2018
 
-```{r fig-gene-expression-ugly, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:gene-expression-ugly)'}
+```{r fig-gene-expression-ugly, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:gene-expression-ugly)'}
 gene_expression %>%
   filter(strain == "phi9v2" & background == "wt") %>%
   ggplot(aes(x=tpm_wt, y=tpm_mutant)) +

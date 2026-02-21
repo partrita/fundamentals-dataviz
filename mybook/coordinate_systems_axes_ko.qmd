@@ -19,7 +19,7 @@ library(ggrepel)
 
 (ref:cartesian-coord) 표준 데카르트 좌표계. 수평 축은 관례적으로 *x*라고 하고 수직 축은 *y*라고 합니다. 두 축은 등간격 격자를 형성합니다. 여기서 *x*와 *y* 격자선은 모두 1단위로 구분됩니다. 점 (2, 1)은 원점 (0, 0)에서 오른쪽으로 *x* 단위 2개, 위로 *y* 단위 1개만큼 떨어져 있습니다. 점 (-1, -1)은 원점에서 왼쪽으로 *x* 단위 1개, 아래로 *y* 단위 1개만큼 떨어져 있습니다.
 
-```{r fig-cartesian-coord, fig-asp = 0.8, fig-cap = '(ref:cartesian-coord)'}
+```{r fig-cartesian-coord, fig.asp = 0.8, fig.cap = '(ref:cartesian-coord)'}
 df_points <- data.frame(x = c(-1, 0, 2),
                         y = c(-1, 0, 1),
                         label = c("(–1, –1)", "(0, 0)", "(2, 1)"),
@@ -60,7 +60,7 @@ ggplot(df_points, aes(x, y)) +
 
 (ref:temperature-normals-Houston) 텍사스 주 휴스턴의 일일 기온 정상값. 온도는 *y* 축에, 연중 날짜는 *x* 축에 매핑됩니다. (a), (b), (c) 부분은 동일한 그림을 다른 가로 세로 비율로 보여줍니다. 세 부분 모두 온도 데이터의 유효한 시각화입니다. 데이터 출처: NOAA.
 
-```{r fig-temperature-normals-Houston, fig-width = 5*6/4.2, fig-asp = 3/4, fig-cap = '(ref:temperature-normals-Houston)'}
+```{r fig-temperature-normals-Houston, fig.width = 5*6/4.2, fig.asp = 3/4, fig.cap = '(ref:temperature-normals-Houston)'}
 temps_wide <- filter(ncdc_normals,
                 station_id %in% c(
                   "USW00014819", # 시카고, IL 60638
@@ -126,7 +126,7 @@ plot_grid(
 
 (ref:temperature-normals-Houston-San-Diego) 텍사스 주 휴스턴의 일일 기온 정상값을 캘리포니아 주 샌디에이고의 해당 기온 정상값과 비교하여 플로팅했습니다. 1월, 4월, 7월, 10월의 첫날은 시간적 참조를 제공하기 위해 강조 표시되었습니다. (a) 기온은 화씨로 표시됩니다. (b) 기온은 섭씨로 표시됩니다. 데이터 출처: NOAA.
 
-```{r fig-temperature-normals-Houston-San-Diego, fig-width = 5.5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:temperature-normals-Houston-San-Diego)'}
+```{r fig-temperature-normals-Houston-San-Diego, fig.width = 5.5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:temperature-normals-Houston-San-Diego)'}
 tempsplot_F <- ggplot(temps_wide_label, aes(x = `샌디에이고`, y = `휴스턴`)) +
   geom_path(size = 1, color = "#0072B2") +
   geom_text_repel(
@@ -189,7 +189,7 @@ plot_grid(
 
 (ref:linear-log-scales) 선형 척도와 로그 척도의 관계. 점은 데이터 값 1, 3.16, 10, 31.6, 100에 해당하며 로그 척도에서 등간격으로 배치된 숫자입니다. 이러한 데이터 포인트를 선형 척도에 표시하거나 로그 변환한 다음 선형 척도에 표시하거나 로그 척도에 표시할 수 있습니다. 중요하게도 로그 척도의 올바른 축 제목은 표시된 변수의 이름이지 해당 변수의 로그가 아닙니다.
 
-```{r fig-linear-log-scales, fig-width = 6, fig-asp = 3/4, fig-cap = '(ref:linear-log-scales)'}
+```{r fig-linear-log-scales, fig.width = 6, fig.asp = 3/4, fig.cap = '(ref:linear-log-scales)'}
 df <- data.frame(x = c(1, 3.16, 10, 31.6, 100))
 
 xaxis_lin <- ggplot(df, aes(x, y = 1)) +
@@ -239,7 +239,7 @@ plot_grid(plotlist[[1]], plotlist[[2]], plotlist[[3]], stamp_wrong(plotlist[[4]]
 
 (ref:texas-counties-pop-ratio-log) 텍사스 카운티의 인구 수를 중간값과 비교합니다. 선택한 카운티는 이름으로 강조 표시됩니다. 점선은 비율 1을 나타내며 중간 인구 수의 카운티에 해당합니다. 가장 인구가 많은 카운티는 중간 카운티보다 약 100배 많은 주민을 가지고 있으며 가장 인구가 적은 카운티는 중간 카운티보다 약 100배 적은 주민을 가지고 있습니다. 데이터 출처: 2010년 미국 인구 조사.
 
-```{r fig-texas-counties-pop-ratio-log, fig-width = 5*6/4.2, fig-asp = 0.6, fig-cap = '(ref:texas-counties-pop-ratio-log)'}
+```{r fig-texas-counties-pop-ratio-log, fig.width = 5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:texas-counties-pop-ratio-log)'}
 set.seed(3878)
 US_census %>% filter(state == "텍사스") %>%
   select(name, pop2010) %>%
@@ -268,7 +268,7 @@ ggplot(tx_counties, aes(x = index, y = popratio)) +
 
 (ref:texas-counties-pop-ratio-lin) 텍사스 카운티의 인구 크기를 중간값과 비교합니다. 비율을 선형 척도에 표시함으로써 비율 > 1을 과도하게 강조하고 비율 < 1을 모호하게 만들었습니다. 일반적으로 비율은 선형 척도에 표시해서는 안 됩니다. 데이터 출처: 2010년 미국 인구 조사.
 
-```{r fig-texas-counties-pop-ratio-lin, fig-width = 5*6/4.2, fig-asp = 0.6, fig-cap = '(ref:texas-counties-pop-ratio-lin)'}
+```{r fig-texas-counties-pop-ratio-lin, fig.width = 5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:texas-counties-pop-ratio-lin)'}
 counties_lin <- ggplot(tx_counties, aes(x = index, y = popratio)) +
   geom_point(size = 0.5, color = "#0072B2") +
   geom_text_repel(aes(label = label_large), point.padding = .4, color = "black",
@@ -290,7 +290,7 @@ stamp_bad(counties_lin)
 
 (ref:sqrt-scales) 선형 척도와 제곱근 척도의 관계. 점은 데이터 값 0, 1, 4, 9, 16, 25, 36, 49에 해당하며, 이는 0에서 7까지의 정수의 제곱이므로 제곱근 척도에서 등간격으로 배치된 숫자입니다. 이러한 데이터 포인트를 선형 척도에 표시하거나 제곱근 변환한 다음 선형 척도에 표시하거나 제곱근 척도에 표시할 수 있습니다.
 
-```{r fig-sqrt-scales, fig-width = 6, fig-asp = 3*(3/4)/4, fig-cap = '(ref:sqrt-scales)'}
+```{r fig-sqrt-scales, fig.width = 6, fig.asp = 3*(3/4)/4, fig.cap = '(ref:sqrt-scales)'}
 df <- data.frame(x = c(0, 1, 4, 9, 16, 25, 36, 49))
 
 xaxis_lin <- ggplot(df, aes(x, y = 1)) +
@@ -336,7 +336,7 @@ plot_grid(plotlist[[1]], plotlist[[2]], plotlist[[3]], ncol = 1)
 
 (ref:northeast-state-areas) 미국 북동부 주의 면적. (a) 선형 척도에 표시된 면적. (b) 제곱근 척도에 표시된 면적. 데이터 출처: Google.
 
-```{r fig-northeast-state-areas, fig-width = 5.5*6/4.2, fig-asp = 0.4, fig-cap = '(ref:northeast-state-areas)'}
+```{r fig-northeast-state-areas, fig.width = 5.5*6/4.2, fig.asp = 0.4, fig.cap = '(ref:northeast-state-areas)'}
 # 면적 (제곱 마일)
 # 출처: Google, 2018년 1월 7일
 northeast_areas <- read.csv(text = "state_abr,area
@@ -376,7 +376,7 @@ plot_grid(
 
 (ref:polar-coord) 데카르트 좌표와 극좌표의 관계. (a) 데카르트 좌표계에 표시된 세 개의 데이터 포인트. (b) 동일한 세 개의 데이터 포인트를 극좌표계에 표시했습니다. (a) 부분의 *x* 좌표를 각도 좌표로 사용하고 (a) 부분의 *y* 좌표를 방사형 좌표로 사용했습니다. 이 예에서 원형 축은 0에서 4까지 실행되므로 이 좌표계에서 *x* = 0과 *x* = 4는 동일한 위치입니다.
 
-```{r fig-polar-coord, fig-width = 5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:polar-coord)'}
+```{r fig-polar-coord, fig.width = 5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:polar-coord)'}
 df_points <- data.frame(x = c(1, 3.5, 0),
                         y = c(3, 4, 0),
                         label = c("(1, 3)", "(3.5, 4)", "(0, 0)"),
@@ -440,7 +440,7 @@ plot_grid(
 
 (ref:temperature-normals-polar) 미국 내 선택된 4개 지역의 일일 기온 정상값을 극좌표로 표시했습니다. 중심점에서 방사형 거리는 화씨로 일일 기온을 나타내며, 연중 날짜는 1월 1일을 6시 위치에서 시작하여 시계 반대 방향으로 배열됩니다.
 
-```{r fig-temperature-normals-polar, fig-width = 6, fig-cap = '(ref:temperature-normals-polar)'}
+```{r fig-temperature-normals-polar, fig.width = 6, fig.cap = '(ref:temperature-normals-polar)'}
 temps_long <- gather(temps_wide, location, temperature, -month, -day, -date) %>%
   filter(location %in% c("시카고",
                          "데스밸리",
@@ -467,7 +467,7 @@ ggplot(temps_long, aes(x = date, y = temperature, color = location)) +
 
 (ref:worldmap-four-projections) 4가지 다른 투영법으로 표시된 세계 지도. 데카르트 경도 및 위도 시스템은 각 위치의 경도와 위도를 일반적인 데카르트 좌표계에 매핑합니다. 이 매핑은 3D 지구상의 실제 값에 비해 면적과 각도 모두에서 상당한 왜곡을 유발합니다. 중단된 구드 호몰로사인 투영법은 실제 표면적을 완벽하게 나타내지만 그린란드와 남극 대륙과 같은 일부 육지를 별도의 조각으로 나누는 단점이 있습니다. 로빈슨 투영법과 빈켈 트리펠 투영법은 모두 각도 왜곡과 면적 왜곡 사이의 균형을 이루며 전 세계 지도에 일반적으로 사용됩니다.
 
-```{r fig-worldmap-four-projections, fig-width = 5.5*6/4.2, fig-cap = '(ref:worldmap-four-projections)'}
+```{r fig-worldmap-four-projections, fig.width = 5.5*6/4.2, fig.cap = '(ref:worldmap-four-projections)'}
 library(sf)
 
 world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))

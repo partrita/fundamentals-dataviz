@@ -17,7 +17,7 @@ library(ggridges) # geom_density_line 용
 
 (ref:titanic-ages-lines) 빈 막대로 그린 타이타닉 승객 연령 히스토그램. 빈 막대는 혼란스러운 시각적 패턴을 만듭니다. 히스토그램 중앙에서는 어느 부분이 막대 안쪽이고 어느 부분이 바깥쪽인지 구분하기 어렵습니다.
 
-```{r fig-titanic-ages-lines, fig-cap='(ref:titanic-ages-lines)'}
+```{r fig-titanic-ages-lines, fig.cap='(ref:titanic-ages-lines)'}
 titanic <- titanic_all
 age_hist_3 <- data.frame(age = (1:25)*3-1.5,
                          count = hist(titanic$age, breaks=(0:25)*3 + .01, plot = FALSE)$counts)
@@ -35,7 +35,7 @@ stamp_bad(h3_bad)
 
 (ref:titanic-ages-filled) 그림 @fig-titanic-ages-lines의 동일한 히스토그램을 이제 채워진 막대로 그렸습니다. 이 그림 변형에서는 연령 분포의 모양을 훨씬 쉽게 식별할 수 있습니다.
 
-```{r fig-titanic-ages-filled, fig-cap='(ref:titanic-ages-filled)'}
+```{r fig-titanic-ages-filled, fig.cap='(ref:titanic-ages-filled)'}
 h3_good <- ggplot(age_hist_3, aes(x = age, y = count)) + geom_col(width = 2.7, fill = "#56B4E9")  +
   scale_y_continuous(limits = c(0, 86), expand = c(0, 0), breaks = 25*(0:5)) +
   scale_x_continuous(limits = c(0, 75), expand = c(0, 0)) +
@@ -50,7 +50,7 @@ h3_good
 
 (ref:iris-densities-lines) 세 가지 다른 붓꽃 종의 꽃받침 길이 밀도 추정치. 버시컬러와 버지니카에 사용된 끊어진 선 스타일은 곡선 아래 영역이 그 위 영역과 구별된다는 인식을 손상시킵니다.
 
-```{r fig-iris-densities-lines, fig-cap='(ref:iris-densities-lines)'}
+```{r fig-iris-densities-lines, fig.cap='(ref:iris-densities-lines)'}
 # 꽃받침 길이에 대한 밀도 계산
 iris_dens <- group_by(iris, Species) %>%
   do(ggplot2:::compute_density(.$Sepal.Length, NULL)) %>%
@@ -97,7 +97,7 @@ stamp_ugly(iris_lines)
 
 (ref:iris-densities-colored-lines) 세 가지 다른 붓꽃 종의 꽃받침 길이 밀도 추정치. 단색의 색선을 사용하여 그림 @fig-iris-densities-lines의 문제, 즉 선 아래 영역과 위 영역이 연결된 것처럼 보이는 문제를 해결했습니다. 그러나 각 곡선 아래 영역의 크기에 대한 강한 느낌은 여전히 없습니다.
 
-```{r fig-iris-densities-colored-lines, fig-cap='(ref:iris-densities-colored-lines)'}
+```{r fig-iris-densities-colored-lines, fig.cap='(ref:iris-densities-colored-lines)'}
 iris_colored_lines <- ggplot(iris_dens, aes(x = Sepal.Length, y = density, color = Species)) +
   geom_density_line(stat = "identity", alpha = 0., size = 1) +
   geom_text(
@@ -128,7 +128,7 @@ stamp_ugly(iris_colored_lines)
 
 (ref:iris-densities-filled) 세 가지 다른 붓꽃 종의 꽃받침 길이 밀도 추정치를 부분적으로 투명한 음영 영역으로 표시합니다.
 
-```{r fig-iris-densities-filled, fig-cap='(ref:iris-densities-filled)'}
+```{r fig-iris-densities-filled, fig.cap='(ref:iris-densities-filled)'}
 iris_filled <- ggplot(iris_dens, aes(x = Sepal.Length, y = density, fill = Species, color = Species)) +
   geom_density_line(stat = "identity") +
   geom_text(
@@ -165,7 +165,7 @@ iris_filled
 
 (ref:mpg-linespoints) 전륜 구동(FWD), 후륜 구동(RWD), 4륜 구동(4WD) 자동차의 도시 연비 대 엔진 배기량. 모두 흑백 선으로 그려진 기호인 다른 점 스타일은 상당한 시각적 노이즈를 생성하고 그림을 읽기 어렵게 만듭니다.
 
-```{r fig-mpg-linespoints, fig-width=5.5, fig-asp=.7416, fig-cap='(ref:mpg-linespoints)'}
+```{r fig-mpg-linespoints, fig.width=5.5, fig.asp=.7416, fig.cap='(ref:mpg-linespoints)'}
 mpg_linespoints <- ggplot(mpg, aes(y=cty, x=displ, shape=drv)) +
   geom_point(
     size = 2,
@@ -195,7 +195,7 @@ stamp_ugly(mpg_linespoints)
 
 (ref:mpg-filledpoints) 도시 연비 대 엔진 배기량. 다른 구동 방식 변형에 대해 다른 색상과 다른 단색 모양을 모두 사용하여 이 그림은 필요한 경우 회색조로 재현 가능하게 유지하면서 구동 방식 변형을 명확하게 구분합니다.
 
-```{r fig-mpg-filledpoints, fig-width=5.5, fig-asp=.7416, fig-cap='(ref:mpg-filledpoints)'}
+```{r fig-mpg-filledpoints, fig.width=5.5, fig.asp=.7416, fig.cap='(ref:mpg-filledpoints)'}
 mpg_filledpoints <- ggplot(mpg, aes(y = cty, x = displ, color = drv, fill = drv, shape = drv)) +
   geom_point(
     size = 3,
@@ -240,7 +240,7 @@ mpg_filledpoints
 
 (ref:lincoln-weather-box-empty) 2016년 네브래스카 주 링컨의 일일 평균 기온 분포. 상자는 음영 없이 전통적인 방식으로 그려집니다.
 
-```{r fig-lincoln-weather-box-empty, fig-cap='(ref:lincoln-weather-box-empty)'}
+```{r fig-lincoln-weather-box-empty, fig.cap='(ref:lincoln-weather-box-empty)'}
 lincoln_weather %>%
   mutate(
     month_short = fct_recode(
@@ -274,7 +274,7 @@ lincoln_box_empty
 
 (ref:lincoln-weather-box-filled) 2016년 네브래스카 주 링컨의 일일 평균 기온 분포. 상자에 밝은 회색 음영을 주어 배경에 대해 더 잘 보이도록 할 수 있습니다.
 
-```{r fig-lincoln-weather-box-filled, fig-cap='(ref:lincoln-weather-box-filled)'}
+```{r fig-lincoln-weather-box-filled, fig.cap='(ref:lincoln-weather-box-filled)'}
 lincoln_box_filled <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_boxplot(fill = 'grey90') +
   xlab("월") +

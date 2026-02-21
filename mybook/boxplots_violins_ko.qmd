@@ -19,7 +19,7 @@ library(ggridges)
 
 (ref:lincoln-temp-points-errorbars) 2016년 네브래스카 주 링컨의 일일 평균 기온. 점은 각 월의 일일 평균 기온을 월의 모든 날에 대해 평균한 값을 나타내며, 오차 막대는 각 월 내 일일 평균 기온의 표준 편차의 두 배를 나타냅니다. 이 그림은 오차 막대가 일반적으로 추정치의 불확실성을 시각화하는 데 사용되고 모집단의 변동성을 시각화하는 데 사용되지 않기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Weather Underground
 
-```{r fig-lincoln-temp-points-errorbars, fig-cap = '(ref:lincoln-temp-points-errorbars)'}
+```{r fig-lincoln-temp-points-errorbars, fig.cap = '(ref:lincoln-temp-points-errorbars)'}
 lincoln_weather %>%
   mutate(
     month_short = fct_recode(
@@ -59,7 +59,7 @@ stamp_bad(lincoln_errbar)
 
 (ref:boxplot-schematic) 상자 그림의 해부학. 점 구름(왼쪽)과 해당 상자 그림(오른쪽)이 표시됩니다. 상자 그림에는 점의 *y* 값만 시각화됩니다. 상자 그림 중앙의 선은 중앙값을 나타내고 상자는 데이터의 중간 50%를 둘러쌉니다. 위쪽 및 아래쪽 수염은 데이터의 최대값과 최소값까지 또는 상자 높이의 1.5배 내에 있는 최대값 또는 최소값까지 확장되며, 어느 쪽이든 더 짧은 수염을 만듭니다. 어느 방향으로든 상자 높이의 1.5배 거리를 위쪽 및 아래쪽 울타리라고 합니다. 울타리를 벗어나는 개별 데이터 포인트는 이상치라고 하며 일반적으로 개별 점으로 표시됩니다.
 
-```{r fig-boxplot-schematic, fig-width = 5*6/4.2, fig-cap = '(ref:boxplot-schematic)'}
+```{r fig-boxplot-schematic, fig.width = 5*6/4.2, fig.cap = '(ref:boxplot-schematic)'}
 set.seed(3423)
 y <- c(rnorm(100), 3.4)
 s <- boxplot.stats(y)
@@ -86,7 +86,7 @@ plot_grid(p_points, p_boxplot, rel_widths = c(.65, 1), nrow = 1)
 
 (ref:lincoln-temp-boxplots) 네브래스카 주 링컨의 일일 평균 기온을 상자 그림으로 시각화했습니다.
 
-```{r fig-lincoln-temp-boxplots, fig-cap = '(ref:lincoln-temp-boxplots)'}
+```{r fig-lincoln-temp-boxplots, fig.cap = '(ref:lincoln-temp-boxplots)'}
 lincoln_box <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_boxplot(fill = 'grey90') +
   xlab("월") +
@@ -102,7 +102,7 @@ lincoln_box
 
 (ref:violin-schematic) 바이올린 그림의 해부학. 점 구름(왼쪽)과 해당 바이올린 그림(오른쪽)이 표시됩니다. 바이올린 그림에는 점의 *y* 값만 시각화됩니다. 주어진 *y* 값에서 바이올린의 너비는 해당 *y* 값의 점 밀도를 나타냅니다. 기술적으로 바이올린 그림은 밀도 추정치를 90도 회전한 다음 미러링한 것입니다. 따라서 바이올린은 대칭입니다. 바이올린은 각각 최소값과 최대값 데이터 값에서 시작하고 끝납니다. 바이올린의 가장 두꺼운 부분은 데이터 세트에서 가장 높은 점 밀도에 해당합니다.
 
-```{r fig-violin-schematic, fig-width = 5*6/4.2, fig-cap = '(ref:violin-schematic)'}
+```{r fig-violin-schematic, fig.width = 5*6/4.2, fig.cap = '(ref:violin-schematic)'}
 set.seed(3423)
 y <- c(rnorm(100), 3.4)
 d <- density(y)
@@ -135,7 +135,7 @@ plot_grid(p_points, p_violin, rel_widths = c(.65, 1), nrow = 1)
 
 (ref:lincoln-temp-violins) 네브래스카 주 링컨의 일일 평균 기온을 바이올린 그림으로 시각화했습니다.
 
-```{r fig-lincoln-temp-violins, fig-cap = '(ref:lincoln-temp-violins)'}
+```{r fig-lincoln-temp-violins, fig.cap = '(ref:lincoln-temp-violins)'}
 lincoln_violin <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_violin(fill = 'grey90') +
   xlab("월") +
@@ -151,7 +151,7 @@ lincoln_violin
 
 (ref:lincoln-temp-all-points) 네브래스카 주 링컨의 일일 평균 기온을 스트립 차트로 시각화했습니다. 각 점은 하루의 평균 기온을 나타냅니다. 이 그림은 너무 많은 점이 서로 겹쳐 그려져 각 달에 어떤 온도가 가장 흔했는지 확인할 수 없기 때문에 "나쁨"으로 표시되었습니다.
 
-```{r fig-lincoln-temp-all-points, fig-cap = '(ref:lincoln-temp-all-points)'}
+```{r fig-lincoln-temp-all-points, fig.cap = '(ref:lincoln-temp-all-points)'}
 lincoln_points <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_point(size = 0.75) +
   xlab("월") +
@@ -165,7 +165,7 @@ stamp_bad(lincoln_points)
 
 (ref:lincoln-temp-jittered) 네브래스카 주 링컨의 일일 평균 기온을 스트립 차트로 시각화했습니다. 각 온도 값에서 점의 밀도를 더 잘 보여주기 위해 점을 *x* 축을 따라 지터링했습니다.
 
-```{r fig-lincoln-temp-jittered, fig-cap = '(ref:lincoln-temp-jittered)'}
+```{r fig-lincoln-temp-jittered, fig.cap = '(ref:lincoln-temp-jittered)'}
 lincoln_jitter <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_point(position = position_jitter(width = .15, height = 0, seed = 320), size = 0.75) +
   xlab("월") +
@@ -185,7 +185,7 @@ lincoln_jitter
 
 (ref:lincoln-temp-sina) 네브래스카 주 링컨의 일일 평균 기온을 시나 플롯(개별 점과 바이올린의 조합)으로 시각화했습니다. 점은 각 온도에서 점 밀도에 비례하여 *x* 축을 따라 지터링되었습니다. *시나 플롯*이라는 이름은 덴마크 코펜하겐 대학교 학생인 시나 하디 소히를 기리기 위한 것으로, 그는 대학 연구원들이 이러한 플롯을 만드는 데 사용한 코드의 첫 번째 버전을 작성했습니다(프레데릭 O. 배거, 개인적인 소통).
 
-```{r fig-lincoln-temp-sina, fig-cap = '(ref:lincoln-temp-sina)'}
+```{r fig-lincoln-temp-sina, fig.cap = '(ref:lincoln-temp-sina)'}
 lincoln_sina <- ggplot(lincoln_df, aes(x = month_short, y = `Mean Temperature [F]`)) +
   geom_violin(color = "transparent", fill = "gray90") +
   stat_sina(size = 0.75) +
@@ -206,7 +206,7 @@ lincoln_sina
 
 (ref:temp-ridgeline) 2016년 네브래스카 주 링컨의 기온을 능선 그림으로 시각화했습니다. 각 월에 대해 화씨로 측정된 일일 평균 기온의 분포를 보여줍니다. 원본 그림 개념: @Wehrwein-Lincoln-weather.
 
-```{r fig-temp-ridgeline, fig-cap = '(ref:temp-ridgeline)'}
+```{r fig-temp-ridgeline, fig.cap = '(ref:temp-ridgeline)'}
 bandwidth <- 3.4
 
 ggplot(lincoln_df, aes(x = `Mean Temperature [F]`, y = `Month`)) +
@@ -233,7 +233,7 @@ ggplot(lincoln_df, aes(x = `Mean Temperature [F]`, y = `Month`)) +
 
 (ref:temp-binline) 2016년 네브래스카 주 링컨의 기온을 히스토그램의 능선 그림으로 시각화했습니다. 개별 히스토그램이 시각적으로 잘 분리되지 않으며 전체 그림이 매우 복잡하고 혼란스럽습니다.
 
-```{r fig-temp-binline, fig-cap = '(ref:temp-binline)'}
+```{r fig-temp-binline, fig.cap = '(ref:temp-binline)'}
 bandwidth <- 3.4
 
 p_binline <- ggplot(lincoln_df, aes(x = `Mean Temperature [F]`, y = `Month`)) +
@@ -264,7 +264,7 @@ stamp_ugly(p_binline)
 
 (ref:movies-ridgeline) 시간에 따른 영화 길이의 진화. 1960년대 이후 대부분의 영화는 약 90분 길이입니다. 데이터 출처: 인터넷 영화 데이터베이스, IMDB
 
-```{r fig-movies-ridgeline, fig-width = 5, fig-asp = 1, fig-cap = '(ref:movies-ridgeline)'}
+```{r fig-movies-ridgeline, fig.width = 5, fig.asp = 1, fig.cap = '(ref:movies-ridgeline)'}
 ggplot(movie_lengths, aes(x = length, y = year, group = year)) +
   geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03, fill = "grey85", na.rm = TRUE) +
   scale_x_continuous(limits = c(0, 200), expand = c(0, 0), name = "길이 (분)") +
@@ -283,7 +283,7 @@ ggplot(movie_lengths, aes(x = length, y = year, group = year)) +
 
 (ref:dw-nominate-ridgeline) 미국 하원의 투표 패턴이 점점 더 양극화되고 있습니다. DW-NOMINATE 점수는 정당 간 및 시간 경과에 따른 의원들의 투표 패턴을 비교하는 데 자주 사용됩니다. 여기서는 1963년부터 2013년까지 각 의회에 대해 민주당과 공화당에 대해 별도로 점수 분포를 보여줍니다. 각 의회는 첫해로 표시됩니다. 원본 그림 개념: @McDonald-DW-NOMINATE.
 
-```{r fig-dw-nominate-ridgeline, fig-width = 5.5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:dw-nominate-ridgeline)'}
+```{r fig-dw-nominate-ridgeline, fig.width = 5.5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:dw-nominate-ridgeline)'}
 # 미국 하원 1963-2013
 all_house_88_113 <- dw_nominate_house %>%
   filter(congress >= 88 & cd !=0 & cd != 98 & cd != 99) %>%

@@ -165,7 +165,7 @@ plot_grid(
 
 (ref:bundestag-bars-side-by-side) 1976년~1980년 제8대 독일 연방의회 정당 구성, 나란히 놓인 막대로 시각화. 그림 @fig-bundestag-stacked-bars에서와 마찬가지로 SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
 
-```{r fig-bundestag-bars-side-by-side, fig-width = 5, fig-asp = 3/4, fig-cap = '(ref:bundestag-bars-side-by-side)'}
+```{r fig-bundestag-bars-side-by-side, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:bundestag-bars-side-by-side)'}
 bt_bars <- ggplot(bundestag, aes(x = factor(party, levels = bundestag$party), y = seats, fill = party)) +
   geom_col() +
   geom_text(aes(label = seats), size = main_size, vjust = 2, color = c("white", "white", "black")) +
@@ -213,7 +213,7 @@ bt_bars
 
 (ref:marketshare-pies) 2015년~2017년 다섯 개 가상 회사 A~E의 시장 점유율, 원형 차트로 시각화. 이 시각화에는 두 가지 주요 문제가 있습니다. 1. 연도 내 상대적 시장 점유율 비교가 거의 불가능합니다. 2. 연도 간 시장 점유율 변화를 보기 어렵습니다.
 
-```{r fig-marketshare-pies, fig-width = 5*6/4.2, fig-asp = .35, fig-cap='(ref:marketshare-pies)'}
+```{r fig-marketshare-pies, fig.width = 5*6/4.2, fig.asp = .35, fig.cap='(ref:marketshare-pies)'}
 # 각 파이의 시작 및 끝 각도 계산
 market_pies_df <- marketshare %>%
   group_by(year) %>%
@@ -265,7 +265,7 @@ stamp_bad(market_pies)
 
 (ref:marketshare-stacked) 2015년~2017년 다섯 개 가상 회사의 시장 점유율, 누적 막대로 시각화. 이 시각화에는 두 가지 주요 문제가 있습니다. 1. 연도 내 상대적 시장 점유율 비교가 어렵습니다. 2. 막대 위치가 연도별로 변경되므로 중간 회사 B, C, D의 연도 간 시장 점유율 변화를 보기 어렵습니다.
 
-```{r fig-marketshare-stacked, fig-cap='(ref:marketshare-stacked)'}
+```{r fig-marketshare-stacked, fig.cap='(ref:marketshare-stacked)'}
 stacked_bars <- ggplot(marketshare, aes(x = year, y = percent, fill = company)) +
   geom_col(position = "stack") +
   scale_y_continuous(
@@ -284,7 +284,7 @@ stamp_bad(stacked_bars)
 
 (ref:marketshare-side-by-side) 2015년~2017년 다섯 개 가상 회사의 시장 점유율, 나란히 놓인 막대로 시각화.
 
-```{r fig-marketshare-side-by-side, fig-cap='(ref:marketshare-side-by-side)'}
+```{r fig-marketshare-side-by-side, fig.cap='(ref:marketshare-side-by-side)'}
 ggplot(marketshare, aes(x = company, y = percent, fill = company)) +
   geom_col() +
   facet_wrap(~year) +
@@ -305,7 +305,7 @@ ggplot(marketshare, aes(x = company, y = percent, fill = company)) +
 
 (ref:women-parliament) 1997년부터 2016년까지 르완다 의회의 성별 구성 변화. 데이터 출처: 국제 의회 연맹(IPU), ipu.org.
 
-```{r fig-women-parliament, fig-width = 6, fig-asp = .55, fig-cap = '(ref:women-parliament)'}
+```{r fig-women-parliament, fig.width = 6, fig.asp = .55, fig.cap = '(ref:women-parliament)'}
 ccode = "RWA" # 르완다
 #ccode = "BEL" # 벨기에
 #ccode = "ARB" # 아랍 세계
@@ -363,7 +363,7 @@ ggdraw(insert_yaxis_grob(plot_base, yax, grid::unit(.15, "null")))
 
 (ref:health-vs-age) 일반 사회 조사(GSS)에서 보고된 연령별 건강 상태.
 
-```{r fig-health-vs-age, fig-asp = .5, fig-cap='(ref:health-vs-age)'}
+```{r fig-health-vs-age, fig.asp = .5, fig.cap='(ref:health-vs-age)'}
 df_health <- select(happy, age, health) %>%
   na.omit()
 
@@ -424,7 +424,7 @@ ggdraw(p_aligned[[1]])
 
 (ref:health-vs-age-facets) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 건강 상태. 색칠된 영역은 해당 건강 상태를 가진 사람들의 연령 밀도 추정치를 나타내고 회색 영역은 전체 연령 분포를 나타냅니다.
 
-```{r fig-health-vs-age-facets, fig-width = 5.5*6/4.2, fig-asp = 0.35, fig-cap='(ref:health-vs-age-facets)'}
+```{r fig-health-vs-age-facets, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:health-vs-age-facets)'}
 ggplot(mutate(df_health, health = fct_rev(health)), aes(x = age, y = ..count..)) +
   geom_density_line(data = select(df_health, -health), aes(fill = "설문 조사 대상 전체  "), color = "transparent") +
   geom_density_line(aes(fill = "강조된 그룹"), color = "transparent") +
@@ -456,7 +456,7 @@ ggplot(mutate(df_health, health = fct_rev(health)), aes(x = age, y = ..count..))
 
 (ref:marital-vs-age) 일반 사회 조사(GSS)에서 보고된 연령별 혼인 상태. 그림을 단순화하기 위해 별거로 보고된 소수의 사례를 제거했습니다. 미혼이거나 사별한 사람들의 빈도가 연령에 따라 너무 급격하게 변하여 기혼 및 이혼한 사람들의 연령 분포가 심하게 왜곡되고 해석하기 어렵기 때문에 이 그림을 "나쁨"으로 표시했습니다.
 
-```{r fig-marital-vs-age, fig-asp = 0.5, fig-cap='(ref:marital-vs-age)'}
+```{r fig-marital-vs-age, fig.asp = 0.5, fig.cap='(ref:marital-vs-age)'}
 stamp_bad(p_aligned[[2]])
 ```
 
@@ -464,7 +464,7 @@ stamp_bad(p_aligned[[2]])
 
 (ref:marital-vs-age-facets) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 혼인 상태. 색칠된 영역은 해당 혼인 상태를 가진 사람들의 연령 밀도 추정치를 나타내고 회색 영역은 전체 연령 분포를 나타냅니다.
 
-```{r fig-marital-vs-age-facets, fig-width = 5.5*6/4.2, fig-asp = 0.35, fig-cap='(ref:marital-vs-age-facets)'}
+```{r fig-marital-vs-age-facets, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:marital-vs-age-facets)'}
 ggplot(mutate(df_marital, marital = fct_rev(marital)), aes(x = age, y = ..count..)) +
   geom_density_line(data = select(df_marital, -marital), aes(fill = "설문 조사 대상 전체  "), color = "transparent") +
   geom_density_line(aes(fill = "강조된 그룹"), color = "transparent") +
@@ -494,7 +494,7 @@ ggplot(mutate(df_marital, marital = fct_rev(marital)), aes(x = age, y = ..count.
 
 (ref:marital-vs-age-proportions) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 혼인 상태. 파란색으로 색칠된 영역은 해당 상태를 가진 해당 연령의 사람들의 비율을 나타내고 회색으로 색칠된 영역은 다른 모든 혼인 상태를 가진 사람들의 비율을 나타냅니다.
 
-```{r fig-marital-vs-age-proportions, fig-width = 5.5*6/4.2, fig-asp = 0.35, fig-cap='(ref:marital-vs-age-proportions)'}
+```{r fig-marital-vs-age-proportions, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:marital-vs-age-proportions)'}
 df_marital2 <- rbind(
   mutate(df_marital,
     marital = as.character(fct_collapse(marital, `미혼` = "미혼", aother = c("기혼", "이혼", "사별"))),

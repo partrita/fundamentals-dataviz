@@ -21,7 +21,7 @@ library(lubridate)
 
 (ref:common-aesthetics) 데이터 시각화에서 일반적으로 사용되는 미학적 요소: 위치, 모양, 크기, 색상, 선 너비, 선 유형. 이러한 미학적 요소 중 일부는 연속 데이터와 이산 데이터를 모두 나타낼 수 있지만(위치, 크기, 선 너비, 색상) 다른 요소는 일반적으로 이산 데이터만 나타낼 수 있습니다(모양, 선 유형).
 
-```{r fig-common-aesthetics, fig-width = 6, fig-asp = 0.45, fig-cap = '(ref:common-aesthetics)'}
+```{r fig-common-aesthetics, fig.width = 6, fig.asp = 0.45, fig.cap = '(ref:common-aesthetics)'}
 aes_pos <- ggdraw() +
   geom_segment(data = data.frame(x = c(0, 0.5),
                                  xend = c(1, 0.5),
@@ -139,7 +139,7 @@ plot_grid(aes_pos, aes_shape, aes_size,
 
 (ref:basic-scales-example) 척도는 데이터 값을 미학적 요소에 연결합니다. 여기서는 숫자 1부터 4까지를 위치 척도, 모양 척도, 색상 척도에 매핑했습니다. 각 척도에 대해 각 숫자는 고유한 위치, 모양 또는 색상에 해당하며 그 반대의 경우도 마찬가지입니다.
 
-```{r fig-basic-scales-example, fig-width = 5.5, fig-asp = 0.3, fig-cap = '(ref:basic-scales-example)'}
+```{r fig-basic-scales-example, fig.width = 5.5, fig.asp = 0.3, fig.cap = '(ref:basic-scales-example)'}
 df <- data.frame(x = c(1:4))
 
 scale_num <- ggplot(df, aes(x)) +
@@ -187,7 +187,7 @@ scale_num + scale_shape + scale_color + plot_layout(ncol = 1)
 
 (ref:temp-normals-vs-time) 미국 내 선택된 4개 지역의 일일 기온 정상값. 기온은 *y* 축에, 연중 날짜는 *x* 축에, 위치는 선 색상에 매핑됩니다. 데이터 출처: NOAA.
 
-```{r fig-temp-normals-vs-time, fig-cap = '(ref:temp-normals-vs-time)'}
+```{r fig-temp-normals-vs-time, fig.cap = '(ref:temp-normals-vs-time)'}
 temps_long <- filter(ncdc_normals,
                 station_id %in% c(
                   "USW00014819", # 시카고, IL 60638
@@ -226,7 +226,7 @@ ggplot(temps_long, aes(x = date, y = temperature, color = location)) +
 
 (ref:four-locations-temps-by-month) 미국 4개 지역의 월별 정상 평균 기온. 데이터 출처: NOAA
 
-```{r fig-four-locations-temps-by-month, fig-width = 5.5*6/4.2, fig-asp = .3, fig-cap = '(ref:four-locations-temps-by-month)'}
+```{r fig-four-locations-temps-by-month, fig.width = 5.5*6/4.2, fig.asp = .3, fig.cap = '(ref:four-locations-temps-by-month)'}
 month_names <- c("01" = "1월", "02" = "2월", "03" = "3월", "04" = "4월", "05" = "5월", "06" = "6월",
                    "07" = "7월", "08" = "8월", "09" = "9월", "10" = "10월", "11" = "11월", "12" = "12월")
 
@@ -262,7 +262,7 @@ ggdraw(align_legend(p))
 
 (ref:mtcars-five-scale) 32개 자동차(1973-74년 모델)의 연비 대 배기량. 이 그림은 데이터를 나타내기 위해 5개의 개별 척도를 사용합니다. (i) *x* 축(배기량); (ii) *y* 축(연비); (iii) 데이터 포인트의 색상(마력); (iv) 데이터 포인트의 크기(무게); (v) 데이터 포인트의 모양(실린더 수). 표시된 5개 변수 중 4개(배기량, 연비, 마력, 무게)는 수치적 연속 변수입니다. 나머지 하나(실린더 수)는 수치적 이산 변수 또는 정성적 순서 변수로 간주할 수 있습니다. 데이터 출처: *Motor Trend*, 1974.
 
-```{r fig-mtcars-five-scale, fig-width = 6, fig-asp = .8, fig-cap = '(ref:mtcars-five-scale)'}
+```{r fig-mtcars-five-scale, fig.width = 6, fig.asp = .8, fig.cap = '(ref:mtcars-five-scale)'}
 p_mtcars <- ggplot(mtcars, aes(disp, mpg, fill = hp, shape = factor(cyl), size = wt)) +
   geom_point(color = "white") +
   scale_shape_manual(values = c(23, 24, 21), name = "실린더") +
