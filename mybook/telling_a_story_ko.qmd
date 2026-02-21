@@ -28,7 +28,7 @@ library(ggtextures)
 
 (ref:q-bio-monthly-growth) 프리프린트 서버 arXiv.org의 정량 생물학(q-bio) 섹션에 대한 월별 제출 건수 증가. 2014년경 성장률에 급격한 변화가 나타납니다. 2014년까지는 성장이 빨랐지만 2014년부터 2018년까지는 거의 성장이 없었습니다. *y* 축은 로그 눈금이므로 *y*의 선형 증가는 프리프린트 제출 건수의 기하급수적인 성장에 해당합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r q-bio-monthly-growth, fig.cap = '(ref:q-bio-monthly-growth)'}
+```{r fig-q-bio-monthly-growth, fig-cap = '(ref:q-bio-monthly-growth)'}
 preprint_growth %>% filter(archive %in% c("bioRxiv", "arXiv q-bio")) %>%
 filter(count > 0) -> df_preprints
 
@@ -64,7 +64,7 @@ ggplot(
 
 (ref:q-bio-bioRxiv-monthly-growth) q-bio로의 제출 증가세 둔화는 bioRxiv 서버 도입과 동시에 발생했습니다. 일반 목적 프리프린트 서버 arxiv.org의 q-bio 섹션과 전용 생물학 프리프린트 서버 bioRxiv로의 월별 제출 증가세가 표시됩니다. bioRxiv 서버는 2013년 11월에 가동되었으며 그 이후로 제출률이 기하급수적으로 증가했습니다. 그렇지 않았다면 q-bio에 프리프린트를 제출했을 많은 과학자들이 대신 bioRxiv에 제출하기로 결정한 것으로 보입니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r q-bio-bioRxiv-monthly-growth, fig.cap = '(ref:q-bio-bioRxiv-monthly-growth)'}
+```{r fig-q-bio-bioRxiv-monthly-growth, fig-cap = '(ref:q-bio-bioRxiv-monthly-growth)'}
 ggplot(df_preprints, aes(date, count, color = archive)) +
   geom_line(size = 0.75) +
   scale_y_log10(
@@ -106,7 +106,7 @@ ggplot(df_preprints, aes(date, count, color = archive)) +
 
 (ref:arrival-delay-vs-distance) 뉴욕시로부터의 거리 대 평균 도착 지연. 각 점은 하나의 목적지를 나타내며 각 점의 크기는 2013년 뉴욕시 3개 주요 공항(뉴어크, JFK 또는 라과디아) 중 하나에서 해당 목적지까지의 항공편 수를 나타냅니다. 음의 지연은 항공편이 일찍 도착했음을 의미합니다. 실선은 도착 지연과 거리 간의 평균 추세를 나타냅니다. 델타 항공은 이동 거리에 관계없이 다른 항공사보다 도착 지연이 지속적으로 낮습니다. 아메리칸 항공은 단거리의 경우 평균적으로 지연이 가장 낮지만 장거리의 경우 지연이 가장 높습니다. 이 그림은 지나치게 복잡하기 때문에 "나쁨"으로 표시되었습니다. 대부분의 독자는 혼란스러워하며 그림이 무엇을 보여주는지 직관적으로 파악하지 못할 것입니다. 데이터 출처: 미국 교통부, 교통 통계국.
 
-```{r arrival-delay-vs-distance, fig.width = 5*6/4.2, fig.cap = '(ref:arrival-delay-vs-distance)'}
+```{r fig-arrival-delay-vs-distance, fig-width = 5*6/4.2, fig-cap = '(ref:arrival-delay-vs-distance)'}
 library(nycflights13)
 carrier_names <- data.frame(carrier = c("9E", "AA", "B6", "DL", "EV", "MQ", "UA", "US", "WN", "--"),
                             name= c("Endeavor", "American", "JetBlue", "Delta", "ExpressJet", "Envoy", "United",
@@ -154,7 +154,7 @@ stamp_bad(p_delay_distance)
 
 (ref:mean-arrival-delay-nyc) 2013년 뉴욕시 지역 출발 항공편의 항공사별 평균 도착 지연. 아메리칸 항공과 델타 항공은 뉴욕시 지역 출발 모든 항공사 중 평균 도착 지연이 가장 낮습니다. 데이터 출처: 미국 교통부, 교통 통계국.
 
-```{r mean-arrival-delay-nyc, fig.cap = '(ref:mean-arrival-delay-nyc)'}
+```{r fig-mean-arrival-delay-nyc, fig-cap = '(ref:mean-arrival-delay-nyc)'}
 flights %>% mutate(carrier = ifelse(carrier %in% c("OO", "HA", "YV", "F9", "AS", "FL", "VX"), "--", carrier)) %>%
     left_join(carrier_names) %>%
     group_by(name) -> flights_grouped
@@ -178,7 +178,7 @@ flights_grouped %>%
 
 (ref:number-of-flights-nyc) 2013년 뉴욕시 지역 출발 항공편 수, 항공사별. 델타 항공과 아메리칸 항공은 뉴욕시 지역 출발 항공편 수 기준으로 각각 4위와 5위 항공사입니다. 데이터 출처: 미국 교통부, 교통 통계국.
 
-```{r number-of-flights-nyc, fig.cap = '(ref:number-of-flights-nyc)'}
+```{r fig-number-of-flights-nyc, fig-cap = '(ref:number-of-flights-nyc)'}
 flights_grouped %>%
   tally() %>%
   mutate(highlight = ifelse(name %in% c("Delta", "American"), "yes", "no")) %>%
@@ -209,7 +209,7 @@ flights_grouped %>%
 
 (ref:united-departures-weekdays) 2013년 뉴어크 공항(EWR)에서 출발하는 유나이티드 항공편, 요일별. 대부분의 요일은 거의 동일한 수의 출발편을 보이지만 주말에는 출발편이 더 적습니다. 데이터 출처: 미국 교통부, 교통 통계국.
 
-```{r united-departures-weekdays, fig.width = 3.5, fig.asp = 1, fig.cap = '(ref:united-departures-weekdays)'}
+```{r fig-united-departures-weekdays, fig-width = 3.5, fig-asp = 1, fig-cap = '(ref:united-departures-weekdays)'}
 flights_grouped$name <- factor(
   flights_grouped$name,
   levels = c(
@@ -252,7 +252,7 @@ filter(flights_grouped, name == "United" & origin == "EWR") %>%
 
 (ref:all-departures-weekdays) 2013년 뉴욕시 지역 공항 출발편, 항공사, 공항, 요일별 분류. 유나이티드 항공과 익스프레스젯이 뉴어크 공항(EWR) 출발편의 대부분을 차지하고, 젯블루, 델타, 아메리칸, 엔데버가 JFK 출발편의 대부분을 차지하며, 델타, 아메리칸, 엔보이, US 에어웨이스가 라과디아(LGA) 출발편의 대부분을 차지합니다. 모든 항공사는 아니지만 대부분의 항공사는 주중보다 주말에 출발편이 적습니다. 데이터 출처: 미국 교통부, 교통 통계국.
 
-```{r all-departures-weekdays, fig.width = 7.5*6/4.2, fig.asp = .4, fig.cap = '(ref:all-departures-weekdays)'}
+```{r fig-all-departures-weekdays, fig-width = 7.5*6/4.2, fig-asp = .4, fig-cap = '(ref:all-departures-weekdays)'}
 ggplot(flights_grouped, aes(x = wday(time_hour, label = TRUE, week_start = 1))) +
   geom_bar(fill = "#0072B2D0", color = "white") +
   facet_grid(origin ~ name) +
@@ -286,7 +286,7 @@ ggplot(flights_grouped, aes(x = wday(time_hour, label = TRUE, week_start = 1))) 
 
 (ref:petownership-bar) 가장 인기 있는 애완동물(개, 고양이, 물고기 또는 새) 중 하나 이상을 키우는 가구 수. 이 막대 그래프는 완벽하게 명확하지만 반드시 특별히 기억에 남지는 않습니다. "고양이" 열은 그림 @fig-number-of-flights-nyc과의 시각적 유사성을 만들기 위해서만 강조 표시되었습니다. 데이터 출처: 2012년 미국 애완동물 소유 및 인구 통계 자료집, 미국 수의학 협회
 
-```{r petownership-bar, fig.asp = .5, fig.cap = '(ref:petownership-bar)'}
+```{r fig-petownership-bar, fig-asp = .5, fig-cap = '(ref:petownership-bar)'}
 
 # 출처: 2012년 미국 애완동물 소유 및 인구 통계 자료집
 # 미국 수의학 협회
@@ -348,7 +348,7 @@ ggplot(df, aes(x = pet, y = households, fill = highlight)) +
 
 (ref:petownership-isotype) 가장 인기 있는 애완동물 중 하나 이상을 키우는 가구 수, 아이소타이프 그래프로 표시. 각 완전한 동물은 해당 종류의 애완동물을 키우는 500만 가구를 나타냅니다. 데이터 출처: 2012년 미국 애완동물 소유 및 인구 통계 자료집, 미국 수의학 협회
 
-```{r petownership-isotype, fig.asp = .5, fig.cap = '(ref:petownership-isotype)'}
+```{r fig-petownership-isotype, fig-asp = .5, fig-cap = '(ref:petownership-isotype)'}
 
 images <- list(
   dogs = "images/dog.png",
@@ -405,7 +405,7 @@ ggplot(df, aes(x = pet, y = households, image = pet)) +
 
 (ref:athletes-composite-repetitive) 남성 및 여성 운동선수의 생리학 및 신체 구성. 오차 막대는 평균의 표준 오차를 나타냅니다. 이 그림은 지나치게 반복적입니다. 그림 @fig-athletes-composite-good과 동일한 데이터를 보여주고 일관된 시각적 언어를 사용하지만 모든 하위 그림은 동일한 유형의 시각화(막대 그래프)를 사용합니다. 이로 인해 독자가 (a), (b), (c) 부분이 완전히 다른 결과를 보여준다는 것을 처리하기 어렵습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r athletes-composite-repetitive, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-repetitive)'}
+```{r fig-athletes-composite-repetitive, fig-width = 5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:athletes-composite-repetitive)'}
 male_sport <- unique(filter(Aus_athletes, sex=="m")$sport)
 female_sport <- unique(filter(Aus_athletes, sex=="f")$sport)
 both_sport <- male_sport[male_sport %in% female_sport]
@@ -520,7 +520,7 @@ stamp_ugly(
 
 (ref:tech-stocks-repetitive) 5년 간격 동안의 페이스북 주가 성장 및 다른 기술주와의 비교. (a) 페이스북 주가는 2012년 중반 주당 약 25달러에서 2017년 중반 주당 150달러로 상승했습니다. (b) 다른 대형 기술 회사의 주가는 같은 기간 동안 비슷하게 상승하지 않았습니다. 가격은 2012년 6월 1일에 100으로 지수화되어 쉽게 비교할 수 있습니다. 이 그림은 (a)와 (b) 부분이 반복적이므로 "못생김"으로 표시되었습니다. 데이터 출처: Yahoo Finance
 
-```{r tech-stocks-repetitive, fig.asp = 2*0.5, fig.cap = '(ref:tech-stocks-repetitive)'}
+```{r fig-tech-stocks-repetitive, fig-asp = 2*0.5, fig-cap = '(ref:tech-stocks-repetitive)'}
 
 final_prices <- filter(tech_stocks, date == ymd("2017-05-31"))
 
@@ -584,7 +584,7 @@ stamp_ugly(
 
 (ref:tech-stocks-diverse) 5년 간격 동안의 페이스북 주가 성장 및 다른 기술주와의 비교. (a) 페이스북 주가는 2012년 중반 주당 약 25달러에서 2017년 중반 주당 150달러로 거의 450% 상승했습니다. (b) 다른 대형 기술 회사의 주가는 같은 기간 동안 비슷하게 상승하지 않았습니다. 가격 상승률은 90%에서 240% 사이였습니다. 데이터 출처: Yahoo Finance
 
-```{r tech-stocks-diverse, fig.asp = 2*0.5, fig.cap = '(ref:tech-stocks-diverse)'}
+```{r fig-tech-stocks-diverse, fig-asp = 2*0.5, fig-cap = '(ref:tech-stocks-diverse)'}
 
 final_prices <- filter(tech_stocks, date == ymd("2017-05-31"))
 

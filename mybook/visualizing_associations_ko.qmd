@@ -18,7 +18,7 @@ library(tidyr)
 
 (ref:blue-jays-scatter) 123마리 파랑어치의 머리 길이(부리 끝에서 머리 뒤까지 측정, mm) 대 체질량(그램). 각 점은 하나의 새에 해당합니다. 무거운 새일수록 머리가 긴 경향이 어느 정도 있습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r blue-jays-scatter, fig.width = 5, fig.asp = 3/4, fig.cap='(ref:blue-jays-scatter)'}
+```{r fig-blue-jays-scatter, fig-width = 5, fig-asp = 3/4, fig-cap='(ref:blue-jays-scatter)'}
 ggplot(blue_jays, aes(Mass, Head)) +
   geom_point(pch = 21, fill = "gray25", color = "white", size = 2.5) +
   scale_x_continuous(name = "체질량 (g)") +
@@ -30,7 +30,7 @@ ggplot(blue_jays, aes(Mass, Head)) +
 
 (ref:blue-jays-scatter-sex) 123마리 파랑어치의 머리 길이 대 체질량. 새의 성별은 색상으로 표시됩니다. 동일한 체질량에서 수컷 새는 암컷 새보다 머리가 더 긴 경향이 있습니다(특히 부리가 더 김). 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r blue-jays-scatter-sex, fig.width = 5, fig.asp = 3.2/4, fig.cap='(ref:blue-jays-scatter-sex)'}
+```{r fig-blue-jays-scatter-sex, fig-width = 5, fig-asp = 3.2/4, fig-cap='(ref:blue-jays-scatter-sex)'}
 ggplot(blue_jays, aes(Mass, Head, fill = KnownSex)) +
   geom_point(pch = 21, color = "white", size = 2.5) +
   scale_x_continuous(name = "체질량 (g)") +
@@ -65,7 +65,7 @@ ggplot(blue_jays, aes(Mass, Head, fill = KnownSex)) +
 (ref:blue-jays-scatter-bubbles) 123마리 파랑어치의 머리 길이 대 체질량. 새의 성별은 색상으로, 새의 두개골 크기는 기호 크기로 표시됩니다. 머리 길이 측정에는 부리 길이가 포함되지만 두개골 크기 측정에는 포함되지 않습니다. 머리 길이와 두개골 크기는 상관 관계가 있는 경향이 있지만 두개골 크기에 비해 부리가 유난히 길거나 짧은 새도 있습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
 
-```{r blue-jays-scatter-bubbles, fig.width = 5.5*6/4.2, fig.asp = 3.2/8, fig.cap='(ref:blue-jays-scatter-bubbles)'}
+```{r fig-blue-jays-scatter-bubbles, fig-width = 5.5*6/4.2, fig-asp = 3.2/8, fig-cap='(ref:blue-jays-scatter-bubbles)'}
 blue_jays$sex <- ifelse(blue_jays$KnownSex == "F", "암컷 새", "수컷 새")
 blue_jays$sex <- factor(blue_jays$sex, levels = c("암컷 새", "수컷 새"))
 ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
@@ -114,7 +114,7 @@ ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
 (ref:blue-jays-scatter-all) 123마리 파랑어치의 머리 길이, 체질량, 두개골 크기의 전체 대 전체 산점도 행렬. 이 그림은 그림 @fig-blue-jays-scatter-sex와 정확히 동일한 데이터를 보여줍니다. 그러나 기호 크기보다 위치를 더 잘 판단하므로 두개골 크기와 다른 두 변수 간의 상관 관계는 그림 @fig-blue-jays-scatter-sex보다 쌍별 산점도에서 더 쉽게 인식할 수 있습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
 
-```{r blue-jays-scatter-all, fig.width = 5*6/4.2, fig.asp = 3/4, fig.cap='(ref:blue-jays-scatter-all)'}
+```{r fig-blue-jays-scatter-all, fig-width = 5*6/4.2, fig-asp = 3/4, fig-cap='(ref:blue-jays-scatter-all)'}
 blue_jays %>% select(BirdID, KnownSex, Head, Mass, Skull) %>%
   gather(var_x, val_x, Head:Skull) %>%
   left_join(select(blue_jays, BirdID, Head, Mass, Skull)) %>%
@@ -180,7 +180,7 @@ ggplot(bj_matrix, aes(val_x, val_y, fill = KnownSex)) +
 
 (ref:correlations) 여러 크기와 방향의 상관 관계 예, 관련 상관 계수 *r* 포함. 두 행 모두 왼쪽에서 오른쪽으로 상관 관계가 약한 것에서 강한 것으로 이동합니다. 위쪽 행에서는 상관 관계가 양수이고(한 양의 큰 값이 다른 양의 큰 값과 연관됨) 아래쪽 행에서는 음수입니다(한 양의 큰 값이 다른 양의 작은 값과 연관됨). 여섯 개 패널 모두에서 *x* 및 *y* 값 집합은 동일하지만 지정된 상관 계수를 생성하기 위해 개별 *x* 및 *y* 값 간의 쌍이 재정렬되었습니다.
 
-```{r correlations, fig.width = 5*6/4.2, fig.asp = 283/434, fig.cap = '(ref:correlations)'}
+```{r fig-correlations, fig-width = 5*6/4.2, fig-asp = 283/434, fig-cap = '(ref:correlations)'}
 r <- c(.2, .6, .9, -.2, -.6, -.9)
 labels_df <- tibble(
   r = factor(r, levels = r),
@@ -222,7 +222,7 @@ $$
 
 (ref:forensic-correlations1) 법의학 작업 중에 얻은 214개 유리 조각 샘플의 광물 함량 상관 관계. 데이터 세트에는 각 유리 조각에서 발견된 마그네슘(Mg), 칼슘(Ca), 철(Fe), 칼륨(K), 나트륨(Na), 알루미늄(Al), 바륨(Ba)의 양을 측정하는 7개의 변수가 포함되어 있습니다. 색칠된 타일은 이러한 변수 쌍 간의 상관 관계를 나타냅니다. 데이터 출처: B. German
 
-```{r forensic-correlations1, fig.width = 4., fig.asp = 1, fig.cap = '(ref:forensic-correlations1)'}
+```{r fig-forensic-correlations1, fig-width = 4., fig-asp = 1, fig-cap = '(ref:forensic-correlations1)'}
 cm <- cor(select(forensic_glass, -type, -RI, -Si))
 df_wide <- as.data.frame(cm)
 df_long <- stack(df_wide)
@@ -269,7 +269,7 @@ ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
 
 (ref:forensic-correlations2) 법의학 유리 샘플의 광물 함량 상관 관계. 색상 척도는 그림 @fig-forensic-correlations1과 동일합니다. 그러나 이제 각 상관 관계의 크기도 색칠된 원의 크기로 인코딩됩니다. 이 선택은 0에 가까운 상관 관계가 있는 경우를 시각적으로 덜 강조합니다. 데이터 출처: B. German
 
-```{r forensic-correlations2, fig.width = 4., fig.asp = 1, fig.cap = '(ref:forensic-correlations2)'}
+```{r fig-forensic-correlations2, fig-width = 4., fig-asp = 1, fig-cap = '(ref:forensic-correlations2)'}
 ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
        aes(var1, var2, fill=cor, size = abs(cor))) +
   geom_point(shape = 21, stroke = 0) +
@@ -314,7 +314,7 @@ ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
 
 (ref:blue-jays-PCA) 2차원 주성분(PC) 분석 예. (a) 원본 데이터. 예제 데이터로 파랑어치 데이터 세트의 머리 길이 및 두개골 크기 측정을 사용합니다. 암컷과 수컷 새는 색상으로 구별되지만 이 구별은 PC 분석에 영향을 미치지 않습니다. (b) PCA의 첫 번째 단계로 원본 데이터 값을 0 평균과 단위 분산으로 조정합니다. 그런 다음 데이터의 최대 변동 방향을 따라 새로운 변수(주성분, PC)를 정의합니다. (c) 마지막으로 데이터를 새로운 좌표로 투영합니다. 수학적으로 이 투영은 원점을 중심으로 데이터 포인트를 회전하는 것과 같습니다. 여기에 표시된 2D 예에서 데이터 포인트는 시계 방향으로 45도 회전합니다.
 
-```{r blue-jays-PCA, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap = '(ref:blue-jays-PCA)'}
+```{r fig-blue-jays-PCA, fig-width = 5.5*6/4.2, fig-asp = 0.35, fig-cap = '(ref:blue-jays-PCA)'}
 p1 <- ggplot(blue_jays, aes(Skull, Head, fill = KnownSex)) +
   geom_point(pch = 21, color = "white", size = 2, stroke = 0.2) +
   scale_x_continuous(
@@ -489,7 +489,7 @@ PCA를 수행할 때 일반적으로 두 가지 정보에 관심이 있습니다
 
 (ref:forensic-PCA-rotation) 법의학 유리 데이터 세트의 주성분 분석(PCA)에서 처음 두 성분의 구성. 성분 1(PC 1)은 주로 유리 조각의 알루미늄, 바륨, 나트륨, 마그네슘 함량을 측정하는 반면 성분 2(PC 2)는 주로 칼슘과 칼륨 함량, 그리고 어느 정도 알루미늄과 마그네슘 함량을 측정합니다.
 
-```{r forensic-PCA-rotation, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:forensic-PCA-rotation)'}
+```{r fig-forensic-PCA-rotation, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:forensic-PCA-rotation)'}
 select(forensic_glass, -type, -RI, -Si) %>%
   scale() %>%
   prcomp() -> pca
@@ -544,7 +544,7 @@ ggplot(rotation_data) +
 (ref:forensic-PCA) 그림 @fig-forensic-PCA-rotation에 정의된 주성분 공간에서 시각화된 개별 유리 조각의 구성. 여러 유형의 유리 샘플이 PC 1과 2의 특징적인 값에서 군집을 이루는 것을 볼 수 있습니다. 특히 전조등은 음의 PC 1 값으로 특징지어지는 반면 창문은 양의 PC 1 값을 갖는 경향이 있습니다. 식기류와 용기는 PC 1 값이 0에 가깝고 양의 PC 2 값을 갖는 경향이 있습니다. 그러나 용기 조각이 음의 PC 1 값과 음의 PC 2 값을 모두 갖는 몇 가지 예외가 있습니다. 이러한 조각은 분석된 다른 모든 조각과 구성이 크게 다릅니다.
 
 
-```{r forensic-PCA, fig.width = 5*6/4.2, fig.cap = '(ref:forensic-PCA)'}
+```{r fig-forensic-PCA, fig-width = 5*6/4.2, fig-cap = '(ref:forensic-PCA)'}
 ggplot(pca_data, aes(x = PC1, y = PC2, color = type, fill = type, shape = type)) +
   geom_point(size = 2) +
   scale_color_manual(values = colors, name = "조각 유형") +
@@ -563,7 +563,7 @@ ggplot(pca_data, aes(x = PC1, y = PC2, color = type, fill = type, shape = type))
 
 (ref:CO2-paired-scatter) 1970년과 2010년 166개국의 1인당 이산화탄소(CO<sub>2</sub>) 배출량. 각 점은 하나의 국가를 나타냅니다. 대각선은 1970년과 2010년의 동일한 CO<sub>2</sub> 배출량을 나타냅니다. 점은 대각선에 비해 체계적으로 위쪽으로 이동합니다. 대부분의 국가에서 2010년 배출량이 1970년보다 높았습니다. 데이터 출처: 이산화탄소 정보 분석 센터
 
-```{r CO2-paired-scatter, fig.width = 5, fig.asp = 0.9, fig.cap = '(ref:CO2-paired-scatter)'}
+```{r fig-CO2-paired-scatter, fig-width = 5, fig-asp = 0.9, fig-cap = '(ref:CO2-paired-scatter)'}
 CO2_emissions %>% filter(year %in% c(1970, 2010)) %>%
   spread(year, emissions) %>% na.omit() -> emissions_1970_2010
 
@@ -607,7 +607,7 @@ ggplot(emissions_1970_2010, aes(`1970`, `2010`)) +
 
 (ref:CO2-slopegraph) 2000년과 2010년 1인당 이산화탄소(CO<sub>2</sub>) 배출량, 이 두 해 사이의 차이가 가장 큰 10개국. 데이터 출처: 이산화탄소 정보 분석 센터
 
-```{r CO2-slopegraph, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:CO2-slopegraph)'}
+```{r fig-CO2-slopegraph, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:CO2-slopegraph)'}
 CO2_emissions %>% filter(year %in% c(2000, 2005, 2010)) %>%
   spread(year, emissions) %>%
   na.omit() %>%
@@ -676,7 +676,7 @@ ggplot(filter(emissions_top_ten, year != 2005), aes(x = year, y = emissions)) +
 
 (ref:CO2-slopegraph-three-year) 2000년, 2005년, 2010년 1인당 CO<sub>2</sub> 배출량, 2000년과 2010년 사이의 차이가 가장 큰 10개국. 데이터 출처: 이산화탄소 정보 분석 센터
 
-```{r CO2-slopegraph-three-year, fig.width = 4.5, fig.asp = 1, fig.cap = '(ref:CO2-slopegraph-three-year)'}
+```{r fig-CO2-slopegraph-three-year, fig-width = 4.5, fig-asp = 1, fig-cap = '(ref:CO2-slopegraph-three-year)'}
 ggplot(emissions_top_ten, aes(x = year, y = emissions)) +
   geom_line(aes(group = country), color = "gray60") +
   geom_point(color = "white", size = 4) +

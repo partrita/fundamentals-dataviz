@@ -225,7 +225,7 @@ pal_steel_blue_inv <- sequential_hcl(n = npal, h1 = 257-180, c1 = 80, c2 = 10, l
 
 ## 양
 
-```{r amounts, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r amounts, fig-width = 5*6/4.2, fig-asp = 1/4}
 palette <- pal_earth_brown
 
 p1 <- ggplot(df_props, aes(x = group, y = value)) +
@@ -300,7 +300,7 @@ plot_grid(p1, p2, p7, ncol = 4, scale = .9)
 
 양(즉, 일부 범주 집합에 대해 표시되는 수치 값)을 시각화하는 가장 일반적인 방법은 수직 또는 수평으로 배열된 막대를 사용하는 것입니다(챕터 @sec-visualizing-amounts). 그러나 막대를 사용하는 대신 해당 막대가 끝나는 위치에 점을 배치할 수도 있습니다(챕터 @sec-visualizing-amounts).
 
-```{r amounts_multi, fig.width = 5*6/4.2, fig.asp = 1/2}
+```{r amounts_multi, fig-width = 5*6/4.2, fig-asp = 1/2}
 plot_grid(p3, p4, p5, p6,
           p8, ncol = 4, scale = .9)
 ```
@@ -310,7 +310,7 @@ plot_grid(p3, p4, p5, p6,
 
 ## 분포
 
-```{r single-distributions, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r single-distributions, fig-width = 5*6/4.2, fig-asp = 1/4}
 
 palette <- pal_ocean_blue
 
@@ -349,7 +349,7 @@ plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
 히스토그램과 밀도 그림(챕터 @sec-histograms-density-plots)은 분포의 가장 직관적인 시각화를 제공하지만 둘 다 임의의 매개변수 선택이 필요하며 오해의 소지가 있을 수 있습니다. 누적 밀도와 분위수-분위수(q-q) 그림(챕터 @sec-ecdf-qq)은 항상 데이터를 충실하게 나타내지만 해석하기 더 어려울 수 있습니다.
 
 
-```{r multiple-distributions, fig.width = 5*6/4.2, fig.asp = 1/2}
+```{r multiple-distributions, fig-width = 5*6/4.2, fig-asp = 1/2}
 palette <- pal_ocean_blue
 
 p1 <- ggplot(df_multi_dist, aes(x = type, y = y)) +
@@ -407,7 +407,7 @@ plot_grid(p1, p2, p3, p4,
 
 ## 비율
 
-```{r proportions, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r proportions, fig-width = 5*6/4.2, fig-asp = 1/4}
 palette <- pal_brown_green
 
 p1_main <- ggplot(df_props, aes(x = 1, y = value, fill = group)) +
@@ -464,7 +464,7 @@ plot_grid(p1, p4, p5, p2, ncol = 4, scale = .9)
 비율은 원형 차트, 나란히 놓인 막대 또는 누적 막대로 시각화할 수 있으며(챕터 @sec-visualizing-proportions), 양의 경우와 마찬가지로 막대는 수직 또는 수평으로 배열할 수 있습니다. 원형 차트는 개별 부분이 전체를 구성하고 단순한 분수를 강조한다는 점을 강조합니다. 그러나 개별 조각은 나란히 놓인 막대에서 더 쉽게 비교할 수 있습니다. 누적 막대는 단일 비율 집합에 대해 어색해 보이지만 여러 비율 집합을 비교할 때 유용할 수 있습니다(아래 참조).
 
 
-```{r proportions-comp, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r proportions-comp, fig-width = 5*6/4.2, fig-asp = 1/4}
 p5 <- ggplot(filter(df_fractions, x!=4), aes(x, y,
                                    fill=factor(type, levels = c("A", "C", "B")))) +
   geom_col(position="dodge", color = palette[npal],
@@ -537,7 +537,7 @@ plot_grid(p8, p5, p6, p7, ncol = 4, scale = .9)
 
 여러 비율 집합을 시각화하거나 조건에 따른 비율 변화를 시각화할 때 원형 차트는 공간 효율성이 떨어지고 관계를 모호하게 만드는 경향이 있습니다. 그룹화된 막대는 비교하는 조건 수가 적당한 한 잘 작동하며 누적 막대는 많은 수의 조건에 대해 작동할 수 있습니다. 누적 밀도(챕터 @sec-visualizing-proportions)는 비율이 연속 변수를 따라 변할 때 적합합니다.
 
-```{r proportions-multi, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r proportions-multi, fig-width = 5*6/4.2, fig-asp = 1/4}
 p1 <- ggplot(df_multi_props, aes(x = var2, y = count, fill = var1, width = group_count)) +
   geom_bar(stat = "identity", position = "fill", colour = palette[npal], size = 0.5) +
   facet_grid(~var2, scales = "free_x", space = "free_x") +
@@ -582,7 +582,7 @@ plot_grid(p1, p2, p3, ncol = 4, scale = .9)
 
 ## *x*--*y* 관계
 
-```{r basic-scatter, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r basic-scatter, fig-width = 5*6/4.2, fig-asp = 1/4}
 palette <- pal_steel_blue
 
 p1 <- ggplot(df_scatter_xy, aes(x, y)) +
@@ -632,7 +632,7 @@ plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
 
 산점도는 한 정량적 변수를 다른 정량적 변수와 비교하여 표시할 때 전형적인 시각화를 나타냅니다(챕터 @sec-associations-scatterplots). 세 개의 정량적 변수가 있는 경우 점 크기에 하나를 매핑하여 버블 차트라는 산점도의 변형을 만들 수 있습니다. *x* 축과 *y* 축을 따른 변수가 동일한 단위로 측정되는 쌍을 이룬 데이터의 경우 일반적으로 *x* = *y*를 나타내는 선을 추가하는 것이 도움이 됩니다(챕터 @sec-associations-paired-data). 쌍을 이룬 데이터는 직선으로 연결된 쌍을 이룬 점의 경사 그래프로 표시할 수도 있습니다(챕터 @sec-associations-paired-data).
 
-```{r xy-binning, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r xy-binning, fig-width = 5*6/4.2, fig-asp = 1/4}
 p5 <- ggplot(df_dense_scatter, aes(x, y)) +
   geom_density2d(binwidth = 0.02, color = palette[1]) +
   scale_x_continuous(limits = c(-2, 3.6), expand = c(0, 0)) +
@@ -681,7 +681,7 @@ plot_grid(p5, p6, p7, p8, ncol = 4, scale = .9)
 
 많은 수의 점에 대해 일반 산점도는 중복 플로팅으로 인해 정보를 제공하지 못할 수 있습니다. 이 경우 등고선, 2D 구간 또는 육각 구간이 대안을 제공할 수 있습니다(챕터 @sec-overlapping-points). 반면에 두 개 이상의 양을 시각화하려는 경우 기본 원시 데이터 대신 상관 계수를 상관도 형태로 플로팅하도록 선택할 수 있습니다(챕터 @sec-associations-correlograms).
 
-```{r xy-lines, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r xy-lines, fig-width = 5*6/4.2, fig-asp = 1/4}
 p1 <- ggplot(df_one_line, aes(x, y)) +
   geom_line(color = palette[1]) +
   geom_point(
@@ -728,7 +728,7 @@ plot_grid(p1, p2, p3, ncol = 4, scale = .9)
 
 ## 지리 공간 데이터 {#sec-directory-geospatial-data}
 
-```{r geospatial, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r geospatial, fig-width = 5*6/4.2, fig-asp = 1/4}
 palette <- pal_green_brown
 
 lower48 <- mutate(
@@ -821,7 +821,7 @@ plot_grid(p1, p2, p3, p4, scale = 0.9, nrow = 1)
 
 ## 불확실성 {#sec-directory-uncertainty}
 
-```{r errorbars, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r errorbars, fig-width = 5*6/4.2, fig-asp = 1/4}
 palette <- pal_brown_red
 
 p1 <- ggplot(df_uncertain, aes(y, type)) +
@@ -908,7 +908,7 @@ plot_grid(p1, p2, p4, p3, ncol = 4, scale = .9)
 
 오차 막대는 일부 추정치 또는 측정값에 대한 가능한 값의 범위를 나타냅니다. 추정치 또는 측정값을 나타내는 일부 참조점에서 수평 및/또는 수직으로 확장됩니다(챕터 @sec-visualizing-uncertainty). 참조점은 점이나 막대와 같은 다양한 방식으로 표시할 수 있습니다. 등급 오차 막대는 동시에 여러 범위를 표시하며 각 범위는 다른 신뢰도 수준에 해당합니다. 사실상 서로 다른 선 두께를 가진 여러 오차 막대를 서로 겹쳐 그린 것입니다.
 
-```{r confidence-dists, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r confidence-dists, fig-width = 5*6/4.2, fig-asp = 1/4}
 
 p1 <- ggplot(df_uncertain, aes(y, type)) +
   stat_confidence_density(aes(moe = dy), fill = palette[3], height = 0.6, confidence = 0.68) +
@@ -1011,7 +1011,7 @@ plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
 
 오차 막대 또는 등급 오차 막대로 가능한 것보다 더 자세한 시각화를 얻으려면 실제 신뢰 구간 또는 사후 분포를 시각화할 수 있습니다(챕터 @sec-visualizing-uncertainty). 신뢰 구간은 불확실성에 대한 명확한 시각적 감각을 제공하지만 정확하게 읽기 어렵습니다. 눈 모양 그림과 반쪽 눈 모양 그림은 오차 막대와 분포 시각화 접근 방식(각각 바이올린 및 능선 그림)을 결합하여 일부 신뢰 수준에 대한 정확한 범위와 전체 불확실성 분포를 모두 보여줍니다. 분위수 점 그림은 불확실성 분포의 대안적인 시각화 역할을 할 수 있습니다(챕터 @sec-frequency-framing). 분포를 이산 단위로 표시함으로써 분위수 점 그림은 바이올린 또는 능선 그림으로 표시되는 연속 분포만큼 정확하지는 않지만 읽기 더 쉬울 수 있습니다.
 
-```{r confidence-bands, fig.width = 5*6/4.2, fig.asp = 1/4}
+```{r confidence-bands, fig-width = 5*6/4.2, fig-asp = 1/4}
 p1 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
   geom_smooth(
     color = palette[1],

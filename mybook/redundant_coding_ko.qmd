@@ -17,7 +17,7 @@ library(ggridges)
 
 (ref:iris-scatter-one-shape) 세 가지 다른 붓꽃 종(*Iris setosa*, *Iris virginica*, *Iris versicolor*)의 꽃받침 너비 대 꽃받침 길이. 각 점은 한 식물 표본의 측정을 나타냅니다. 중복 플로팅을 방지하기 위해 모든 점 위치에 약간의 지터가 적용되었습니다. 녹색의 *virginica* 점과 파란색의 *versicolor* 점을 서로 구별하기 어렵기 때문에 그림은 "나쁨"으로 표시되었습니다.
 
-```{r iris-scatter-one-shape, fig.cap = '(ref:iris-scatter-one-shape)'}
+```{r fig-iris-scatter-one-shape, fig-cap = '(ref:iris-scatter-one-shape)'}
 
 breaks = c("setosa", "virginica", "versicolor")
 labels = paste0("붓꽃 ", breaks)
@@ -69,7 +69,7 @@ stamp_bad(iris_scatter)
 
 (ref:iris-scatter-one-shape-cvd) 그림 @fig-iris-scatter-one-shape의 색각 이상 시뮬레이션.
 
-```{r iris-scatter-one-shape-cvd, fig.width = 5.5*6/4.2, fig.asp = 0.66, fig.cap = '(ref:iris-scatter-one-shape-cvd)'}
+```{r fig-iris-scatter-one-shape-cvd, fig-width = 5.5*6/4.2, fig-asp = 0.66, fig-cap = '(ref:iris-scatter-one-shape-cvd)'}
 iris_scatter_small <- iris_scatter_base +
   geom_point(
     size=.655*2.5, shape=21, stroke = .655*0.5,
@@ -97,7 +97,7 @@ cvd_sim2(iris_scatter_small, label_size = 14, label_y = .98, scale = .95)
 
 (ref:iris-scatter-three-shapes) 세 가지 다른 붓꽃 종의 꽃받침 너비 대 꽃받침 길이. 그림 @fig-iris-scatter-one-shape와 비교하여 *Iris setosa*와 *Iris versicolor*의 색상을 바꾸고 각 붓꽃 종에 고유한 점 모양을 지정했습니다.
 
-```{r iris-scatter-three-shapes, fig.cap = '(ref:iris-scatter-three-shapes)'}
+```{r fig-iris-scatter-three-shapes, fig-cap = '(ref:iris-scatter-three-shapes)'}
 iris_scatter2_base <- ggplot(
   iris, aes(x = Sepal.Length, y = Sepal.Width, shape = Species, fill = Species, color = Species)
 ) +
@@ -151,7 +151,7 @@ iris_scatter2
 
 (ref:iris-scatter-three-shapes-cvd) 그림 @fig-iris-scatter-three-shapes의 색각 이상 시뮬레이션. 여러 점 모양을 사용했기 때문에 완전히 채도가 낮은 회색조 버전의 그림도 읽을 수 있습니다.
 
-```{r iris-scatter-three-shapes-cvd, fig.width = 5.5*6/4.2, fig.asp = 0.66, fig.cap = '(ref:iris-scatter-three-shapes-cvd)'}
+```{r fig-iris-scatter-three-shapes-cvd, fig-width = 5.5*6/4.2, fig-asp = 0.66, fig-cap = '(ref:iris-scatter-three-shapes-cvd)'}
 iris_scatter2_small <- iris_scatter2_base +
   geom_point(
     size=.655*2.5, stroke = .655*0.5,
@@ -178,7 +178,7 @@ cvd_sim2(iris_scatter2_small, label_size = 14, label_y = .98, scale = .95)
 
 (ref:tech-stocks-bad-legend) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 범례의 회사 이름을 데이터 곡선과 일치시키는 데 상당한 정신적 에너지가 필요하기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Yahoo Finance
 
-```{r tech-stocks-bad-legend, fig.cap = '(ref:tech-stocks-bad-legend)'}
+```{r fig-tech-stocks-bad-legend, fig-cap = '(ref:tech-stocks-bad-legend)'}
 price_plot_base <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
   geom_line(size = 0.66, na.rm = TRUE) +
   scale_color_manual(
@@ -212,7 +212,7 @@ stamp_bad(
 
 (ref:tech-stocks-good-legend) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 데이터 출처: Yahoo Finance
 
-```{r tech-stocks-good-legend, fig.cap = '(ref:tech-stocks-good-legend)'}
+```{r fig-tech-stocks-good-legend, fig-cap = '(ref:tech-stocks-good-legend)'}
 price_plot_base_good <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
   scale_color_manual(
     values = c("#000000", "#E69F00", "#56B4E9", "#009E73"),
@@ -246,7 +246,7 @@ price_plot_base_good +
 
 (ref:tech-stocks-good-legend-cvd) 그림 @fig-tech-stocks-good-legend의 색각 이상 시뮬레이션.
 
-```{r tech-stocks-good-legend-cvd, fig.width = 5.5*6/4.2, fig.asp = 0.66, fig.cap = '(ref:tech-stocks-good-legend-cvd)'}
+```{r fig-tech-stocks-good-legend-cvd, fig-width = 5.5*6/4.2, fig-asp = 0.66, fig-cap = '(ref:tech-stocks-good-legend-cvd)'}
 price_plot_good_small <-
   price_plot_base_good +
   geom_line(
@@ -271,7 +271,7 @@ cvd_sim2(price_plot_good_small, label_size = 14, label_y = .98, scale = .95)
 
 (ref:tech-stocks-good-no-legend) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 데이터 출처: Yahoo Finance
 
-```{r tech-stocks-good-no-legend, fig.cap = '(ref:tech-stocks-good-no-legend)'}
+```{r fig-tech-stocks-good-no-legend, fig-cap = '(ref:tech-stocks-good-no-legend)'}
 price_plot <- price_plot_base_good +
   geom_line(size = 0.66, na.rm = TRUE) +
   theme_dviz_hgrid()
@@ -301,7 +301,7 @@ ggdraw(price_plot_ann)
 
 (ref:iris-scatter-with-ellipses) 세 가지 다른 붓꽃 종의 꽃받침 너비 대 꽃받침 길이. 그림이 너무 복잡해져서 이 그림에서 배경 격자를 제거했습니다.
 
-```{r iris-scatter-with-ellipses, fig.width = 4.6, fig.asp = 0.8, fig.cap = '(ref:iris-scatter-with-ellipses)'}
+```{r fig-iris-scatter-with-ellipses, fig-width = 4.6, fig-asp = 0.8, fig-cap = '(ref:iris-scatter-with-ellipses)'}
 label_df <- data.frame(
   Species = c("setosa", "virginica", "versicolor"),
   label = c("붓꽃 setosa", "붓꽃 virginica", "붓꽃 versicolor"),
@@ -371,7 +371,7 @@ iris_scatter3
 
 (ref:iris-densities-direct-label) 세 가지 다른 붓꽃 종의 꽃받침 길이 밀도 추정치. 각 밀도 추정치는 해당 종 이름으로 직접 레이블이 지정됩니다.
 
-```{r iris-densities-direct-label, fig.cap = '(ref:iris-densities-direct-label)'}
+```{r fig-iris-densities-direct-label, fig-cap = '(ref:iris-densities-direct-label)'}
 # 꽃받침 길이에 대한 밀도 계산
 iris_dens <- group_by(iris, Species) %>%
   do(ggplot2:::compute_density(.$Sepal.Length, NULL)) %>%
@@ -428,7 +428,7 @@ iris_p
 
 (ref:iris-scatter-dens) 세 가지 다른 붓꽃 종의 꽃받침 너비 대 꽃받침 길이, 각 종에 대한 각 변수의 주변 밀도 추정치 포함.
 
-```{r iris-scatter-dens, fig.width = 5*6/4.2, fig.asp=0.85, fig.cap = '(ref:iris-scatter-dens)'}
+```{r fig-iris-scatter-dens, fig-width = 5*6/4.2, fig-asp=0.85, fig-cap = '(ref:iris-scatter-dens)'}
 # 꽃받침 너비에 대한 밀도 계산
 iris_dens2 <- group_by(iris, Species) %>%
   do(ggplot2:::compute_density(.$Sepal.Width, NULL)) %>%
@@ -510,7 +510,7 @@ ggdraw(p2)
 
 (ref:temp-ridgeline-colorbar) 2016년 네브래스카 주 링컨의 기온. 이 그림은 그림 @fig-temp-ridgeline의 변형입니다. 이제 온도는 *x* 축을 따른 위치와 색상으로 모두 표시되며 *x* 축을 따른 색상 막대는 온도를 색상으로 변환하는 척도를 시각화합니다.
 
-```{r temp-ridgeline-colorbar, fig.asp = 0.652, fig.cap = '(ref:temp-ridgeline-colorbar)'}
+```{r fig-temp-ridgeline-colorbar, fig-asp = 0.652, fig-cap = '(ref:temp-ridgeline-colorbar)'}
 bandwidth <- 3.4
 
 lincoln_base <- ggplot(lincoln_weather, aes(x = `Mean Temperature [F]`, y = `Month`, fill = ..x..)) +

@@ -26,7 +26,7 @@ library(forcats)
 
 (ref:lincoln-repro) 그림의 반복 및 재현. (a) 부분은 그림 @fig-lincoln-temp-jittered의 반복입니다. 두 그림은 각 점에 적용된 임의 지터까지 동일합니다. 반대로 (b) 부분은 재현이지만 반복은 아닙니다. 특히 (b) 부분의 지터는 (a) 부분 또는 그림 @fig-lincoln-temp-jittered의 지터와 다릅니다.
 
-```{r lincoln-repro, fig.width = 5.5*6/4.2, fig.asp = .32, fig.cap = '(ref:lincoln-repro)'}
+```{r fig-lincoln-repro, fig-width = 5.5*6/4.2, fig-asp = .32, fig-cap = '(ref:lincoln-repro)'}
 ggridges::lincoln_weather %>%
   mutate(
     month_short = fct_recode(
@@ -98,7 +98,7 @@ plot_grid(lincoln1, lincoln2, labels = "auto", ncol = 2)
 
 (ref:sequencing-cost) 차세대 시퀀싱 방법이 도입된 후 게놈당 시퀀싱 비용은 무어의 법칙에서 예측한 것보다 훨씬 빠르게 감소했습니다. 이 손으로 그린 그림은 국립 보건원에서 준비한 널리 알려진 시각화를 재현한 것입니다. 데이터 출처: 국립 인간 게놈 연구소
 
-```{r sequencing-cost, out.width = "70%", fig.cap='(ref:sequencing-cost)'}
+```{r fig-sequencing-cost, out-width = "70%", fig-cap='(ref:sequencing-cost)'}
 knitr::include_graphics("figures/sequencing_costs.png", auto_pdf = FALSE)
 ```
 
@@ -110,7 +110,7 @@ knitr::include_graphics("figures/sequencing_costs.png", auto_pdf = FALSE)
 
 (ref:unemploy-themes) 1970년부터 2015년까지 미국의 실업자 수. 동일한 그림이 네 가지 다른 ggplot2 테마를 사용하여 표시됩니다. (a) 이 책의 기본 테마; (b) 이 책의 모든 그림을 만드는 데 사용한 플로팅 소프트웨어인 ggplot2의 기본 테마; (c) 이코노미스트에 표시된 시각화를 모방한 테마; (d) 파이브서티에이트에 표시된 시각화를 모방한 테마. 파이브서티에이트는 종종 플롯 제목과 부제목을 위해 축 레이블을 생략하므로 그에 따라 그림을 조정했습니다. 데이터 출처: 미국 노동 통계국
 
-```{r unemploy-themes, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:unemploy-themes)'}
+```{r fig-unemploy-themes, fig-width = 5.5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:unemploy-themes)'}
 unemploy_base <- ggplot(economics, aes(x = date, y = unemploy)) +
   scale_y_continuous(
     name = "실업자 (x1000)",

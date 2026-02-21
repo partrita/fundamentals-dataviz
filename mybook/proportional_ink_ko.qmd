@@ -28,7 +28,7 @@ library(treemapify)
 
 (ref:hawaii-income-bars-bad) 하와이 주 5개 카운티의 중간 소득. 이 그림은 *y* 축 눈금이 0달러가 아닌 50,000달러에서 시작하기 때문에 오해의 소지가 있습니다. 결과적으로 막대 높이는 표시된 값에 비례하지 않으며 하와이 카운티와 다른 4개 카운티 간의 소득 격차가 실제보다 훨씬 커 보입니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사.
 
-```{r hawaii-income-bars-bad, fig.cap = '(ref:hawaii-income-bars-bad)'}
+```{r fig-hawaii-income-bars-bad, fig-cap = '(ref:hawaii-income-bars-bad)'}
 p_income_base <- ggplot(filter(hawaii_income, year == 2015), aes(x = reorder(county, desc(median_income)), y = median_income)) +
   geom_col(fill = "#56B4E9") +
   xlab("카운티") +
@@ -53,7 +53,7 @@ stamp_bad(p_income_bad)
 
 (ref:hawaii-income-bars-good) 하와이 주 5개 카운티의 중간 소득. 여기서 *y* 축 눈금은 0달러에서 시작하므로 5개 카운티의 중간 소득의 상대적 크기가 정확하게 표시됩니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사.
 
-```{r hawaii-income-bars-good, fig.cap = '(ref:hawaii-income-bars-good)'}
+```{r fig-hawaii-income-bars-good, fig-cap = '(ref:hawaii-income-bars-good)'}
 p_income_good <- p_income_base +
   coord_cartesian(xlim = c(0.5, 5.55), ylim = c(0, 78000), expand = FALSE, clip = "off") +
   scale_y_continuous(
@@ -74,7 +74,7 @@ p_income_good
 
 (ref:fb-stock-drop-bad) 2016년 10월 22일부터 2017년 1월 21일까지 페이스북(FB) 주가. 이 그림은 2016년 11월 1일경 페이스북 주가가 폭락했음을 암시하는 것처럼 보입니다. 그러나 *y* 축이 0달러가 아닌 110달러에서 시작하기 때문에 이는 오해의 소지가 있습니다.
 
-```{r fb-stock-drop-bad, fig.cap = '(ref:fb-stock-drop-bad)'}
+```{r fig-fb-stock-drop-bad, fig-cap = '(ref:fb-stock-drop-bad)'}
 df_fb_drop <- filter(tech_stocks, ticker == "FB", date >= ymd("2016-10-22") & date < ymd("2017-01-22"))
 
 fb_drop_bad <- ggplot(df_fb_drop, aes(x=date, height=price - 110, y = 110)) +
@@ -95,7 +95,7 @@ stamp_bad(fb_drop_bad)
 
 (ref:fb-stock-drop-good) 2016년 10월 22일부터 2017년 1월 21일까지 페이스북(FB) 주가. 주가를 0달러에서 150달러까지의 *y* 눈금으로 표시함으로써 이 그림은 2016년 11월 1일경 FB 주가 하락의 크기를 더 정확하게 전달합니다.
 
-```{r fb-stock-drop-good, fig.cap = '(ref:fb-stock-drop-good)'}
+```{r fig-fb-stock-drop-good, fig-cap = '(ref:fb-stock-drop-good)'}
 fb_drop_good <- ggplot(df_fb_drop, aes(x=date, height=price, y = 0)) +
   geom_ridgeline(alpha = 0.7) +
   scale_x_date(name = NULL, #name = "일",
@@ -116,7 +116,7 @@ stamp_phantom(fb_drop_good)
 
 (ref:hawaii-income-change) 2010년부터 2015년까지 하와이 카운티의 중간 소득 변화. 데이터 출처: 2010년 및 2015년 5개년 미국 지역사회 조사.
 
-```{r hawaii-income-change, fig.cap = '(ref:hawaii-income-change)'}
+```{r fig-hawaii-income-change, fig-cap = '(ref:hawaii-income-change)'}
 hawaii_income_diff <- select(hawaii_income, county, year, median_income) %>%
   spread(year, median_income) %>%
   mutate(income_diff = `2015` - `2010`,
@@ -141,7 +141,7 @@ ggplot(hawaii_income_diff, aes(x = reorder(county, desc(filter(hawaii_income, ye
 
 (ref:fb-stock-drop-inverse) 2016년 10월 22일 가격 대비 페이스북(FB) 주가 손실. 2016년 11월 1일부터 2017년 1월 1일까지 가격은 2016년 10월 22일 고점보다 약 15달러 낮게 유지되었습니다. 그러나 2017년 1월에 가격이 회복되기 시작했습니다.
 
-```{r fb-stock-drop-inverse, fig.cap = '(ref:fb-stock-drop-inverse)'}
+```{r fig-fb-stock-drop-inverse, fig-cap = '(ref:fb-stock-drop-inverse)'}
 df_fb_drop2 <- filter(tech_stocks,
                       ticker == "FB", date >= ymd("2016-10-22") & date < ymd("2017-01-22")) %>%
   mutate(price_drop = price - max(price))
@@ -170,7 +170,7 @@ stamp_phantom(fb_drop_inverse)
 
 (ref:oceania-gdp-logbars) 2007년 오세아니아 국가의 GDP. 막대의 길이는 막대가 임의의 값인 3억 달러에서 시작하므로 표시된 데이터 값을 정확하게 반영하지 않습니다. 데이터 출처: 갭마인더.
 
-```{r oceania-gdp-logbars, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-logbars)'}
+```{r fig-oceania-gdp-logbars, fig-width = 6, fig-asp = 0.5, fig-cap = '(ref:oceania-gdp-logbars)'}
 library(gapminder)
 
 df_oceania <- filter(gapminder_unfiltered, year == 2007, continent == "오세아니아") %>%
@@ -195,7 +195,7 @@ stamp_bad(oc_bad)
 
 (ref:oceania-gdp-logbars-long) 2007년 오세아니아 국가의 GDP. 막대의 길이는 막대가 임의의 값인 10<sup>-9</sup>억 달러에서 시작하므로 표시된 데이터 값을 정확하게 반영하지 않습니다. 데이터 출처: 갭마인더.
 
-```{r oceania-gdp-logbars-long, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-logbars-long)'}
+```{r fig-oceania-gdp-logbars-long, fig-width = 6, fig-asp = 0.5, fig-cap = '(ref:oceania-gdp-logbars-long)'}
 oc_bad2 <- ggplot(df_oceania, aes(x = reorder(country, -GDP), y = log10(GDP))) +
   geom_col(fill = "#56B4E9") +
   scale_y_continuous(breaks = 2*(0:6),
@@ -214,7 +214,7 @@ stamp_bad(oc_bad2)
 
 (ref:oceania-gdp-dots) 2007년 오세아니아 국가의 GDP. 데이터 출처: 갭마인더.
 
-```{r oceania-gdp-dots, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-dots)'}
+```{r fig-oceania-gdp-dots, fig-width = 6, fig-asp = 0.5, fig-cap = '(ref:oceania-gdp-dots)'}
 ggplot(df_oceania, aes(x = reorder(country, -GDP), y = log10(GDP))) +
   geom_point(size = 3.5, color = "#0072B2") +
   geom_label(aes(label = country, y = log10(GDP) - .08), hjust = 1, size = 12/.pt,
@@ -236,7 +236,7 @@ ggplot(df_oceania, aes(x = reorder(country, -GDP), y = log10(GDP))) +
 
 (ref:oceania-gdp-relative) 파푸아뉴기니 GDP 대비 2007년 오세아니아 국가 GDP. 데이터 출처: 갭마인더.
 
-```{r oceania-gdp-relative, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-relative)'}
+```{r fig-oceania-gdp-relative, fig-width = 6, fig-asp = 0.5, fig-cap = '(ref:oceania-gdp-relative)'}
 GDP_PNG <- filter(df_oceania, country == "파푸아뉴기니")$GDP
 
 df_oceania_ratios <- mutate(df_oceania, gdp_ratio = GDP/GDP_PNG) %>%
@@ -270,7 +270,7 @@ ggplot(df_oceania_ratios, aes(x = reorder(country, gdp_ratio), y = gdp_ratio)) +
 
 (ref:RI-pop-pie) 로드아일랜드 카운티의 주민 수를 원형 차트로 표시했습니다. 각 파이 조각의 각도와 면적은 해당 카운티의 주민 수에 비례합니다. 데이터 출처: 2010년 미국 인구 조사.
 
-```{r RI-pop-pie, fig.cap = '(ref:RI-pop-pie)'}
+```{r fig-RI-pop-pie, fig-cap = '(ref:RI-pop-pie)'}
 RI_pop <- US_census %>%
   filter(state == "로드아일랜드") %>%
   extract(name, "county", regex = "(.+) 카운티") %>%
@@ -342,7 +342,7 @@ plot_RI_pies
 
 (ref:RI-pop-bars) 로드아일랜드 카운티의 주민 수를 막대로 표시했습니다. 각 막대의 길이는 해당 카운티의 주민 수에 비례합니다. 데이터 출처: 2010년 미국 인구 조사.
 
-```{r RI-pop-bars, fig.width = 5.5, fig.cap = '(ref:RI-pop-bars)'}
+```{r fig-RI-pop-bars, fig-width = 5.5, fig-cap = '(ref:RI-pop-bars)'}
 ggplot(RI_pop, aes(x = factor(county, levels = rev(county)), y = pop2010, fill = county)) +
   geom_col() +
   scale_fill_OkabeIto(darken = -.3, guide = "none") +
@@ -368,7 +368,7 @@ ggplot(RI_pop, aes(x = factor(county, levels = rev(county)), y = pop2010, fill =
 
 (ref:RI-pop-treemap) 로드아일랜드 카운티의 주민 수를 트리맵으로 표시했습니다. 각 사각형의 면적은 해당 카운티의 주민 수에 비례합니다. 데이터 출처: 2010년 미국 인구 조사.
 
-```{r RI-pop-treemap, fig.width = 4.5, fig.asp = .75, fig.cap = '(ref:RI-pop-treemap)'}
+```{r fig-RI-pop-treemap, fig-width = 4.5, fig-asp = .75, fig-cap = '(ref:RI-pop-treemap)'}
 # 브리스톨 레이블 수정
 RI_pop$label_comb[5] <- paste(RI_pop$county[5], RI_pop$label_pop[5])
 RI_pop$label_comb = factor(RI_pop$label_comb, levels = RI_pop$label_comb)

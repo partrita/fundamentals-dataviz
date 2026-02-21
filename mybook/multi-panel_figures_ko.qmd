@@ -21,7 +21,7 @@ library(ggridges)
 
 (ref:titanic-passenger-breakdown) 타이타닉호 승객을 성별, 생존 여부, 탑승 등급(1등석, 2등석, 3등석)별로 분류한 내역.
 
-```{r titanic-passenger-breakdown, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:titanic-passenger-breakdown)'}
+```{r fig-titanic-passenger-breakdown, fig-width = 5, fig-asp = 3/4, fig-cap = '(ref:titanic-passenger-breakdown)'}
 titanic %>% mutate(surv = ifelse(survived == 0, "사망", "생존")) %>%
   ggplot(aes(sex, fill = sex)) + geom_bar() +
     facet_grid(class ~ surv, scales = "free_x") +
@@ -51,7 +51,7 @@ titanic %>% mutate(surv = ifelse(survived == 0, "사망", "생존")) %>%
 
 (ref:movie-rankings) 1906년부터 2005년까지 영화의 평균 순위 대 투표 수. 점은 개별 영화를 나타내고 선은 각 영화의 평균 순위를 영화가 받은 투표 수의 로그에 대한 선형 회귀를 나타냅니다. 대부분의 해에 투표 수가 많은 영화일수록 평균적으로 평균 순위가 높습니다. 그러나 이 추세는 20세기 말에 약화되었으며 2000년대 초반에 개봉된 영화에서는 음의 관계를 볼 수 있습니다. 데이터 출처: 인터넷 영화 데이터베이스(IMDB, http://imdb.com/)
 
-```{r movie-rankings, fig.width = 5.5*6/4.2, fig.asp = 1, fig.cap = '(ref:movie-rankings)'}
+```{r fig-movie-rankings, fig-width = 5.5*6/4.2, fig-asp = 1, fig-cap = '(ref:movie-rankings)'}
 library(ggplot2movies)
 
 ggplot(filter(movies, year > 1905), aes(y = rating, x = votes)) +
@@ -83,7 +83,7 @@ ggplot(filter(movies, year > 1905), aes(y = rating, x = votes)) +
 
 (ref:BA-degrees-variable-y-lims) 미국 고등 교육 기관에서 수여한 학사 학위 동향. 평균적으로 모든 학위의 4% 이상을 차지하는 모든 학위 분야가 표시됩니다. 이 그림은 모든 패널이 다른 *y* 축 범위를 사용하기 때문에 "나쁨"으로 표시되었습니다. 이 선택은 여러 학위 분야의 상대적 크기를 모호하게 만들고 일부 학위 분야에서 발생한 변화를 과장합니다. 데이터 출처: 국립 교육 통계 센터
 
-```{r BA-degrees-variable-y-lims, fig.width = 5.5*6/4.2, fig.asp = 0.8, fig.cap = '(ref:BA-degrees-variable-y-lims)'}
+```{r fig-BA-degrees-variable-y-lims, fig-width = 5.5*6/4.2, fig-asp = 0.8, fig-cap = '(ref:BA-degrees-variable-y-lims)'}
 BA_degrees %>%
   mutate(field = ifelse(field == "커뮤니케이션, 저널리즘 및 관련 프로그램",
                         "커뮤니케이션, 저널리즘 및 관련", field)) -> BA_df
@@ -116,7 +116,7 @@ stamp_bad(p)
 
 (ref:BA-degrees-fixed-y-lims) 미국 고등 교육 기관에서 수여한 학사 학위 동향. 평균적으로 모든 학위의 4% 이상을 차지하는 모든 학위 분야가 표시됩니다. 데이터 출처: 국립 교육 통계 센터
 
-```{r BA-degrees-fixed-y-lims, fig.width = 5.5*6/4.2, fig.asp = 0.8, fig.cap = '(ref:BA-degrees-fixed-y-lims)'}
+```{r fig-BA-degrees-fixed-y-lims, fig-width = 5.5*6/4.2, fig-asp = 0.8, fig-cap = '(ref:BA-degrees-fixed-y-lims)'}
 ggplot(BA_top_degrees, aes(year, perc)) +
   geom_line(color = "#0072B2") +
   facet_wrap(~field, labeller = label_wrap_gen(width = 25), ncol = 3,
@@ -149,7 +149,7 @@ ggplot(BA_top_degrees, aes(year, perc)) +
 
 (ref:BA-degrees-compound) 미국 고등 교육 기관에서 수여한 학사 학위 동향. (a) 1970년부터 2015년까지 총 학위 수는 거의 두 배가 되었습니다. (b) 가장 인기 있는 학위 분야 중 사회 과학, 역사, 교육은 크게 감소한 반면 경영 및 보건 전문직은 성장했습니다. 데이터 출처: 국립 교육 통계 센터
 
-```{r BA-degrees-compound, fig.width =  5.5*6/4.2, fig.asp = 0.4, fig.cap = '(ref:BA-degrees-compound)'}
+```{r fig-BA-degrees-compound, fig-width =  5.5*6/4.2, fig-asp = 0.4, fig-cap = '(ref:BA-degrees-compound)'}
 BA_degrees %>%
   mutate(field = ifelse(field == "커뮤니케이션, 저널리즘 및 관련 프로그램",
                         "커뮤니케이션, 저널리즘 및 관련", field)) -> BA_df
@@ -219,7 +219,7 @@ plot_grid(p1, p2, labels = "auto", rel_widths = c(1.2, 1), align = 'h')
 
 (ref:BA-degrees-compound-bad) 레이블링이 잘못된 그림 @fig-BA-degrees-compound의 변형. 레이블이 너무 크고 두꺼우며 잘못된 글꼴로 되어 있고 어색한 위치에 배치되어 있습니다. 또한 대문자로 레이블링하는 것은 괜찮고 실제로 매우 일반적이지만 레이블링은 문서의 모든 그림에서 일관되어야 합니다. 이 책에서는 다중 패널 그림에 소문자 레이블을 사용하는 것이 규칙이므로 이 그림은 이 책의 다른 그림과 일치하지 않습니다.
 
-```{r BA-degrees-compound-bad, fig.width =  5.5*6/4.2, fig.asp = 0.4, fig.cap = '(ref:BA-degrees-compound-bad)'}
+```{r fig-BA-degrees-compound-bad, fig-width =  5.5*6/4.2, fig-asp = 0.4, fig-cap = '(ref:BA-degrees-compound-bad)'}
 stamp_ugly(plot_grid(p1, p2, labels = "AUTO", rel_widths = c(1.2, 1), align = 'h',
                      label_fontfamily = "Palatino", label_fontface = "bold",
                      label_x = 0.8,
@@ -234,7 +234,7 @@ stamp_ugly(plot_grid(p1, p2, labels = "AUTO", rel_widths = c(1.2, 1), align = 'h
 
 (ref:athletes-composite-inconsistent) 남성 및 여성 운동선수의 생리학 및 신체 구성. (a) 데이터 세트에는 73명의 여성 및 85명의 남성 프로 운동선수가 포함됩니다. (b) 남성 운동선수는 여성 운동선수보다 적혈구(RBC, 리터당 $10^{12}$ 단위로 보고됨) 수가 더 높은 경향이 있지만 백혈구 수(WBC, 리터당 $10^{9}$ 단위로 보고됨)에는 이러한 차이가 없습니다. (c) 남성 운동선수는 동일한 스포츠를 하는 여성 운동선수보다 체지방률이 낮은 경향이 있습니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r athletes-composite-inconsistent, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-inconsistent)'}
+```{r fig-athletes-composite-inconsistent, fig-width = 5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:athletes-composite-inconsistent)'}
 male_sport <- unique(filter(Aus_athletes, sex=="m")$sport)
 female_sport <- unique(filter(Aus_athletes, sex=="f")$sport)
 both_sport <- male_sport[male_sport %in% female_sport]
@@ -338,7 +338,7 @@ stamp_bad(
 
 (ref:athletes-composite-good) 남성 및 여성 운동선수의 생리학 및 신체 구성. 이 그림은 그림 @fig-athletes-composite-inconsistent과 정확히 동일한 데이터를 보여주지만 이제 일관된 시각적 언어를 사용합니다. 여성 운동선수의 데이터는 항상 해당 남성 운동선수의 데이터 왼쪽에 표시되며 성별은 그림의 모든 요소에 걸쳐 일관되게 색상으로 구분됩니다. 데이터 출처: @Telford-Cunningham-1991
 
-```{r athletes-composite-good, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-good)'}
+```{r fig-athletes-composite-good, fig-width = 5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:athletes-composite-good)'}
 p1 <- ggplot(athletes_df, aes(x = sex, fill = sex)) +
   geom_bar() +
   scale_y_continuous(limits = c(0, 95), expand = c(0, 0), name = "수") +
@@ -412,7 +412,7 @@ plot_grid(
 
 (ref:athletes-composite-misaligned) 모든 그림 패널이 약간 정렬되지 않은 그림 @fig-athletes-composite-good의 변형. 정렬 불량은 보기 흉하며 피해야 합니다.
 
-```{r athletes-composite-misaligned, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-misaligned)'}
+```{r fig-athletes-composite-misaligned, fig-width = 5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:athletes-composite-misaligned)'}
 p1 <- ggplot(athletes_df, aes(x = sex, fill = sex)) +
   geom_bar() +
   scale_y_continuous(limits = c(0, 95), expand = c(0, 0), name = "수") +

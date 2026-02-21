@@ -23,7 +23,7 @@ library(geofacet)
 
 (ref:world-orthographic) 우주에서 볼 수 있는 유럽과 북아프리카를 보여주는 세계의 정사 투영. 북극에서 남쪽으로 뻗어 나가는 선을 *경선*이라고 하고 경선에 직교하는 선을 *평행선*이라고 합니다. 모든 경선은 길이가 같지만 평행선은 어느 극에 가까울수록 짧아집니다.
 
-```{r world-orthographic, fig.width = 5.5, fig.asp = 1, fig.cap = '(ref:world-orthographic)'}
+```{r fig-world-orthographic, fig-width = 5.5, fig-asp = 1, fig-cap = '(ref:world-orthographic)'}
 intersperse <- function(x1, x2) {
   x <- numeric(0)
   for (i in seq_along(x1)) {
@@ -75,7 +75,7 @@ text(
 
 (ref:world-mercator) 세계의 메르카토르 투영법. 이 투영법에서 평행선은 직선 수평선이고 경선은 직선 수직선입니다. 국부적인 각도를 보존하는 등각 투영법이지만 극 근처에서 면적에 심각한 왜곡을 유발합니다. 예를 들어 이 투영법에서 그린란드는 아프리카보다 커 보이지만 실제로는 아프리카가 그린란드보다 14배 더 큽니다(그림 @fig-world-orthographic 및 @fig-world-goode 참조).
 
-```{r world-mercator, fig.width = 5, fig.asp = 0.85, fig.cap = '(ref:world-mercator)'}
+```{r fig-world-mercator, fig-width = 5, fig-asp = 0.85, fig-cap = '(ref:world-mercator)'}
 world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))
 
 crs_longlat <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -115,7 +115,7 @@ ggplot(world_sf) +
 
 (ref:world-goode) 세계의 중단된 구드 호몰로사인 투영법. 이 투영법은 각도 왜곡을 최소화하면서 면적을 정확하게 보존하지만 바다와 일부 육지(그린란드, 남극 대륙)를 비연속적인 방식으로 표시하는 단점이 있습니다.
 
-```{r world-goode, fig.width = 5*6/4.2, fig.asp = 0.45, fig.cap = '(ref:world-goode)'}
+```{r fig-world-goode, fig-width = 5*6/4.2, fig-asp = 0.45, fig-cap = '(ref:world-goode)'}
 crs_goode <- "+proj=igh"
 
 # 경위도 좌표의 투영 윤곽선
@@ -181,7 +181,7 @@ ggplot(world_sf) +
 
 (ref:usa-orthographic) 지구본에 표시된 알래스카, 하와이 및 하위 48개 주의 상대적 위치.
 
-```{r usa-orthographic, fig.width = 5.5, fig.asp = 1, fig.cap = '(ref:usa-orthographic)'}
+```{r fig-usa-orthographic, fig-width = 5.5, fig-asp = 1, fig-cap = '(ref:usa-orthographic)'}
 cenlat <- 35
 cenlong <- -130
 
@@ -203,7 +203,7 @@ text(
 
 (ref:usa-true-albers) 미국 지도, 면적 보존 알버스 투영법 사용 (ESRI:102003, 일반적으로 하위 48개 주 투영에 사용됨). 알래스카와 하와이는 실제 위치에 표시됩니다.
 
-```{r usa-true-albers, fig.asp = 0.72, fig.cap = '(ref:usa-true-albers)'}
+```{r fig-usa-true-albers, fig-asp = 0.72, fig-cap = '(ref:usa-true-albers)'}
 longs <- -180:-20
 lats <- rep(89.9, length(longs))
 earth_boundary <- sf::st_sfc(
@@ -249,7 +249,7 @@ p
 
 (ref:usa-albers) 알래스카와 하와이 주를 하위 48개 주 아래에 배치한 미국 시각화. 알래스카는 또한 주의 실제 크기의 35%만 선형 범위가 되도록 축척되었습니다. (즉, 주의 면적이 실제 크기의 약 12%로 축소되었습니다.) 이러한 축척은 알래스카가 시각적으로 일반적인 중서부 또는 서부 주와 비슷한 크기로 보이도록 하기 위해 자주 적용됩니다. 그러나 이 축척은 매우 오해의 소지가 있으므로 그림에 "나쁨"이라고 표시했습니다.
 
-```{r usa-albers, fig.asp = 0.65, fig.cap = '(ref:usa-albers)'}
+```{r fig-usa-albers, fig-asp = 0.65, fig-cap = '(ref:usa-albers)'}
 # 표준 미국 알버스 지도, AK는 인위적으로 작게 표시됨
 
 # 이전에 그린 지도와 같이 투명한 파란색 위에 투명한 주황색의 색상을 모방합니다.
@@ -272,7 +272,7 @@ stamp_bad(p)
 
 (ref:usa-albers-revised) 알래스카와 하와이 주를 하위 48개 주 아래에 배치한 미국 시각화.
 
-```{r usa-albers-revised, fig.asp = 0.75, fig.cap = '(ref:usa-albers-revised)'}
+```{r fig-usa-albers-revised, fig-asp = 0.75, fig-cap = '(ref:usa-albers-revised)'}
 # 수정된 미국 알버스 지도, AK는 원래 크기로 표시됨
 ggplot(US_states_geoms$albers_revised) +
   geom_sf(fill = brown, color = "black", size = 0.5/.pt) +
@@ -290,7 +290,7 @@ ggplot(US_states_geoms$albers_revised) +
 
 (ref:sfbay-overview) 샌프란시스코만 지역의 풍력 터빈. 개별 풍력 터빈은 보라색 점으로 표시됩니다. 풍력 터빈이 밀집된 두 지역은 검은색 사각형으로 강조 표시됩니다. 리오 비스타 근처의 풍력 터빈을 통칭하여 실로 풍력 발전 단지라고 합니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터: 미국 풍력 터빈 데이터베이스
 
-```{r sfbay-overview, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:sfbay-overview)'}
+```{r fig-sfbay-overview, fig-width = 5.5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:sfbay-overview)'}
 # http://www.csgnetwork.com/degreelenllavcalc.html에서
 # 위도 38도에서 경도 1도의 길이(미터)
 m_per_deg <- 87832.42967867786
@@ -386,7 +386,7 @@ p1
 
 (ref:sfbay-layers) 그림 @fig-sfbay-overview의 개별 레이어. 아래에서 위로 그림은 지형 레이어, 도로 레이어, 풍력 터빈을 보여주는 레이어, 도시 레이블을 지정하고 축척 막대와 북쪽 화살표를 추가하는 레이어로 구성됩니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터 출처: 미국 풍력 터빈 데이터베이스
 
-```{r sfbay-layers, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:sfbay-layers) '}
+```{r fig-sfbay-layers, fig-width = 5.5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:sfbay-layers) '}
 l1 <- ggmap(sfbay_maps$sfbay_bg) + labs(subtitle = "지형") +
   geom_rect(
     data = data.frame(t(sfbay_bbox)),
@@ -496,7 +496,7 @@ plot_grid(
 
 (ref:shiloh-map) 실로 풍력 발전 단지의 개별 풍력 터빈 위치. 각 점은 풍력 터빈 하나의 위치를 강조 표시합니다. 지도 영역은 그림 @fig-sfbay-overview의 사각형에 해당합니다. 점은 풍력 터빈이 건설된 시기에 따라 색상이 지정되며 점의 모양은 개별 풍력 터빈이 속한 다양한 프로젝트를 나타냅니다. 지도 타일: Stamen Design, CC BY 3.0. 지도 데이터: OpenStreetMap, ODbL. 풍력 터빈 데이터 출처: 미국 풍력 터빈 데이터베이스
 
-```{r shiloh-map, fig.asp = 0.75, fig.cap = '(ref:shiloh-map)'}
+```{r fig-shiloh-map, fig-asp = 0.75, fig-cap = '(ref:shiloh-map)'}
 # http://www.csgnetwork.com/degreelenllavcalc.html에서
 # 위도 38도에서 경도 1도의 길이(미터)
 m_per_deg <- 87832.42967867786
@@ -603,7 +603,7 @@ p2
 
 (ref:population-density-counties) 미국의 모든 카운티의 인구 밀도를 단계 구분도로 표시했습니다. 인구 밀도는 제곱킬로미터당 인구 수로 보고됩니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r population-density-counties, fig.asp = 0.73, fig.cap = '(ref:population-density-counties)'}
+```{r fig-population-density-counties, fig-asp = 0.73, fig-cap = '(ref:population-density-counties)'}
 # x 범위: -3683715  2258154
 # y 범위: -2839538  1558935
 
@@ -646,7 +646,7 @@ ggdraw(align_legend(p))
 
 (ref:population-density-counties2) 미국의 모든 카운티의 인구 밀도를 단계 구분도로 표시했습니다. 이 지도는 색상 척도에서 높은 인구 밀도에 밝은 색상을 사용하고 낮은 인구 밀도에 어두운 색상을 사용한다는 점을 제외하고는 그림 @fig-population-density-counties와 동일합니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r population-density-counties2, fig.asp = 0.73, fig.cap = '(ref:population-density-counties2)'}
+```{r fig-population-density-counties2, fig-asp = 0.73, fig-cap = '(ref:population-density-counties2)'}
 # x 범위: -3683715  2258154
 # y 범위: -2839538  1558935
 
@@ -687,7 +687,7 @@ ggdraw(align_legend(p))
 (ref:median-income-counties) 미국의 모든 카운티의 중간 소득을 단계 구분도로 표시했습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
 
-```{r median-income-counties, eval = FALSE, fig.asp = 0.73, fig.cap = '(ref:median-income-counties)'}
+```{r fig-median-income-counties, eval = FALSE, fig-asp = 0.73, fig-cap = '(ref:median-income-counties)'}
 # x 범위: -3683715  2258154
 # y 범위: -2839538  1558935
 
@@ -731,7 +731,7 @@ ggdraw(align_legend(p))
 
 (ref:median-income-counties-binned) 미국의 모든 카운티의 중간 소득을 단계 구분도로 표시했습니다. 중간 소득 값은 5개의 뚜렷한 그룹으로 구간화되었는데, 이는 구간화된 색상 척도가 일반적으로 연속적인 색상 척도보다 읽기 쉽기 때문입니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r median-income-counties-binned, fig.asp = 0.73, fig.cap = '(ref:median-income-counties-binned)'}
+```{r fig-median-income-counties-binned, fig-asp = 0.73, fig-cap = '(ref:median-income-counties-binned)'}
 # x 범위: -3683715  2258154
 # y 범위: -2839538  1558935
 
@@ -782,7 +782,7 @@ p
 (ref:median-income-states) 미국의 모든 주의 중간 소득을 단계 구분도로 표시했습니다. 이 지도는 중간 소득은 높지만 인구 밀도는 매우 낮은 알래스카 주가 시각적으로 지배합니다. 동시에 동부 해안의 인구 밀도가 높은 고소득 주는 이 지도에서 그다지 두드러지지 않습니다. 종합적으로 이 지도는 미국의 소득 분포를 제대로 시각화하지 못하므로 "나쁨"으로 표시했습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
 
-```{r median-income-states, fig.asp = 0.73, fig.cap = '(ref:median-income-states)'}
+```{r fig-median-income-states, fig-asp = 0.73, fig-cap = '(ref:median-income-states)'}
 # x 범위: -3683715  2258154
 # y 범위: -2839538  1558935
 
@@ -833,7 +833,7 @@ stamp_bad(p)
 
 (ref:median-income-cartogram) 미국의 모든 주의 중간 소득을 카토그램으로 표시했습니다. 개별 주의 모양은 면적이 주민 수에 비례하도록 수정되었습니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r median-income-cartogram, fig.asp = 0.73, fig.cap = '(ref:median-income-cartogram)'}
+```{r fig-median-income-cartogram, fig-asp = 0.73, fig-cap = '(ref:median-income-cartogram)'}
 # 구간화된 데이터를 복사하고 두 데이터 프레임의 순서는 동일합니다.
 US_income_cartogram$income_bins <- US_income$income_bins
 
@@ -870,7 +870,7 @@ p
 
 (ref:median-income-statebins) 미국의 모든 주의 중간 소득을 카토그램 히트맵으로 표시했습니다. 각 주는 동일한 크기의 정사각형으로 표시되며 정사각형은 다른 주에 대한 각 주의 대략적인 위치에 따라 배열됩니다. 이 표현은 각 주에 동일한 시각적 가중치를 부여합니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r median-income-statebins, fig.asp = 0.62, fig.cap = '(ref:median-income-statebins)'}
+```{r fig-median-income-statebins, fig-asp = 0.62, fig-cap = '(ref:median-income-statebins)'}
 filter(US_income, name != "푸에르토리코", GEOID != "11") %>% # 푸에르토리코와 DC 제거
   ggplot(aes(state = name, fill = income_bins)) +
   geom_statebins(family = dviz.supp::dviz_font_family,
@@ -905,7 +905,7 @@ filter(US_income, name != "푸에르토리코", GEOID != "11") %>% # 푸에르�
 
 (ref:unemployment-geofacet) 2008년 금융 위기 전후의 주별 실업률. 각 패널은 2007년 1월부터 2013년 5월까지 한 주(컬럼비아 특별구(DC) 포함)의 실업률을 보여줍니다. 수직 격자선은 2008년, 2010년, 2012년 1월을 표시합니다. 지리적으로 가까운 주는 실업률에서 유사한 추세를 보이는 경향이 있습니다. 데이터 출처: 미국 노동 통계국
 
-```{r unemployment-geofacet, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:unemployment-geofacet)'}
+```{r fig-unemployment-geofacet, fig-width = 5.5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:unemployment-geofacet)'}
 adjust_labels <- as_labeller(
   function(x) {
     case_when(

@@ -18,7 +18,7 @@ library(ggrepel)
 
 (ref:biorxiv-dots) 2014년 11월 창립부터 2018년 4월까지 프리프린트 서버 bioRxiv에 월별 제출 건수. 각 점은 한 달의 제출 건수를 나타냅니다. 4.5년 전체 기간 동안 제출 건수가 꾸준히 증가했습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r biorxiv-dots, fig.cap = '(ref:biorxiv-dots)'}
+```{r fig-biorxiv-dots, fig-cap = '(ref:biorxiv-dots)'}
 preprint_growth %>% filter(archive == "bioRxiv") %>%
   filter(count > 0) -> biorxiv_growth
 
@@ -36,7 +36,7 @@ ggplot(biorxiv_growth, aes(date, count)) +
 
 (ref:biorxiv-dots-line) 월별 프리프린트 서버 bioRxiv 제출 건수, 점과 선으로 연결하여 표시. 선은 데이터를 나타내지 않으며 단지 눈을 안내하기 위한 것입니다. 개별 점을 선으로 연결함으로써 점 사이에 순서가 있으며 각 점에는 바로 앞에 오는 이웃과 바로 뒤에 오는 이웃이 하나씩 있음을 강조합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r biorxiv-dots-line, fig.cap = '(ref:biorxiv-dots-line)'}
+```{r fig-biorxiv-dots-line, fig-cap = '(ref:biorxiv-dots-line)'}
 ggplot(biorxiv_growth, aes(date, count)) +
   geom_line(size = 0.5, color = "#0072B2") +
   geom_point(color = "white", fill = "#0072B2", shape = 21, size = 2) +
@@ -53,7 +53,7 @@ ggplot(biorxiv_growth, aes(date, count)) +
 
 (ref:biorxiv-line) 월별 프리프린트 서버 bioRxiv 제출 건수, 점 없는 선 그래프로 표시. 점을 생략하면 특정 시점의 개별 관찰을 덜 강조하면서 전반적인 시간적 추세를 강조합니다. 시점이 매우 조밀하게 간격을 두고 있는 경우 특히 유용합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r biorxiv-line, fig.cap = '(ref:biorxiv-line)'}
+```{r fig-biorxiv-line, fig-cap = '(ref:biorxiv-line)'}
 ggplot(biorxiv_growth, aes(date, count)) + geom_line(color = "#0072B2", size = 1) +
   scale_y_continuous(limits = c(0, 1600), expand = c(0, 0),
                 name = "월별 프리프린트 수") +
@@ -66,7 +66,7 @@ ggplot(biorxiv_growth, aes(date, count)) + geom_line(color = "#0072B2", size = 1
 
 (ref:biorxiv-line-area) 월별 프리프린트 서버 bioRxiv 제출 건수, 아래 영역이 채워진 선 그래프로 표시. 곡선 아래 영역을 채움으로써 선만 그리는 것보다(그림 @fig-biorxiv-line) 포괄적인 시간적 추세를 훨씬 더 강조합니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r biorxiv-line-area, fig.cap = '(ref:biorxiv-line-area)'}
+```{r fig-biorxiv-line-area, fig-cap = '(ref:biorxiv-line-area)'}
 ggplot(biorxiv_growth, aes(date, height = count, y = 0)) +
   geom_ridgeline(color = "#0072B2", fill = "#0072B240", size = 0.75) +
   scale_y_continuous(limits = c(0, 1600), expand = c(0, 0),
@@ -83,7 +83,7 @@ ggplot(biorxiv_growth, aes(date, height = count, y = 0)) +
 
 (ref:bio-preprints-dots) 생의학 연구를 다루는 세 개의 프리프린트 서버(bioRxiv, arXiv의 q-bio 섹션, PeerJ Preprints)에 대한 월별 제출 건수. 각 점은 해당 프리프린트 서버에 대한 한 달의 제출 건수를 나타냅니다. 이 그림은 세 개의 시계열이 시각적으로 서로 간섭하고 읽기 어렵기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r bio-preprints-dots, fig.cap = '(ref:bio-preprints-dots)'}
+```{r fig-bio-preprints-dots, fig-cap = '(ref:bio-preprints-dots)'}
 preprint_growth %>% filter(archive %in% c("bioRxiv", "arXiv q-bio", "PeerJ Preprints")) %>%
   filter(count > 0) %>%
   mutate(archive = factor(archive, levels = c("bioRxiv", "arXiv q-bio", "PeerJ Preprints")))-> preprints
@@ -111,7 +111,7 @@ stamp_bad(p)
 
 (ref:bio-preprints-lines) 생의학 연구를 다루는 세 개의 프리프린트 서버에 대한 월별 제출 건수. 그림 @fig-bio-preprints-dots의 점을 선으로 연결함으로써 뷰어가 각 개별 시계열을 따라갈 수 있도록 도와줍니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r bio-preprints-lines, fig.cap = '(ref:bio-preprints-lines)'}
+```{r fig-bio-preprints-lines, fig-cap = '(ref:bio-preprints-lines)'}
 ggplot(preprints, aes(date, count, color = archive, fill = archive, shape = archive)) +
   geom_line(size = 0.75) + geom_point(color = "white", size = 2) +
   scale_y_continuous(limits = c(0, 600), expand = c(0, 0),
@@ -135,7 +135,7 @@ ggplot(preprints, aes(date, count, color = archive, fill = archive, shape = arch
 
 (ref:bio-preprints-direct-label) 생의학 연구를 다루는 세 개의 프리프린트 서버에 대한 월별 제출 건수. 범례를 제공하는 대신 선에 직접 레이블을 지정하여 그림을 읽는 데 필요한 인지 부하를 줄였습니다. 그리고 범례를 제거하면 여러 모양의 점이 필요하지 않습니다. 따라서 점을 제거하여 그림을 더욱 간소화할 수 있습니다. 데이터 출처: Jordan Anaya, http://www.prepubmed.org/
 
-```{r bio-preprints-direct-label, fig.cap = '(ref:bio-preprints-direct-label)'}
+```{r fig-bio-preprints-direct-label, fig-cap = '(ref:bio-preprints-direct-label)'}
 preprints_final <- filter(preprints, date == ymd("2017-01-01"))
 
 ggplot(preprints) +
@@ -173,7 +173,7 @@ ggplot(preprints) +
 
 (ref:oats-yield) 분뇨로 비료를 준 후 귀리 품종의 평균 수확량을 보여주는 용량-반응 곡선. 분뇨는 질소 공급원 역할을 하며 귀리 수확량은 일반적으로 품종에 관계없이 질소 공급량이 많을수록 증가합니다. 여기서 분뇨 시비량은 에이커당 cwt(백량) 단위로 측정됩니다. 백량은 112파운드 또는 50.8kg에 해당하는 오래된 영국식 단위입니다. 데이터 출처: @Yates1935
 
-```{r oats-yield, fig.cap = '(ref:oats-yield)'}
+```{r fig-oats-yield, fig-cap = '(ref:oats-yield)'}
 MASS::oats %>%
   # 1 영국식 백량(cwt) == 112파운드 == 50.802345kg
   mutate(N = 1*as.numeric(sub("cwt", "", N, fixed = TRUE))) %>%
@@ -209,7 +209,7 @@ ggplot(oats_df,
 
 (ref:house-price-unemploy) 2001년 1월부터 2017년 12월까지 시간 경과에 따른 주택 가격 12개월 변화 (a) 및 실업률 (b). 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국.
 
-```{r house-price-unemploy, fig.width = 5*6/4.2, fig.cap = '(ref:house-price-unemploy)'}
+```{r fig-house-price-unemploy, fig-width = 5*6/4.2, fig-cap = '(ref:house-price-unemploy)'}
 # 다음 그림을 위해 이미 데이터 세트 준비
 CA_house_prices <-
   filter(house_prices, state == "캘리포니아", year(date) > 2000) %>%
@@ -269,7 +269,7 @@ plot_grid(p1, p2, align = 'v', ncol = 1, labels = "auto")
 
 (ref:house-price-path) 2001년 1월부터 2017년 12월까지 주택 가격 12개월 변화 대 실업률, 연결된 산점도로 표시. 어두운 음영은 더 최근의 달을 나타냅니다. 그림 @fig-house-price-unemploy에서 볼 수 있는 주택 가격 변화와 실업률 간의 반비례 관계는 연결된 산점도가 두 개의 반시계 방향 원을 형성하도록 합니다. 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국. 원본 그림 개념: 렌 키퍼
 
-```{r house-price-path, fig.asp = 3/4, fig.cap = '(ref:house-price-path)'}
+```{r fig-house-price-path, fig-asp = 3/4, fig-cap = '(ref:house-price-path)'}
 
 ggplot(CA_house_prices) +
   aes(unemploy_perc/100, house_price_perc, colour = as.numeric(date)) +
@@ -309,7 +309,7 @@ ggplot(CA_house_prices) +
 
 (ref:house-price-path-bad) 2001년 1월부터 2017년 12월까지 주택 가격 12개월 변화 대 실업률. 이 그림은 그림 @fig-house-price-path의 날짜 표시와 색상 음영이 없으면 데이터의 방향이나 변화 속도를 볼 수 없기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Freddie Mac 주택 가격 지수, 미국 노동 통계국.
 
-```{r house-price-path-bad, fig.asp = 3/4, fig.cap = '(ref:house-price-path-bad)'}
+```{r fig-house-price-path-bad, fig-asp = 3/4, fig-cap = '(ref:house-price-path-bad)'}
 
 p <- ggplot(CA_house_prices) +
   aes(unemploy_perc/100, house_price_perc) +
@@ -339,7 +339,7 @@ stamp_bad(p)
 
 (ref:fred-md-PCA) 주성분 공간에서 연결된 산점도로 고차원 시계열 시각화. 경로는 1990년 1월부터 2017년 12월까지 100개 이상의 거시경제 지표의 공동 움직임을 나타냅니다. 경기 침체 및 회복 시기는 색상으로 표시되며 세 번의 경기 침체 종료 지점(1991년 3월, 2001년 11월, 2009년 6월)도 레이블로 표시됩니다. (a) PC 2 대 PC 1. (b) PC 2 대 PC 3. 데이터 출처: M. W. McCracken, 세인트루이스 연준
 
-```{r fred-md-PCA, fig.width = 5*6/4.2, fig.asp = 2*0.618, fig.cap = '(ref:fred-md-PCA)'}
+```{r fig-fred-md-PCA, fig-width = 5*6/4.2, fig-asp = 2*0.618, fig-cap = '(ref:fred-md-PCA)'}
 fred_md %>%
   select(-date, -sasdate) %>%
   scale() %>%

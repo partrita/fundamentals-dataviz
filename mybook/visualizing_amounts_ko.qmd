@@ -14,7 +14,7 @@ library(forcats)
 
 막대 그래프의 개념을 설명하기 위해 특정 주말에 가장 인기 있는 영화의 총 티켓 판매량을 생각해 보겠습니다. 표 @tab-boxoffice-gross는 2017년 크리스마스 주말의 상위 5개 주말 총 티켓 판매량을 보여줍니다. 영화 "스타워즈: 라스트 제다이"는 해당 주말에 단연 가장 인기 있는 영화였으며 4위와 5위 영화인 "위대한 쇼맨"과 "페르디난드"보다 거의 10배나 많은 수익을 올렸습니다.
 
-```{r boxoffice-gross}
+```{r tab-boxoffice-gross}
 # 출처: 박스오피스 모조
 # URL: http://www.boxofficemojo.com/weekend/chart/?view=&yr=2017&wknd=51&p=.htm
 # 다운로드 날짜: 2018-02-11
@@ -49,7 +49,7 @@ knitr::kable(
 
 (ref:boxoffice-vertical) 2017년 12월 22-24일 주말 최고 흥행 영화, 막대 그래프로 표시. 데이터 출처: 박스오피스 모조 (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
-```{r boxoffice-vertical, fig.width = 5*6/4.2, fig.asp = .5, fig.cap = '(ref:boxoffice-vertical)'}
+```{r fig-boxoffice-vertical, fig-width = 5*6/4.2, fig-asp = .5, fig-cap = '(ref:boxoffice-vertical)'}
 boxoffice %>%
   ggplot(aes(x = fct_reorder(title_short, rank), y = amount)) +
     geom_col(fill = "#56B4E9", width = 0.6, alpha = 0.9) +
@@ -72,7 +72,7 @@ boxoffice %>%
 
 (ref:boxoffice-rot-axis-tick-labels) 2017년 12월 22-24일 주말 최고 흥행 영화, 회전된 축 눈금 레이블이 있는 막대 그래프로 표시. 회전된 축 눈금 레이블은 읽기 어렵고 플롯 아래에 어색한 공간 사용을 필요로 하는 경향이 있습니다. 이러한 이유로 저는 일반적으로 회전된 눈금 레이블이 있는 플롯을 보기 흉하다고 생각합니다. 데이터 출처: 박스오피스 모조 (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
-```{r boxoffice-rot-axis-tick-labels, fig.asp = 0.85, fig.cap = '(ref:boxoffice-rot-axis-tick-labels)'}
+```{r fig-boxoffice-rot-axis-tick-labels, fig-asp = 0.85, fig-cap = '(ref:boxoffice-rot-axis-tick-labels)'}
 boxoffice %>%
   ggplot(aes(x = fct_reorder(title_short, rank), y = amount)) +
     geom_col(fill = "#56B4E9", alpha = 0.9) +
@@ -98,7 +98,7 @@ stamp_ugly(p_box_axrot)
 
 (ref:boxoffice-horizontal) 2017년 12월 22-24일 주말 최고 흥행 영화, 가로 막대 그래프로 표시. 데이터 출처: 박스오피스 모조 (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
-```{r boxoffice-horizontal, fig.cap = '(ref:boxoffice-horizontal)'}
+```{r fig-boxoffice-horizontal, fig-cap = '(ref:boxoffice-horizontal)'}
 ggplot(boxoffice, aes(x = fct_reorder(title_short, desc(rank)), y = amount)) +
   geom_col(fill = "#56B4E9", alpha = 0.9) +
   scale_y_continuous(limits = c(0, 7.5e7),
@@ -122,7 +122,7 @@ ggplot(boxoffice, aes(x = fct_reorder(title_short, desc(rank)), y = amount)) +
 
 (ref:boxoffice-horizontal-bad-order) 2017년 12월 22-24일 주말 최고 흥행 영화, 가로 막대 그래프로 표시. 여기서 막대는 영화 제목의 길이 내림차순으로 배치되었습니다. 이러한 막대 배열은 임의적이며 의미 있는 목적을 수행하지 않으며 결과 그림을 그림 @fig-boxoffice-horizontal보다 훨씬 덜 직관적으로 만듭니다. 데이터 출처: 박스오피스 모조 (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
-```{r boxoffice-horizontal-bad-order, fig.cap = '(ref:boxoffice-horizontal-bad-order)'}
+```{r fig-boxoffice-horizontal-bad-order, fig-cap = '(ref:boxoffice-horizontal-bad-order)'}
 p <- ggplot(boxoffice, aes(x = factor(title_short, levels = title_short[c(2, 1, 5, 3, 4)]),
                            y = amount)) +
   geom_col(fill = "#56B4E9", alpha = 0.9) +
@@ -149,7 +149,7 @@ stamp_bad(p)
 
 (ref:income-by-age) 2016년 미국 가구 연령대별 중간 연간 소득. 45~54세 연령대가 중간 소득이 가장 높습니다. 데이터 출처: 미국 인구 조사국
 
-```{r income-by-age, fig.cap = '(ref:income-by-age)'}
+```{r fig-income-by-age, fig-cap = '(ref:income-by-age)'}
 income_by_age %>% filter(race == "all") %>%
   ggplot(aes(x = age, y = median_income)) +
     geom_col(fill = "#56B4E9", alpha = 0.9) +
@@ -170,7 +170,7 @@ income_by_age %>% filter(race == "all") %>%
 
 (ref:income-by-age-sorted) 2016년 미국 가구 연령대별 중간 연간 소득, 소득별 정렬. 이러한 막대 순서는 시각적으로 보기 좋지만 연령대 순서가 이제 혼란스럽습니다. 데이터 출처: 미국 인구 조사국
 
-```{r income-by-age-sorted, fig.cap = '(ref:income-by-age-sorted)'}
+```{r fig-income-by-age-sorted, fig-cap = '(ref:income-by-age-sorted)'}
 income_by_age %>% filter(race == "all") %>%
   ggplot(aes(x = fct_reorder(age, desc(median_income)), y = median_income)) +
     geom_col(fill = "#56B4E9", alpha = 0.9) +
@@ -203,7 +203,7 @@ stamp_bad(p_income_sorted)
 
 (ref:income-by-age-race-dodged) 2016년 미국 가구 연령대 및 인종별 중간 연간 소득. 연령대는 *x* 축을 따라 표시되며 각 연령대에 대해 아시아인, 백인, 히스패닉, 흑인의 중간 소득에 해당하는 4개의 막대가 각각 표시됩니다. 데이터 출처: 미국 인구 조사국
 
-```{r income-by-age-race-dodged, fig.width = 5.5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:income-by-age-race-dodged)'}
+```{r fig-income-by-age-race-dodged, fig-width = 5.5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:income-by-age-race-dodged)'}
 income_by_age %>% filter(race %in% c("white", "asian", "black", "hispanic")) %>%
    mutate(race = fct_relevel(race, c("asian", "white", "hispanic", "black")),
           race = fct_recode(race, 아시아인 = "asian", 히스패닉 = "hispanic"),
@@ -237,7 +237,7 @@ p_income_race_dodged
 
 (ref:income-by-race-age-dodged) 2016년 미국 가구 연령대 및 인종별 중간 연간 소득. 그림 @fig-income-by-age-race-dodged와 달리 이제 인종이 *x* 축을 따라 표시되며 각 인종에 대해 7개 연령대에 따라 7개의 막대가 표시됩니다. 데이터 출처: 미국 인구 조사국
 
-```{r income-by-race-age-dodged, fig.width = 5.5*6/4.2, fig.asp = 0.4, fig.cap = '(ref:income-by-race-age-dodged) '}
+```{r fig-income-by-race-age-dodged, fig-width = 5.5*6/4.2, fig-asp = 0.4, fig-cap = '(ref:income-by-race-age-dodged) '}
 # 8개 클래스 ColorBrewer 팔레트 "PuBu"에서 가장 어두운 7개 색상 가져오기
 colors_seven = RColorBrewer::brewer.pal(8, "PuBu")[2:8]
 
@@ -266,7 +266,7 @@ p_income_age_dodged
 
 (ref:income-by-age-race-faceted) 2016년 미국 가구 연령대 및 인종별 중간 연간 소득. 이 데이터를 그림 @fig-income-by-age-race-dodged 및 @fig-income-by-race-age-dodged에서와 같이 그룹화된 막대 그래프로 표시하는 대신 이제 네 개의 개별 일반 막대 그래프로 표시합니다. 이 선택은 막대 색상으로 범주형 변수를 인코딩할 필요가 없다는 장점이 있습니다. 데이터 출처: 미국 인구 조사국
 
-```{r income-by-age-race-faceted, fig.width = 5.5*6/4.2, fig.cap = '(ref:income-by-age-race-faceted)'}
+```{r fig-income-by-age-race-faceted, fig-width = 5.5*6/4.2, fig-cap = '(ref:income-by-age-race-faceted)'}
 income_df %>%
    mutate(age = fct_recode(age, "15–24" = "15 to 24", "25–34" = "25 to 34", "35–44" = "35 to 44",
                                 "45–54" = "45 to 54", "55–64" = "55 to 64", "65–74" = "65 to 74")) -> income_age_abbrev_df
@@ -300,7 +300,7 @@ p_income_age_faceted
 
 (ref:titanic-passengers-by-class-sex) 1등석, 2등석, 3등석으로 여행한 타이타닉호의 여성 및 남성 승객 수.
 
-```{r titanic-passengers-by-class-sex, fig.width = 5.5, fig.cap = '(ref:titanic-passengers-by-class-sex)'}
+```{r fig-titanic-passengers-by-class-sex, fig-width = 5.5, fig-cap = '(ref:titanic-passengers-by-class-sex)'}
 titanic_groups <- titanic_all %>% filter(class != "*") %>%
   select(class, sex) %>%
   group_by(class, sex) %>%
@@ -351,7 +351,7 @@ ggplot(titanic_groups, aes(x = class, y = n, fill = sex)) +
 
 (ref:Americas-life-expect) 2007년 미주 국가의 기대 수명. 데이터 출처: 갭마인더 프로젝트
 
-```{r Americas-life-expect, fig.width = 6., fig.asp = .9, fig.cap = '(ref:Americas-life-expect)'}
+```{r fig-Americas-life-expect, fig-width = 6., fig-asp = .9, fig-cap = '(ref:Americas-life-expect)'}
 library(gapminder)
 df_Americas <- gapminder %>% filter(year == 2007, continent == "아메리카")
 ggplot(df_Americas, aes(x = lifeExp, y = fct_reorder(country, lifeExp))) +
@@ -372,7 +372,7 @@ ggplot(df_Americas, aes(x = lifeExp, y = fct_reorder(country, lifeExp))) +
 
 (ref:Americas-life-expect-bars) 2007년 미주 국가의 기대 수명, 막대로 표시. 이 데이터 세트는 막대로 시각화하기에 적합하지 않습니다. 막대가 너무 길고 데이터의 주요 특징인 여러 국가 간 기대 수명 차이에서 주의를 분산시킵니다. 데이터 출처: 갭마인더 프로젝트
 
-```{r Americas-life-expect-bars, fig.width = 6., fig.asp = .9, fig.cap = '(ref:Americas-life-expect-bars)'}
+```{r fig-Americas-life-expect-bars, fig-width = 6., fig-asp = .9, fig-cap = '(ref:Americas-life-expect-bars)'}
 life_bars <- ggplot(df_Americas, aes(y = lifeExp, x = fct_reorder(country, lifeExp))) +
   geom_col(fill = "#56B4E9", alpha = 0.9) +
   scale_y_continuous(
@@ -398,7 +398,7 @@ stamp_bad(life_bars)
 
 (ref:Americas-life-expect-bad) 2007년 미주 국가의 기대 수명. 여기서 국가는 알파벳순으로 정렬되어 점이 무질서한 점 구름을 형성합니다. 이로 인해 그림을 읽기 어려우므로 "나쁨"으로 표시할 가치가 있습니다. 데이터 출처: 갭마인더 프로젝트
 
-```{r Americas-life-expect-bad, fig.width = 6., fig.asp = .9, fig.cap = '(ref:Americas-life-expect-bad)'}
+```{r fig-Americas-life-expect-bad, fig-width = 6., fig-asp = .9, fig-cap = '(ref:Americas-life-expect-bad)'}
 p <- ggplot(df_Americas, aes(x = lifeExp, y = fct_rev(country))) +
   geom_point(color = "#0072B2", size = 3) +
   scale_x_continuous(name = "기대 수명 (세)",
@@ -419,7 +419,7 @@ stamp_bad(p)
 
 (ref:internet-over-time) 일부 국가의 시간 경과에 따른 인터넷 보급률. 색상은 해당 국가 및 연도의 인터넷 사용자 비율을 나타냅니다. 국가는 2016년 인터넷 사용자 비율별로 정렬되었습니다. 데이터 출처: 세계 은행
 
-```{r internet-over-time, fig.width = 5.5*6/4.2, fig.cap = '(ref:internet-over-time)'}
+```{r fig-internet-over-time, fig-width = 5.5*6/4.2, fig-cap = '(ref:internet-over-time)'}
 country_list = c("미국", "중국", "인도", "일본", "알제리",
                  "브라질", "독일", "프랑스", "영국", "이탈리아", "뉴질랜드",
                  "캐나다", "멕시코", "칠레", "아르헨티나", "노르웨이", "남아프리카 공화국", "케냐",
@@ -472,7 +472,7 @@ ggplot(filter(internet_short, year > 1993),
 (ref:internet-over-time2) 일부 국가의 시간 경과에 따른 인터넷 보급률. 국가는 인터넷 사용량이 처음으로 20%를 초과한 연도별로 정렬되었습니다. 데이터 출처: 세계 은행
 
 
-```{r internet-over-time2, fig.width = 5.5*6/4.2, fig.cap = '(ref:internet-over-time2)'}
+```{r fig-internet-over-time2, fig-width = 5.5*6/4.2, fig-cap = '(ref:internet-over-time2)'}
 internet_summary <- internet_short %>%
   group_by(country) %>%
   summarize(year1 = min(year[users > 20]),

@@ -35,7 +35,7 @@ animate <- TRUE # 애니메이션 그림을 포함해야 하는지 여부
 
 (ref:probability-waffle) 빈도로서의 확률 시각화. 각 격자에는 100개의 정사각형이 있으며 각 정사각형은 어떤 무작위 시행에서 성공 또는 실패를 나타냅니다. 1% 성공 확률은 어두운 정사각형 1개와 밝은 정사각형 99개에 해당하고, 10% 성공 확률은 어두운 정사각형 10개와 밝은 정사각형 90개에 해당하며, 40% 성공 확률은 어두운 정사각형 40개와 밝은 정사각형 60개에 해당합니다. 밝은 정사각형 사이에 어두운 정사각형을 무작위로 배치함으로써 단일 시행 결과의 불확실성을 강조하는 무작위성의 시각적 인상을 만들 수 있습니다.
 
-```{r probability-waffle, fig.width = 5*6/4.2, fig.asp = 1.2/3, fig.cap = '(ref:probability-waffle)'}
+```{r fig-probability-waffle, fig-width = 5*6/4.2, fig-asp = 1.2/3, fig-cap = '(ref:probability-waffle)'}
 g <- expand.grid(x = 1:10, y = 1:10)
 
 set.seed(84524)
@@ -91,7 +91,7 @@ ggplot(data, aes(x, y, fill = value)) +
 
 (ref:election-prediction) 가상 선거 결과 예측. 파란색 정당은 노란색 정당보다 약 1% 포인트 우세할 것으로 예측되지만("최적 추정치"로 표시됨) 해당 예측에는 오차 범위가 있습니다(여기서는 가능한 결과의 95%를 포함하도록 그려졌으며 최적 추정치에서 양방향으로 1.76% 포인트). 파란색으로 음영 처리된 영역은 전체의 87.1%에 해당하며 파란색이 이기는 모든 결과를 나타냅니다. 마찬가지로 노란색으로 음영 처리된 영역은 전체의 12.9%에 해당하며 노란색이 이기는 모든 결과를 나타냅니다. 이 예에서 파란색은 선거에서 이길 확률이 87%입니다.
 
-```{r election-prediction, fig.asp = 0.5, fig.cap = '(ref:election-prediction)'}
+```{r fig-election-prediction, fig-asp = 0.5, fig-cap = '(ref:election-prediction)'}
 x <- c(seq(-2.5, 0, length.out = 50), seq(0.00001, 5, length.out = 100))
 mu <- 1.02
 sd <- .9
@@ -157,7 +157,7 @@ ggplot(df_norm, aes(x, y)) +
 
 (ref:election-quantile-dot) 그림 @fig-election-prediction의 선거 결과 분포의 분위수 점 그림 표현. (a) 부드러운 분포는 각각 2% 확률을 나타내는 50개의 점으로 근사됩니다. 따라서 6개의 노란색 점은 12% 확률에 해당하며 실제 값 12.9%에 상당히 가깝습니다. (b) 부드러운 분포는 각각 10% 확률을 나타내는 10개의 점으로 근사됩니다. 따라서 하나의 노란색 점은 10% 확률에 해당하며 여전히 실제 값에 가깝습니다. 점 수가 적은 분위수 점 그림은 읽기 쉬운 경향이 있으므로 이 예에서는 50개 점 버전보다 10개 점 버전이 더 바람직할 수 있습니다.
 
-```{r election-quantile-dot, fig.asp = 0.72, fig.cap = '(ref:election-quantile-dot)'}
+```{r fig-election-quantile-dot, fig-asp = 0.72, fig-cap = '(ref:election-quantile-dot)'}
 mu <- 1.02
 sd <- 0.9
 binwidth <- 0.31
@@ -227,7 +227,7 @@ plot_grid(p1, p2, align = 'h', labels = "auto", ncol = 1)
 
 (ref:sampling-schematic) 통계적 표본 추출의 주요 개념. 우리가 연구하는 관심 변수는 모집단에서 실제 모집단 평균과 표준 편차를 갖는 어떤 실제 분포를 갖습니다. 해당 변수의 유한한 표본은 모집단 모수와 다른 표본 평균과 표준 편차를 갖습니다. 반복적으로 표본을 추출하고 매번 평균을 계산하면 결과 평균은 평균의 표본 분포에 따라 분포됩니다. 표준 오차는 표본 분포의 너비에 대한 정보를 제공하며, 이는 관심 모수(여기서는 모집단 평균)를 얼마나 정확하게 추정하고 있는지 알려줍니다.
 
-```{r sampling-schematic, fig.asp = 3/4, fig.cap = '(ref:sampling-schematic)'}
+```{r fig-sampling-schematic, fig-asp = 3/4, fig-cap = '(ref:sampling-schematic)'}
 fill_color <- lighten("#56B4E9", 0.2)
 fill_color <- "lightblue"
 
@@ -395,7 +395,7 @@ plot_grid(
 
 (ref:cocoa-data-vs-CI) 초콜릿 바 평가 예에서 표본, 표본 평균, 표준 편차, 표준 오차 및 신뢰 구간 간의 관계. 표본을 구성하는 관찰값(녹색 점으로 표시됨)은 캐나다 제조업체의 125개 초콜릿 바에 대한 전문가 평가를 나타내며 1점(불쾌함)에서 5점(최상급)까지 평가됩니다. 큰 주황색 점은 평가의 평균을 나타냅니다. 오차 막대는 위에서 아래로 표준 편차의 두 배, 표준 오차(평균의 표준 편차)의 두 배, 평균의 80%, 95%, 99% 신뢰 구간을 나타냅니다. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
-```{r cocoa-data-vs-CI, fig.width = 5*6/4.2, fig.asp = 0.48, warning = FALSE, message = FALSE, fig.cap = '(ref:cocoa-data-vs-CI)'}
+```{r fig-cocoa-data-vs-CI, fig-width = 5*6/4.2, fig-asp = 0.48, warning = FALSE, message = FALSE, fig-cap = '(ref:cocoa-data-vs-CI)'}
 
 # 개별 작은 데이터 포인트의 색상
 point_color <- darken("#009E73", .3)
@@ -503,7 +503,7 @@ ggplot(CI_df, aes(estimate, type)) +
 
 (ref:cocoa-CI-vs-n) 표본 크기가 작을수록 신뢰 구간이 넓어집니다. 캐나다와 스위스의 초콜릿 바는 평균 평가와 표준 편차가 비슷합니다(단순한 검은색 오차 막대로 표시됨). 그러나 스위스 바보다 캐나다 바가 3배 이상 많이 평가되었으므로 스위스 평가 평균에 대한 신뢰 구간(여러 색상과 두께의 오차 막대를 서로 겹쳐 그린 것으로 표시됨)이 캐나다 평가 평균에 대한 신뢰 구간보다 훨씬 넓습니다. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
-```{r cocoa-CI-vs-n, fig.width = 5*6/4.2, fig.asp = 0.46, warning = FALSE, message = FALSE, fig.cap = '(ref:cocoa-CI-vs-n)'}
+```{r fig-cocoa-CI-vs-n, fig-width = 5*6/4.2, fig-asp = 0.46, warning = FALSE, message = FALSE, fig-cap = '(ref:cocoa-CI-vs-n)'}
 cacao_CA <- filter(cacao, location == "캐나다")
 cacao_CH <- filter(cacao, location == "스위스")
 
@@ -663,7 +663,7 @@ ggplot(rbind(CI_df, sd_df), aes(estimate, interaction(location, type))) +
 
 (ref:mean-chocolate-ratings) 6개국의 제조업체에서 생산한 초콜릿 바의 평균 초콜릿 맛 평가 및 관련 신뢰 구간. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
-```{r mean-chocolate-ratings, fig.width = 5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:mean-chocolate-ratings)'}
+```{r fig-mean-chocolate-ratings, fig-width = 5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:mean-chocolate-ratings)'}
 #countries <- c("오스트리아", "벨기에", "캐나다", "페루", "스위스")
 #
 cacao_small <-
@@ -750,7 +750,7 @@ ggplot(conf_df, aes(estimate, reorder(location, estimate))) +
 
 (ref:chocolate-ratings-contrasts) 5개국의 제조업체에서 생산한 초콜릿 바의 평균 초콜릿 맛 평가, 미국 초콜릿 바의 평균 평가 대비. 캐나다 초콜릿 바는 미국 바보다 유의미하게 높은 평가를 받았습니다. 다른 4개국의 경우 미국과 평균 평가에 유의미한 차이가 95% 신뢰 수준에서 없습니다. 신뢰 수준은 더넷 방법을 사용하여 다중 비교에 대해 조정되었습니다. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
-```{r chocolate-ratings-contrasts, fig.width = 5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:chocolate-ratings-contrasts)'}
+```{r fig-chocolate-ratings-contrasts, fig-width = 5*6/4.2, fig-asp = 0.5, fig-cap = '(ref:chocolate-ratings-contrasts)'}
 # 대비를 위한 참조 격자 필요
 fit_rg <- ref_grid(fit)
 
@@ -841,7 +841,7 @@ ggplot(contrasts_dunnettx, aes(x = estimate, y = reorder(contrast, estimate))) +
 
 (ref:confidence-visualizations) 4개국의 제조업체에서 생산한 초콜릿 바의 평균 초콜릿 맛 평가, 미국 초콜릿 바의 평균 평가 대비. 각 패널은 동일한 불확실성 정보를 시각화하는 다른 접근 방식을 사용합니다. (a) 캡이 있는 등급 오차 막대. (b) 캡이 없는 등급 오차 막대. (c) 캡이 있는 단일 간격 오차 막대. (d) 캡이 없는 단일 간격 오차 막대. (e) 신뢰 구간. (f) 신뢰 분포.
 
-```{r confidence-visualizations, fig.width = 5.5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:confidence-visualizations)'}
+```{r fig-confidence-visualizations, fig-width = 5.5*6/4.2, fig-asp = 0.75, fig-cap = '(ref:confidence-visualizations)'}
 cacao_smaller <- filter(cacao_small, location != "스위스")
 
 fit <- lm(rating ~ location, data = cacao_smaller)
@@ -1121,7 +1121,7 @@ plot_grid(
 
 (ref:butterfat-bars) 네 가지 소 품종 우유의 평균 유지방 함량. 오차 막대는 평균의 표준 오차 +/-를 나타냅니다. 이러한 유형의 시각화는 과학 문헌에서 자주 볼 수 있습니다. 기술적으로는 정확하지만 각 범주 내의 변동이나 표본 평균의 불확실성을 특별히 잘 나타내지는 못합니다. 개별 품종 내 유지방 함량 변동은 그림 @fig-butterfat-densitites를 참조하십시오. 데이터 출처: 캐나다 순종 젖소 생산 능력 기록
 
-```{r butterfat-bars, fig.width = 5, fig.cap = '(ref:butterfat-bars)'}
+```{r fig-butterfat-bars, fig-width = 5, fig-cap = '(ref:butterfat-bars)'}
 cows %>% filter(breed != "캐나다산") %>%
   mutate(breed = as.character(breed)) %>%
   group_by(breed) %>%
@@ -1150,7 +1150,7 @@ ggplot(cow_means, aes(x = breed, y = mean, ymin = mean - 1.96*se, ymax = mean + 
 
 (ref:median-age-income) 펜실베이니아 67개 카운티의 중간 소득 대 중간 연령. 오차 막대는 90% 신뢰 구간을 나타냅니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
-```{r median-age-income, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:median-age-income)'}
+```{r fig-median-age-income, fig-width = 5, fig-asp = 3/4, fig-cap = '(ref:median-age-income)'}
 filter(US_income_age, state == "펜실베이니아") %>%
   ggplot(aes(age, income)) +
   geom_errorbarh(
@@ -1178,7 +1178,7 @@ filter(US_income_age, state == "펜실베이니아") %>%
 
 (ref:ci-frequentist-expl) 신뢰 구간의 빈도 해석. 신뢰 구간(CI)은 반복적인 표본 추출의 맥락에서 가장 잘 이해됩니다. 각 표본에 대해 특정 신뢰 구간은 실제 모수(여기서는 평균)를 포함하거나 제외합니다. 그러나 반복적으로 표본을 추출하면 신뢰 구간(여기서는 68% 신뢰 구간, 표본 평균 +/- 표준 오차에 해당)이 약 68%의 경우 실제 평균을 포함합니다.
 
-```{r ci-frequentist-expl, fig.asp = 1, fig.cap = '(ref:ci-frequentist-expl)'}
+```{r fig-ci-frequentist-expl, fig-asp = 1, fig-cap = '(ref:ci-frequentist-expl)'}
 set.seed(85439)
 df <- data.frame(y = rnorm(10000))
 df_cont <- data.frame(
@@ -1227,7 +1227,7 @@ ggplot(df, aes(y = y)) +
 
 (ref:bayes-vs-ols) 평균 초콜릿 평점에 대한 빈도주의 신뢰 구간과 베이즈 신뢰 구간 비교. 두 접근 방식 모두 유사하지만 정확히 동일하지는 않은 결과를 생성함을 알 수 있습니다. 특히 베이즈 추정치는 약간의 축소를 보이는데, 이는 가장 극단적인 모수 추정치를 전체 평균으로 조정하는 것입니다. (스위스에 대한 베이즈 추정치가 약간 왼쪽으로 이동하고 페루에 대한 베이즈 추정치가 해당 빈도주의 추정치에 비해 약간 오른쪽으로 이동한 방식을 확인하십시오.) 여기에 표시된 빈도주의 추정치와 신뢰 구간은 그림 @fig-mean-chocolate-ratings에 표시된 95% 신뢰도에 대한 결과와 동일합니다.
 
-```{r bayes-vs-ols, fig.width = 5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:bayes-vs-ols)'}
+```{r fig-bayes-vs-ols, fig-width = 5*6/4.2, fig-asp = 0.6, fig-cap = '(ref:bayes-vs-ols)'}
 linear_results <-
   lm(rating ~ location, data = cacao_small) %>%
   emmeans(~ location) %>%
@@ -1292,7 +1292,7 @@ bind_rows(linear_results, bayes_results) %>%
 
 (ref:bayes-ridgeline) 능선 그림으로 표시된 평균 초콜릿 바 평점의 베이즈 사후 분포. 빨간색 점은 각 사후 분포의 중앙값을 나타냅니다. 연속 분포를 특정 신뢰 영역으로 변환하기 어렵기 때문에 각 곡선 아래에 음영을 추가하여 각 사후 분포의 중앙 80%, 95%, 99%를 나타냈습니다.
 
-```{r bayes-ridgeline, fig.width = 5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:bayes-ridgeline)'}
+```{r fig-bayes-ridgeline, fig-width = 5*6/4.2, fig-asp = 0.6, fig-cap = '(ref:bayes-ridgeline)'}
 bayes_emmeans %>%
   ggplot(aes(.value, reorder(location, .value))) +
   geom_density_ridges_gradient(
@@ -1359,7 +1359,7 @@ bayes_emmeans %>%
 
 (ref:blue-jays-male-conf-band) 그림 @fig-blue-jays-scatter-line에서와 같이 수컷 파랑어치의 머리 길이 대 체질량. 직선 파란색 선은 데이터에 대한 최상의 선형 적합을 나타내고 선 주위의 회색 띠는 선형 적합의 불확실성을 보여줍니다. 회색 띠는 95% 신뢰 수준을 나타냅니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r blue-jays-male-conf-band, fig.width = 5.5, fig.asp = 3/4, fig.cap = '(ref:blue-jays-male-conf-band)'}
+```{r fig-blue-jays-male-conf-band, fig-width = 5.5, fig-asp = 3/4, fig-cap = '(ref:blue-jays-male-conf-band)'}
 blue_jays_male <- filter(blue_jays, KnownSex == "M")
 
 fit <- gam(Head ~ Mass, data = blue_jays_male, method = "REML")
@@ -1388,7 +1388,7 @@ ggplot(blue_jays_male, aes(Mass, Head)) +
 
 (ref:blue-jays-male-fitted-draws) 수컷 파랑어치의 머리 길이 대 체질량. 그림 @fig-blue-jays-male-conf-band와 달리 이제 직선 파란색 선은 사후 분포에서 무작위로 추출된 동일하게 가능한 대체 적합을 나타냅니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r blue-jays-male-fitted-draws, fig.width = 5.5, fig.asp = 3/4, fig.cap = '(ref:blue-jays-male-fitted-draws)'}
+```{r fig-blue-jays-male-fitted-draws, fig-width = 5.5, fig-asp = 3/4, fig-cap = '(ref:blue-jays-male-fitted-draws)'}
 
 ggplot(blue_jays_male, aes(Mass, Head)) +
   geom_ribbon(data = ci_df, aes(ymin = lo, ymax = hi), fill="grey70", color = NA, alpha = 1/2) +
@@ -1412,7 +1412,7 @@ ggplot(blue_jays_male, aes(Mass, Head)) +
 
 (ref:blue-jays-male-graded-conf-band) 수컷 파랑어치의 머리 길이 대 체질량. 오차 막대의 경우와 마찬가지로 추정치의 불확실성을 강조하기 위해 등급 신뢰대를 그릴 수 있습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
-```{r blue-jays-male-graded-conf-band, fig.width = 5.5, fig.asp = 3/4, fig.cap = '(ref:blue-jays-male-graded-conf-band)'}
+```{r fig-blue-jays-male-graded-conf-band, fig-width = 5.5, fig-asp = 3/4, fig-cap = '(ref:blue-jays-male-graded-conf-band)'}
 ci_99_df <- confidence_band(fit, newdata, level = 0.99, unconditional = TRUE)
 ci_80_df <- confidence_band(fit, newdata, level = 0.80, unconditional = TRUE)
 
@@ -1475,7 +1475,7 @@ ggplot(blue_jays_male, aes(Mass, Head)) +
 
 (ref:mpg-uncertain) 32개 자동차(1973~74년 모델)의 연비 대 배기량. 각 점은 하나의 자동차를 나타내며 평활선은 5개의 매듭이 있는 3차 회귀 스플라인을 적합시켜 얻었습니다. (a) 최적 적합 스플라인 및 신뢰대. (b) 사후 분포에서 추출한 동일하게 가능한 대체 적합. 데이터 출처: 모터 트렌드, 1974.
 
-```{r mpg-uncertain, fig.width = 5.5*6/4.2, fig.asp = 3/8, fig.cap='(ref:mpg-uncertain)'}
+```{r fig-mpg-uncertain, fig-width = 5.5*6/4.2, fig-asp = 3/8, fig-cap='(ref:mpg-uncertain)'}
 set.seed(8692282)
 
 fit <- gam(mpg ~ s(disp, bs = 'cr', k = 5), data = mtcars, method = "REML")
@@ -1523,7 +1523,7 @@ HOP 개념을 설명하기 위해 초콜릿 바 등급으로 다시 돌아가 �
 
 (ref:chocolate-HOP-static) (인쇄판용) 캐나다 및 미국산 초콜릿 바 등급에 대한 가상 결과 그림의 개략도. 각 수직 녹색 막대는 하나의 바에 대한 등급을 나타내며 각 패널은 캐나다 제조업체와 미국 제조업체에서 각각 하나씩 무작위로 선택된 두 바의 비교를 보여줍니다. 실제 가상 결과 그림에서는 디스플레이가 여러 플롯 패널을 나란히 표시하는 대신 순환합니다.
 
-```{r chocolate-HOP-static, fig.width = 5.5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:chocolate-HOP-static)'}
+```{r fig-chocolate-HOP-static, fig-width = 5.5*6/4.2, fig-asp = 0.6, fig-cap = '(ref:chocolate-HOP-static)'}
 cacao %>%
   filter(location %in% c("캐나다", "미국")) %>%
   mutate(location = fct_recode(location, US = "미국")) -> cacao_US_CA
@@ -1572,7 +1572,7 @@ ggplot(sample_df) +
 
 (ref:chocolate-HOP-animated) (온라인판용) 캐나다 및 미국산 초콜릿 바 등급에 대한 가상 결과 그림. 각 수직 녹색 막대는 하나의 바에 대한 등급을 나타냅니다. 애니메이션은 캐나다 제조업체와 미국 제조업체에서 각각 하나씩 무작위로 선택된 두 바의 여러 경우를 순환합니다.
 
-```{r chocolate-HOP-animated, eval = TRUE, gganimate = list(nframes = 200), fig.asp = 0.6, fig.retina = 1, fig.cap = '(ref:chocolate-HOP-animated)'}
+```{r fig-chocolate-HOP-animated, eval = TRUE, gganimate = list(nframes = 200), fig-asp = 0.6, fig.retina = 1, fig-cap = '(ref:chocolate-HOP-animated)'}
 library(gganimate)
 
 set.seed(49316)
@@ -1624,7 +1624,7 @@ ggplot(sample_df) +
 (ref:mpg-uncertain-HOP-static) (인쇄판용) 연비 대 배기량에 대한 가상 결과 그림의 개략도. 각 점은 하나의 자동차를 나타내며 평활선은 5개의 매듭이 있는 3차 회귀 스플라인을 적합시켜 얻었습니다. 각 패널의 각 선은 적합 매개변수의 사후 분포에서 추출한 하나의 대체 적합 결과를 나타냅니다. 실제 가상 결과 그림에서는 디스플레이가 여러 플롯 패널을 나란히 표시하는 대신 순환합니다.
 
 
-```{r mpg-uncertain-HOP-static, fig.width = 5.5*6/4.2, fig.asp = 2/4, fig.cap = '(ref:mpg-uncertain-HOP-static)'}
+```{r fig-mpg-uncertain-HOP-static, fig-width = 5.5*6/4.2, fig-asp = 2/4, fig-cap = '(ref:mpg-uncertain-HOP-static)'}
 #set.seed(8692282)
 set.seed(8692276)
 
@@ -1658,7 +1658,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 
 (ref:mpg-uncertain-HOP-animated) (온라인판용) 연비 대 배기량에 대한 가상 결과 그림. 각 점은 하나의 자동차를 나타내며 평활선은 5개의 매듭이 있는 3차 회귀 스플라인을 적합시켜 얻었습니다. 애니메이션은 적합 매개변수의 사후 분포에서 추출한 여러 대체 적합 결과를 순환합니다.
 
-```{r mpg-uncertain-HOP-animated, eval = TRUE, fig.width = 5.5, fig.asp = 3/4, fig.retina = 1, fig.cap = '(ref:mpg-uncertain-HOP-animated)'}
+```{r fig-mpg-uncertain-HOP-animated, eval = TRUE, fig-width = 5.5, fig-asp = 3/4, fig.retina = 1, fig-cap = '(ref:mpg-uncertain-HOP-animated)'}
 library(gganimate)
 
 #set.seed(8692282)

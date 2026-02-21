@@ -19,7 +19,7 @@ source("_common.R")
 
 (ref:student-grades) 50명의 가상 수업 학생 성적의 경험적 누적 분포 함수.
 
-```{r student-grades, fig.cap='(ref:student-grades)'}
+```{r fig-student-grades, fig-cap='(ref:student-grades)'}
 set.seed(4211)
 points = round(c(rnorm(47, mean = 82, sd = 10), 45, 51, 67))
 points[points > 100] <- 100
@@ -39,7 +39,7 @@ ggplot(student_data, aes(x = points, y = 50*..y..)) +
 
 (ref:student-grades-desc) 내림차순 ecdf로 표시된 학생 성적 분포.
 
-```{r student-grades-desc, fig.cap='(ref:student-grades-desc)'}
+```{r fig-student-grades-desc, fig-cap='(ref:student-grades-desc)'}
 ggplot(student_data, aes(x = points, y = 51-50*..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2") +
   geom_point(aes(y = 51-rank), color = "#0072B2") +
@@ -57,7 +57,7 @@ ggplot(student_data, aes(x = points, y = 51-50*..y..)) +
 
 (ref:student-grades-normalized) 학생 성적의 Ecdf. 학생 순위는 총 학생 수로 정규화되어 플로팅된 *y* 값이 해당 점수 이하를 받은 학급 학생의 비율에 해당합니다.
 
-```{r student-grades-normalized, fig.cap='(ref:student-grades-normalized)'}
+```{r fig-student-grades-normalized, fig-cap='(ref:student-grades-normalized)'}
 ggplot(student_data, aes(x = points, y = ..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2", size = 0.75) +
   scale_x_continuous(limits = c(40, 102), expand = c(0, 0), breaks = 10*(4:10)) +
@@ -79,7 +79,7 @@ ggplot(student_data, aes(x = points, y = ..y..)) +
 
 (ref:county-populations) 2010년 미국 인구 조사에 따른 미국 카운티의 주민 수 분포. (a) 밀도 그림. (b) 경험적 누적 분포 함수.
 
-```{r county-populations, fig.width = 5, fig.asp = 2*0.618, fig.cap='(ref:county-populations)'}
+```{r fig-county-populations, fig-width = 5, fig-asp = 2*0.618, fig-cap='(ref:county-populations)'}
 p1 <- ggplot(US_census, aes(x=pop2010)) +
   geom_density(fill = "#56B4E9", color = "transparent") +
   scale_x_continuous(expand = c(0.01, 0), name = "주민 수",
@@ -111,7 +111,7 @@ plot_grid(p1, p2, ncol = 1, align = 'v', labels = 'auto')
 
 (ref:county-populations-log) 미국 카운티 주민 수의 로그 분포. (a) 밀도 그림. (b) 경험적 누적 분포 함수.
 
-```{r county-populations-log, fig.width = 5, fig.asp = 2*0.618, fig.cap='(ref:county-populations-log)'}
+```{r fig-county-populations-log, fig-width = 5, fig-asp = 2*0.618, fig-cap='(ref:county-populations-log)'}
 p1_log <- ggplot(US_census, aes(x=log10(pop2010))) +
   geom_density(fill = "#56B4E9", color = "transparent") +
   scale_x_continuous(
@@ -141,7 +141,7 @@ plot_grid(p1_log, p2_log, ncol = 1, align = 'v', labels = 'auto')
 
 (ref:county-populations-tail-log-log) 해당 주민 수 이상의 카운티 상대 빈도 대 카운티 주민 수.
 
-```{r county-populations-tail-log-log, fig.cap='(ref:county-populations-tail-log-log)'}
+```{r fig-county-populations-tail-log-log, fig-cap='(ref:county-populations-tail-log-log)'}
 ggplot(US_census, aes(x=pop2010, y = 1-..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2", size = 0.75, pad = FALSE) +
   scale_x_log10(expand = c(0.01, 0),
@@ -158,7 +158,7 @@ ggplot(US_census, aes(x=pop2010, y = 1-..y..)) +
 
 (ref:word-counts-tail-log-log) 소설 모비 딕의 단어 수 분포. 소설에서 해당 횟수 이상으로 나오는 단어의 상대 빈도 대 단어가 사용된 횟수가 표시됩니다.
 
-```{r word-counts-tail-log-log, fig.cap='(ref:word-counts-tail-log-log)' }
+```{r fig-word-counts-tail-log-log, fig-cap='(ref:word-counts-tail-log-log)' }
 ggplot(Moby_Dick, aes(x=count, y = 1-..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2", size = 0.75, pad = FALSE) +
   scale_x_log10(expand = c(0.01, 0), breaks = c(1, 10, 100, 1000, 10000),
@@ -178,7 +178,7 @@ ggplot(Moby_Dick, aes(x=count, y = 1-..y..)) +
 
 (ref:student-grades-qq) 학생 성적의 q-q 그림.
 
-```{r student-grades-qq, fig.width = 5, fig.asp = .98, fig.cap='(ref:student-grades-qq)'}
+```{r fig-student-grades-qq, fig-width = 5, fig-asp = .98, fig-cap='(ref:student-grades-qq)'}
 # 분포 매개변수 추정(평균 및 표준 편차)
 params <- as.list(MASS::fitdistr(student_data$points, "normal")$estimate)
 
@@ -211,7 +211,7 @@ ggplot(student_data, aes(sample = points)) +
 
 (ref:county-populations-qq) 미국 카운티 주민 수의 로그에 대한 q-q 그림.
 
-```{r county-populations-qq, fig.width = 5, fig.asp = 1, fig.cap='(ref:county-populations-qq)'}
+```{r fig-county-populations-qq, fig-width = 5, fig-asp = 1, fig-cap='(ref:county-populations-qq)'}
 # 분포 매개변수 추정(평균 및 표준 편차)
 params <- as.list(MASS::fitdistr(log(US_census$pop2010), "normal")$estimate)
 
