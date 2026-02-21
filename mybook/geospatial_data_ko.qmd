@@ -75,7 +75,7 @@ text(
 
 (ref:world-mercator) 세계의 메르카토르 투영법. 이 투영법에서 평행선은 직선 수평선이고 경선은 직선 수직선입니다. 국부적인 각도를 보존하는 등각 투영법이지만 극 근처에서 면적에 심각한 왜곡을 유발합니다. 예를 들어 이 투영법에서 그린란드는 아프리카보다 커 보이지만 실제로는 아프리카가 그린란드보다 14배 더 큽니다(그림 @fig-world-orthographic 및 @fig-world-goode 참조).
 
-```{r fig-world-mercator, fig.width = 5, fig.asp = 0.85, fig.cap = '(ref:world-mercator)'}
+```{r fig-world-mercator, eval = FALSE, fig.width = 5, fig.asp = 0.85, fig.cap = '(ref:world-mercator)'}
 world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))
 
 crs_longlat <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -115,7 +115,7 @@ ggplot(world_sf) +
 
 (ref:world-goode) 세계의 중단된 구드 호몰로사인 투영법. 이 투영법은 각도 왜곡을 최소화하면서 면적을 정확하게 보존하지만 바다와 일부 육지(그린란드, 남극 대륙)를 비연속적인 방식으로 표시하는 단점이 있습니다.
 
-```{r fig-world-goode, fig.width = 5*6/4.2, fig.asp = 0.45, fig.cap = '(ref:world-goode)'}
+```{r fig-world-goode, eval = FALSE, fig.width = 5*6/4.2, fig.asp = 0.45, fig.cap = '(ref:world-goode)'}
 crs_goode <- "+proj=igh"
 
 # 경위도 좌표의 투영 윤곽선

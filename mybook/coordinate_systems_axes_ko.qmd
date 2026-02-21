@@ -467,7 +467,7 @@ ggplot(temps_long, aes(x = date, y = temperature, color = location)) +
 
 (ref:worldmap-four-projections) 4가지 다른 투영법으로 표시된 세계 지도. 데카르트 경도 및 위도 시스템은 각 위치의 경도와 위도를 일반적인 데카르트 좌표계에 매핑합니다. 이 매핑은 3D 지구상의 실제 값에 비해 면적과 각도 모두에서 상당한 왜곡을 유발합니다. 중단된 구드 호몰로사인 투영법은 실제 표면적을 완벽하게 나타내지만 그린란드와 남극 대륙과 같은 일부 육지를 별도의 조각으로 나누는 단점이 있습니다. 로빈슨 투영법과 빈켈 트리펠 투영법은 모두 각도 왜곡과 면적 왜곡 사이의 균형을 이루며 전 세계 지도에 일반적으로 사용됩니다.
 
-```{r fig-worldmap-four-projections, fig.width = 5.5*6/4.2, fig.cap = '(ref:worldmap-four-projections)'}
+```{r fig-worldmap-four-projections, eval = FALSE, fig.width = 5.5*6/4.2, fig.cap = '(ref:worldmap-four-projections)'}
 library(sf)
 
 world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))
