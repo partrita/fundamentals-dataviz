@@ -13,8 +13,8 @@ library(ggridges) # geom_density_line()용
 
 ## 단일 분포 시각화
 
-모든 승객을 비슷한 연령대의 구간으로 그룹화한 다음 각 구간의 승객 수를 계산하여 승객 간의 연령 분포를 파악할 수 있습니다. 이 절차를 통해 표 @tab-titanic-ages와 같은 표가 생성됩니다.
-```{r tab-titanic-ages}
+모든 승객을 비슷한 연령대의 구간으로 그룹화한 다음 각 구간의 승객 수를 계산하여 승객 간의 연령 분포를 파악할 수 있습니다. 이 절차를 통해 표 @tbl-titanic-ages와 같은 표가 생성됩니다.
+```{r tbl-titanic-ages}
 titanic <- titanic_all
 age_counts <- hist(titanic$age, breaks = (0:15) * 5 + .01, plot = FALSE)$counts
 age_hist <- data.frame(

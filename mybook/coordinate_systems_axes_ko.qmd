@@ -243,7 +243,7 @@ plot_grid(plotlist[[1]], plotlist[[2]], plotlist[[3]], stamp_wrong(plotlist[[4]]
 set.seed(3878)
 US_census %>% filter(state %in% c("Texas", "텍사스")) %>%
   select(name, pop2010) %>%
-  extract(name, "county", regex = "(.+)( County| 카운티)") %>%
+  extract(name, "county", regex = "(.+)(?: County| 카운티)") %>%
   mutate(popratio = pop2010/median(pop2010)) %>%
   arrange(desc(popratio)) %>%
   mutate(index = seq_len(n()),

@@ -273,7 +273,7 @@ ggplot(df_oceania_ratios, aes(x = reorder(country, gdp_ratio), y = gdp_ratio)) +
 ```{r fig-RI-pop-pie, fig.cap = '(ref:RI-pop-pie)'}
 RI_pop <- US_census %>%
   filter(state %in% c("Rhode Island", "로드아일랜드")) %>%
-  extract(name, "county", regex = "(.+)( County| 카운티)") %>%
+  extract(name, "county", regex = "(.+)(?: County| 카운티)") %>%
   select(county, pop2010) %>%
   mutate(
     label_pop = scales::comma(signif(pop2010, 3)),
