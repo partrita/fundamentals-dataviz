@@ -26,22 +26,18 @@ boxoffice <- data.frame(rank = 1:5,
                         amount_text = c("$71,565,498", "$36,169,328", "$19,928,525", "$8,805,843", "$7,316,746"))
 
 boxoffice_display <- boxoffice %>%
-  mutate(A = " ", B = " ", C = " ") %>%
-  select(A, rank, title, amount_text, B, C) %>%
-  rename(` ` = A,
-         순위 = rank,
+  mutate(v1 = " ", v2 = " ", v3 = " ") %>%
+  select(v1, rank, title, amount_text, v2, v3) %>%
+  rename(순위 = rank,
          제목 = title,
-         `주말 총수입` = amount_text,
-         ` ` = B,
-         ` ` = C)
+         `주말 총수입` = amount_text)
 
 knitr::kable(
   boxoffice_display,
+  col.names = c(" ", "순위", "제목", "주말 총수입", " ", " "),
   caption = '2017년 12월 22-24일 주말 최고 흥행 영화. 데이터 출처: 박스오피스 모조 (http://www.boxofficemojo.com/). 허가를 받아 사용함', booktabs = TRUE,
   row.names = FALSE,
-  align = c('c', 'c', 'l', 'r', 'c', 'c')#,
-  #format = "html",
-  #table.attr = "style = \"width: 75%\""
+  align = c('c', 'c', 'l', 'r', 'c', 'c')
 )
 ```
 
