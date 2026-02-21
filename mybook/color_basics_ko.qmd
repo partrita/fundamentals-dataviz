@@ -45,6 +45,13 @@ popgrowth_df <- left_join(US_census, US_regions) %>%
               area = sum(area)) %>%
     arrange(popgrowth) %>%
     ungroup() %>%
+    mutate(region = case_when(
+      region == "West" ~ "서부",
+      region == "South" ~ "남부",
+      region == "Midwest" ~ "중서부",
+      region == "Northeast" ~ "북동부",
+      TRUE ~ region
+    )) %>%
     mutate(state = factor(state, levels = state),
            region = factor(region, levels = c("서부", "남부", "중서부", "북동부")))
 
@@ -229,7 +236,14 @@ popgrowth_hilight <- left_join(US_census, US_regions) %>%
               area = sum(area)) %>%
     arrange(popgrowth) %>%
     ungroup() %>%
-    mutate(region = ifelse(state %in% c("텍사스", "루이지애나"), "강조", region)) %>%
+    mutate(region = case_when(
+      region == "West" ~ "서부",
+      region == "South" ~ "남부",
+      region == "Midwest" ~ "중서부",
+      region == "Northeast" ~ "북동부",
+      TRUE ~ region
+    )) %>%
+    mutate(region = ifelse(state %in% c("텍사스", "루이지애나", "Texas", "Louisiana"), "강조", region)) %>%
     mutate(state = factor(state, levels = state),
            region = factor(region, levels = c("서부", "남부", "중서부", "북동부", "강조")))
 

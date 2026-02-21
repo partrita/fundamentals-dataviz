@@ -23,6 +23,13 @@ popgrowth_df <- left_join(US_census, US_regions) %>%
               area = sum(area)) %>%
     arrange(popgrowth) %>%
     ungroup() %>%
+    mutate(region = case_when(
+      region == "West" ~ "서부",
+      region == "South" ~ "남부",
+      region == "Midwest" ~ "중서부",
+      region == "Northeast" ~ "북동부",
+      TRUE ~ region
+    )) %>%
     mutate(state = factor(state, levels = state),
            region = factor(region, levels = c("서부", "남부", "중서부", "북동부")))
 
