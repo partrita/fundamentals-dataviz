@@ -1,5 +1,5 @@
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-# 설정 스크립트 실행
+## 설정 스크립트 실행
 source("_common.R")
 
 library(ggforce)

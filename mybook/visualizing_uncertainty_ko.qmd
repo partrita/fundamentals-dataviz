@@ -1,5 +1,5 @@
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-# 설정 스크립트 실행
+## 설정 스크립트 실행
 source("_common.R")
 
 library(forcats)
@@ -1572,7 +1572,7 @@ ggplot(sample_df) +
 
 (ref:chocolate-HOP-animated) (온라인판용) 캐나다 및 미국산 초콜릿 바 등급에 대한 가상 결과 그림. 각 수직 녹색 막대는 하나의 바에 대한 등급을 나타냅니다. 애니메이션은 캐나다 제조업체와 미국 제조업체에서 각각 하나씩 무작위로 선택된 두 바의 여러 경우를 순환합니다.
 
-```{r chocolate-HOP-animated, eval = animate, gganimate = list(nframes = 200), fig.asp = 0.6, fig.retina = 1, fig.cap = '(ref:chocolate-HOP-animated)'}
+```{r chocolate-HOP-animated, eval = TRUE, gganimate = list(nframes = 200), fig.asp = 0.6, fig.retina = 1, fig.cap = '(ref:chocolate-HOP-animated)'}
 library(gganimate)
 
 set.seed(49316)
@@ -1658,7 +1658,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 
 (ref:mpg-uncertain-HOP-animated) (온라인판용) 연비 대 배기량에 대한 가상 결과 그림. 각 점은 하나의 자동차를 나타내며 평활선은 5개의 매듭이 있는 3차 회귀 스플라인을 적합시켜 얻었습니다. 애니메이션은 적합 매개변수의 사후 분포에서 추출한 여러 대체 적합 결과를 순환합니다.
 
-```{r mpg-uncertain-HOP-animated, eval = animate, fig.width = 5.5, fig.asp = 3/4, fig.retina = 1, fig.cap = '(ref:mpg-uncertain-HOP-animated)'}
+```{r mpg-uncertain-HOP-animated, eval = TRUE, fig.width = 5.5, fig.asp = 3/4, fig.retina = 1, fig.cap = '(ref:mpg-uncertain-HOP-animated)'}
 library(gganimate)
 
 #set.seed(8692282)

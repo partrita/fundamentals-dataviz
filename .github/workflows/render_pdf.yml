@@ -1,46 +1,51 @@
 name: Render Korean PDFs
 
 on:
-  workflow_dispatch: # 이 부분을 추가하여 수동으로 워크플로우를 실행할 수 있습니다.
-  push: # 기존 push 트리거는 주석 처리하거나 제거하여 자동 실행을 방지합니다.
+  workflow_dispatch:
+  push:
      branches:
-       - main # Or your preferred branch
+       - main
      paths:
-       - 'translated_korean_files/**.qmd'
+       - 'mybook/**.qmd'
+       - 'pixi.toml'
   
 jobs:
   render_and_release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2 # Add this step to install R
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          pixi-version: v0.39.0
+          manifest-path: pixi.toml
 
-      - name: Install R dependencies (rmarkdown, knitr)
-        run: |
-          Rscript -e 'install.packages(c("rmarkdown", "knitr"), repos = "http://cran.rstudio.com/")'
+      - name: Install dviz.supp and colorblindr
+        run: pixi run Rscript -e 'remotes::install_github("clauswilke/colorblindr"); remotes::install_github("clauswilke/dviz.supp")'
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Install TinyTeX
+        run: pixi run quarto install tinytex
 
       - name: Render QMD to PDF and move to artifacts
         run: |
           mkdir -p artifacts
-          for file in translated_korean_files/*.qmd; do
+          for file in mybook/*.qmd; do
             # Render the QMD file. Quarto will by default place the PDF
             # in the same directory as the source QMD file.
-            quarto render "$file" --to pdf
-            # After rendering, move the generated PDF to the artifacts directory.
-            # The basename command extracts just the filename, and ${file%.qmd}
-            # removes the .qmd extension to correctly name the PDF.
-            mv "${file%.qmd}.pdf" "artifacts/$(basename "${file%.qmd}").pdf"
+            pixi run quarto render "$file" --to pdf || true
+            
+            # After rendering, move the generated PDF to the artifacts directory if it exists.
+            if [ -f "${file%.qmd}.pdf" ]; then
+              mv "${file%.qmd}.pdf" "artifacts/$(basename "${file%.qmd}").pdf"
+            fi
           done
 
       - name: Create Release and Upload PDFs
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*.pdf
           tag_name: korean-pdfs-${{ github.sha }}

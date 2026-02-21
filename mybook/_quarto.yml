@@ -1,5 +1,7 @@
 project:
   type: book
+  resources:
+    - cover.png
 
 book:
   title: "데이터 시각화의 기본"
