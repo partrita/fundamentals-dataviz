@@ -1,4 +1,4 @@
-name: Deploy Quarto Book to GitHub Pages
+name: Build and Deploy Quarto Book
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -18,6 +18,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,18 +29,57 @@ jobs:
           pixi-version: v0.39.0
           manifest-path: pixi.toml
 
-      - name: Install dviz.supp and colorblindr
+      - name: Cache Quarto Execution
+        uses: actions/cache@v4
+        with:
+          path: |
+            mybook/.quarto
+            mybook/*_cache
+          key: quarto-cache-${{ runner.os }}-${{ hashFiles('mybook/*.qmd') }}
+          restore-keys: |
+            quarto-cache-${{ runner.os }}-
+
+      - name: Install R Dependencies
         run: pixi run install-deps
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Render Quarto Book
+      - name: Install TinyTeX
+        run: pixi run quarto install tinytex
+
+      - name: Render HTML Book
         run: pixi run quarto render mybook
 
-      - name: Upload artifact
+      - name: Render Individual PDFs
+        run: |
+          mkdir -p artifacts
+          for file in mybook/*.qmd; do
+            # Skip index.qmd if you don't want it as a separate PDF, 
+            # or include it. The previous script included all.
+            pixi run quarto render "$file" --to pdf || true
+            
+            if [ -f "${file%.qmd}.pdf" ]; then
+              mv "${file%.qmd}.pdf" "artifacts/$(basename "${file%.qmd}").pdf"
+            fi
+          done
+
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: mybook/_book
+
+      - name: Create Release and Upload PDFs
+        uses: softprops/action-gh-release@v2
+        if: github.event_name != 'pull_request'
+        with:
+          files: artifacts/*.pdf
+          tag_name: build-${{ github.sha }}
+          name: Build Artifacts ${{ github.sha }}
+          body: |
+            Automated build of Quarto book (HTML and PDFs).
+            Commit: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     environment:

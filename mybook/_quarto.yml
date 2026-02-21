@@ -53,6 +53,7 @@ bibliography: bibliography.bib
 
 execute:
   enabled: true
+  cache: true
 
 format:
   html:
