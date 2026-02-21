@@ -1,0 +1,554 @@
+```{r echo = FALSE, message = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+
+library(tidyr)
+library(forcats)
+library(ggforce)
+library(ggridges)
+
+main_size = 14 / .pt
+small_rel <- 12/14
+small_size <- small_rel * main_size
+```
+
+
+# 비율 시각화하기 {#visualizing-proportions}
+
+어떤 그룹, 개체 또는 양이 전체의 *비율*을 나타내는 개별 조각으로 어떻게 나뉘는지 보여주고 싶은 경우가 많습니다. 일반적인 예로는 특정 집단의 남성과 여성 비율, 선거에서 여러 정당에 투표한 사람들의 비율 또는 기업의 시장 점유율 등이 있습니다. 이러한 시각화의 전형은 원형 차트이며, 모든 비즈니스 프레젠테이션에 omnipresent하고 데이터 과학자들 사이에서는 많이 비판받습니다. 앞으로 살펴보겠지만, 특히 전체가 여러 개의 다른 조각으로 나뉘거나 시간 경과 또는 조건에 따른 비율 변화를 보고 싶을 때 비율을 시각화하는 것은 어려울 수 있습니다. 항상 작동하는 단일한 이상적인 시각화는 없습니다. 이 문제를 설명하기 위해 각각 다른 유형의 시각화가 필요한 몇 가지 다른 시나리오를 논의하겠습니다.
+
+```{block type='rmdtip', echo=TRUE}
+기억하십시오. 항상 특정 데이터 세트에 가장 적합하고 보여주고 싶은 주요 데이터 특징을 강조하는 시각화를 선택해야 합니다.
+```
+
+
+## 원형 차트의 경우
+
+1961년부터 1983년까지 독일 의회(분데스탁이라고 함)는 세 개의 다른 정당인 CDU/CSU, SPD, FDP의 의원들로 구성되었습니다. 이 기간 대부분 동안 CDU/CSU와 SPD는 거의 비슷한 수의 의석을 가졌고 FDP는 일반적으로 전체 의석의 작은 부분만 차지했습니다. 예를 들어 1976년부터 1980년까지의 제8대 분데스탁에서 CDU/CSU는 243석, SPD는 214석, FDP는 39석으로 총 496석을 차지했습니다. 이러한 의회 데이터는 일반적으로 원형 차트로 시각화됩니다(그림 \@ref(fig:bundestag-pie)).
+
+(ref:bundestag-pie) 1976년~1980년 제8대 독일 연방의회 정당 구성, 원형 차트로 시각화. 이 시각화는 SPD와 FDP의 연립 정부가 야당인 CDU/CSU보다 약간의 과반수를 차지했음을 명확하게 보여줍니다.
+
+```{r, bundestag-pie, fig.cap='(ref:bundestag-pie)'}
+# 각 파이의 시작 및 끝 각도 계산
+bund_pie <- bundestag %>%
+  arrange(seats) %>%
+  mutate(
+    seat_total = sum(seats),
+    end_angle = 2*pi*cumsum(seats)/seat_total,   # 각 파이 조각의 끝 각도
+    start_angle = lag(end_angle, default = 0),   # 각 파이 조각의 시작 각도
+    mid_angle = 0.5*(start_angle + end_angle),   # 텍스트 레이블을 위한 각 파이 조각의 중간
+    hjust = ifelse(mid_angle>pi, 1, 0),
+    vjust = ifelse(mid_angle<pi/2 | mid_angle>3*pi/2, 0, 1)
+  )
+
+rpie = 1
+rlabel = 1.05 * rpie
+
+ggplot(bund_pie) +
+  geom_arc_bar(
+    aes(
+      x0 = 0, y0 = 0, r0 = 0, r = rpie,
+      start = start_angle, end = end_angle, fill = party
+    ),
+    color = "white", size = 0.5
+  ) +
+  geom_text(
+    aes(
+      x = rlabel*sin(mid_angle),
+      y = rlabel*cos(mid_angle),
+      label = party,
+      hjust = hjust, vjust = vjust
+    ),
+    family = dviz_font_family, size = main_size
+  ) +
+  geom_text(
+    aes(
+      x = 0.6*sin(mid_angle),
+      y = 0.6*cos(mid_angle),
+      label = seats
+    ),
+    family = dviz_font_family, size = main_size,
+    color = c("black", "white", "white")
+  ) +
+  coord_fixed(clip = "off") +
+  scale_x_continuous(
+    limits = c(-1.5, 1.5),
+    expand = c(0, 0),
+    name = "",
+    breaks = NULL,
+    labels = NULL
+  ) +
+  scale_y_continuous(
+    limits = c(-1.01, 1.15),
+    expand = c(0, 0),
+    name = "",
+    breaks = NULL,
+    labels = NULL
+  ) +
+  scale_fill_manual(
+    values = bund_pie$colors[order(bund_pie$party)]
+  ) +
+  theme_dviz_map() +
+  theme(
+    legend.position = "none",
+    plot.margin = margin(3.5, 1.5, 3.5, 1.5)
+  )
+```
+
+원형 차트는 원을 조각으로 나누어 각 조각의 면적이 전체에서 차지하는 비율에 비례하도록 합니다. 동일한 절차를 직사각형에 수행할 수 있으며 결과는 누적 막대 차트입니다(그림 \@ref(fig:bundestag-stacked-bars)). 막대를 세로로 자르는지 가로로 자르는지에 따라 세로 누적 막대(그림 \@ref(fig:bundestag-stacked-bars)a) 또는 가로 누적 막대(그림 \@ref(fig:bundestag-stacked-bars)b)를 얻습니다.
+
+(ref:bundestag-stacked-bars) 1976년~1980년 제8대 독일 연방의회 정당 구성, 누적 막대로 시각화. (a) 세로로 쌓인 막대. (b) 가로로 쌓인 막대. SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
+
+```{r, bundestag-stacked-bars, fig.width = 5.5*6/4.2, fig.cap='(ref:bundestag-stacked-bars)'}
+bundestag <- mutate(bundestag,
+                    label_y = cumsum(seats) - seats/2)
+
+bt_bars_stacked_base <- ggplot(bundestag, aes(x = 1, y = seats, fill = factor(party, levels = rev(party)))) +
+  geom_col(position = "stack", color = "white") +
+  geom_text(
+    aes(x = 1., y = label_y, label = seats),
+    size = main_size, family = dviz_font_family,
+    color = c("white", "white", "black")
+  ) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = c(0, 0), breaks = NULL, name = NULL) +
+  scale_fill_manual(values = rev(bundestag$colors), guide = "none")
+
+bt_bars_yax <- axis_canvas(bt_bars_stacked_base, axis = "y") +
+  geom_text(
+    data = bundestag,
+    aes(x = 0.06, y = label_y, label = party),
+    hjust = 0, vjust = 0.5, size = small_size,
+    family = dviz_font_family
+  ) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1))
+
+bt_bars_stacked <- insert_yaxis_grob(
+  bt_bars_stacked_base +
+    theme_dviz_hgrid() +
+    theme(
+      axis.ticks = element_line(color = "gray70"),
+      plot.margin = margin(7, 1.5, 7, 1.5)
+    ),
+  bt_bars_yax, grid::unit(.5, "null"))
+
+bt_bars_xax <- axis_canvas(bt_bars_stacked_base, axis = "y") +
+  geom_text(
+    data = bundestag,
+    aes(x = 0., y = label_y, label = party, hjust = 0.5, vjust = 0, size = small_size),
+    family = dviz_font_family
+  ) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1)) +
+  coord_flip()
+
+bt_bars_hstacked <- insert_xaxis_grob(
+  bt_bars_stacked_base + coord_flip() +
+    scale_y_continuous(expand = c(0, 0), position = "right") +
+    theme_dviz_vgrid() +
+    theme(
+      axis.ticks = element_line(color = "gray70"),
+      plot.margin = margin(3, 1.5, 3, 3)
+    ),
+  bt_bars_xax, grid::unit(14, "pt"), position = "bottom")
+
+plot_grid(
+  bt_bars_stacked,
+  plot_grid(
+    NULL, bt_bars_hstacked, NULL,
+    ncol = 1, rel_heights = c(1, 6, 7.5)
+  ),
+  rel_widths = c(4, 7), labels = "auto"
+)
+```
+
+그림 \@ref(fig:bundestag-stacked-bars)a의 막대를 가져와 서로 겹쳐 쌓는 대신 나란히 배치할 수도 있습니다. 이 시각화는 세 그룹을 직접 비교하기 쉽게 만들지만 데이터의 다른 측면을 모호하게 만듭니다(그림 \@ref(fig:bundestag-bars-side-by-side)). 가장 중요한 것은 나란히 놓인 막대 그래프에서 각 막대와 전체의 관계가 시각적으로 명확하지 않다는 것입니다.
+
+(ref:bundestag-bars-side-by-side) 1976년~1980년 제8대 독일 연방의회 정당 구성, 나란히 놓인 막대로 시각화. 그림 \@ref(fig:bundestag-stacked-bars)에서와 마찬가지로 SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
+
+```{r bundestag-bars-side-by-side, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:bundestag-bars-side-by-side)'}
+bt_bars <- ggplot(bundestag, aes(x = factor(party, levels = bundestag$party), y = seats, fill = party)) +
+  geom_col() +
+  geom_text(aes(label = seats), size = main_size, vjust = 2, color = c("white", "white", "black")) +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = bundestag$colors[order(bundestag$party)], guide = "none") +
+  #geom_hline(yintercept = c(50, 100, 150, 200), color = "#ffffff70", size = .5) +
+  coord_cartesian(clip = "off") +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+bt_bars
+```
+
+많은 저자들이 원형 차트를 단호하게 거부하고 나란히 놓인 막대나 누적 막대를 지지합니다. 다른 사람들은 일부 응용 프로그램에서 원형 차트 사용을 옹호합니다. 제 개인적인 의견은 이러한 시각화 중 어느 것도 다른 것보다 일관되게 우수하지 않다는 것입니다. 데이터 세트의 특징과 전달하려는 특정 이야기에 따라 한 가지 또는 다른 접근 방식을 선호할 수 있습니다. 제8대 독일 연방의회의 경우 원형 차트가 최상의 옵션이라고 생각합니다. SPD와 FDP의 연립 정부가 CDU/CSU보다 약간의 과반수를 차지했음을 명확하게 보여줍니다(그림 \@ref(fig:bundestag-pie)). 이 사실은 다른 어떤 플롯에서도 시각적으로 명확하지 않습니다(그림 \@ref(fig:bundestag-stacked-bars) 및 \@ref(fig:bundestag-bars-side-by-side)).
+
+일반적으로 원형 차트는 1/2, 1/3 또는 1/4과 같은 단순한 분수를 강조하는 것이 목표일 때 잘 작동합니다. 또한 매우 작은 데이터 세트가 있는 경우에도 잘 작동합니다. 그림 \@ref(fig:bundestag-pie)와 같은 단일 원형 차트는 괜찮아 보이지만 그림 \@ref(fig:bundestag-stacked-bars)a와 같은 단일 열의 누적 막대는 어색해 보입니다. 반면에 누적 막대는 여러 조건의 나란히 비교 또는 시계열에서 작동할 수 있으며 개별 분수를 서로 직접 비교하려는 경우 나란히 놓인 막대가 선호됩니다. 원형 차트, 누적 막대 및 나란히 놓인 막대의 여러 장단점에 대한 요약은 표 \@ref(tab:pros-cons-pie-bar)에 나와 있습니다.
+
+표: (\#tab:pros-cons-pie-bar) 비율 시각화에 대한 일반적인 접근 방식의 장단점: 원형 차트, 누적 막대 및 나란히 놓인 막대.
+
+----------------------------------------------------------------------------------------
+                                    원형 차트         누적 막대      나란히 놓인 막대
+-----------------------------  ------------------- ------------------- -------------------
+데이터를 전체의 비율로 명확하게 시각화             ✔                 ✔                   ✖
+
+상대적 비율의 쉬운 시각적 비교 허용           ✖                 ✖                   ✔
+
+1/2, 1/3, 1/4와 같은 단순 분수를 시각적으로 강조              ✔                 ✖                   ✖
+
+매우 작은 데이터 세트에서도 시각적으로 매력적으로 보임                ✔                 ✖                   ✔
+
+전체가 여러 조각으로 나뉘었을 때 잘 작동            ✖                 ✖                   ✔
+
+여러 비율 집합 또는 비율 시계열 시각화에 잘 작동                      ✖                 ✔                   ✖
+----------------------------------------------------------------------------------------
+
+
+## 나란히 놓인 막대의 경우 {#side-by-side-bars}
+
+이제 원형 차트가 실패하는 경우를 보여 드리겠습니다. 이 예는 원래 위키백과에 게시된 원형 차트에 대한 비판을 모델로 삼았습니다[@Schutz-piecharts]. 다섯 개의 가상 회사 A, B, C, D, E가 모두 약 20%의 비슷한 시장 점유율을 가지고 있다고 가정해 보겠습니다. 가상 데이터 세트에는 3년 연속 각 회사의 시장 점유율이 나열되어 있습니다. 이 데이터 세트를 원형 차트로 시각화하면 정확히 무슨 일이 일어나고 있는지 파악하기 어렵습니다(그림 \@ref(fig:marketshare-pies)). 회사 A의 시장 점유율은 증가하고 회사 E의 시장 점유율은 감소하는 것처럼 보이지만 이 관찰 외에는 무슨 일이 일어나고 있는지 알 수 없습니다. 특히 각 연도 내 여러 회사의 시장 점유율을 정확히 비교하기는 불분명합니다.
+
+
+(ref:marketshare-pies) 2015년~2017년 다섯 개 가상 회사 A~E의 시장 점유율, 원형 차트로 시각화. 이 시각화에는 두 가지 주요 문제가 있습니다. 1. 연도 내 상대적 시장 점유율 비교가 거의 불가능합니다. 2. 연도 간 시장 점유율 변화를 보기 어렵습니다.
+
+```{r marketshare-pies, fig.width = 5*6/4.2, fig.asp = .35, fig.cap='(ref:marketshare-pies)'}
+# 각 파이의 시작 및 끝 각도 계산
+market_pies_df <- marketshare %>%
+  group_by(year) %>%
+  mutate(total = sum(percent),
+         end_angle = 2*pi*cumsum(percent)/total,      # 각 파이 조각의 끝 각도
+         start_angle = lag(end_angle, default = 0),   # 각 파이 조각의 시작 각도
+         mid_angle = 0.5*(start_angle + end_angle),   # 텍스트 레이블을 위한 각 파이 조각의 중간
+         hjust = ifelse(mid_angle>pi, 1, 0),
+         vjust = ifelse(mid_angle<pi/2 | mid_angle>3*pi/2, 0, 1))
+
+rpie = 1
+rlabel = 1.05 * rpie
+
+market_pies <- ggplot(market_pies_df) +
+  geom_arc_bar(
+    aes(
+      x0 = 0, y0 = 0, r0 = 0, r = rpie,
+      start = start_angle, end = end_angle, fill = company
+    ),
+    color = NA
+  ) +
+  geom_text(
+    aes(x = rlabel*sin(mid_angle), y = rlabel*cos(mid_angle), label = company, hjust = hjust, vjust = vjust),
+    family = dviz_font_family,
+    size = small_size
+  ) +
+  coord_fixed() +
+  facet_wrap(~year) +
+  scale_x_continuous(limits = c(-1.2, 1.2), expand = c(0, 0), name = NULL, breaks = NULL, labels = NULL) +
+  scale_y_continuous(limits = c(-1.2, 1.2), expand = c(0, 0), name = NULL, breaks = NULL, labels = NULL) +
+  scale_fill_OkabeIto(order = c(1:3, 5, 4)) +
+  guides(fill = "none") +
+  theme_dviz_open() +
+  theme(
+    axis.line = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    axis.ticks.length = grid::unit(0, "pt"),
+    plot.margin = margin(7, 7, 0, 7),
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_text(size= 14, margin = margin(0, 0, 0.1, 0))
+  )
+
+stamp_bad(market_pies)
+```
+
+누적 막대로 전환하면 그림이 약간 더 명확해집니다(그림 \@ref(fig:marketshare-stacked)). 이제 회사 A의 시장 점유율 증가 추세와 회사 E의 시장 점유율 감소 추세가 명확하게 보입니다. 그러나 각 연도 내 5개 회사의 상대적 시장 점유율은 여전히 비교하기 어렵습니다. 그리고 회사 B, C, D의 시장 점유율을 연도별로 비교하기는 어렵습니다. 막대가 연도별로 서로 상대적으로 이동하기 때문입니다. 이것은 누적 막대 그래프의 일반적인 문제이며 제가 일반적으로 이러한 유형의 시각화를 권장하지 않는 주된 이유입니다.
+
+(ref:marketshare-stacked) 2015년~2017년 다섯 개 가상 회사의 시장 점유율, 누적 막대로 시각화. 이 시각화에는 두 가지 주요 문제가 있습니다. 1. 연도 내 상대적 시장 점유율 비교가 어렵습니다. 2. 막대 위치가 연도별로 변경되므로 중간 회사 B, C, D의 연도 간 시장 점유율 변화를 보기 어렵습니다.
+
+```{r marketshare-stacked, fig.cap='(ref:marketshare-stacked)'}
+stacked_bars <- ggplot(marketshare, aes(x = year, y = percent, fill = company)) +
+  geom_col(position = "stack") +
+  scale_y_continuous(
+    name = "시장 점유율",
+    labels = scales::percent_format(accuracy = 1, scale = 1),
+    expand = c(0, 0)
+  ) +
+  scale_fill_OkabeIto(order = c(1:3, 5, 4)) +
+  theme_dviz_open() +
+  theme(plot.margin = margin(14, 7, 3, 1.5))
+
+stamp_bad(stacked_bars)
+```
+
+이 가상 데이터 세트의 경우 나란히 놓인 막대가 최상의 선택입니다(그림 \@ref(fig:marketshare-side-by-side)). 이 시각화는 회사 A와 B 모두 2015년부터 2017년까지 시장 점유율을 높인 반면 회사 D와 E는 모두 시장 점유율을 줄였음을 강조합니다. 또한 2015년에는 회사 A에서 E로 시장 점유율이 순차적으로 증가하고 2017년에는 유사하게 감소함을 보여줍니다.
+
+(ref:marketshare-side-by-side) 2015년~2017년 다섯 개 가상 회사의 시장 점유율, 나란히 놓인 막대로 시각화.
+
+```{r marketshare-side-by-side, fig.cap='(ref:marketshare-side-by-side)'}
+ggplot(marketshare, aes(x = company, y = percent, fill = company)) +
+  geom_col() +
+  facet_wrap(~year) +
+  scale_y_continuous(
+    name = "시장 점유율",
+    labels = scales::percent_format(accuracy = 1, scale = 1),
+    expand = c(0, 0)
+  ) +
+  scale_fill_OkabeIto(order = c(1:3, 5, 4), guide = "none") +
+  theme_dviz_open() +
+  theme(strip.background = element_blank())
+```
+
+
+## 누적 막대 및 누적 밀도에 대한 사례 {#stacked-densities}
+
+섹션 \@ref(side-by-side-bars)에서 내부 막대의 위치가 시퀀스를 따라 이동하기 때문에 일반적으로 누적 막대 시퀀스를 권장하지 않는다고 썼습니다. 그러나 각 스택에 막대가 두 개만 있는 경우 이동하는 내부 막대 문제가 사라지며 결과 시각화가 매우 명확해질 수 있습니다. 예를 들어 한 국가의 국회에서 여성 비율을 생각해 보십시오. 특히 2016년 기준으로 여성 국회의원 비율이 가장 높은 국가 목록에서 1위를 차지한 아프리카 국가 르완다를 살펴보겠습니다. 르완다는 2008년부터 여성 과반수 국회를 유지했으며 2013년부터는 국회의원 거의 3분의 2가 여성입니다. 르완다 국회에서 여성 비율이 시간 경과에 따라 어떻게 변했는지 시각화하기 위해 누적 막대 그래프 시퀀스를 그릴 수 있습니다(그림 \@ref(fig:women-parliament)). 이 그림은 시간 경과에 따른 비율 변화를 즉각적으로 시각적으로 나타냅니다. 독자가 과반수가 언제 여성으로 바뀌었는지 정확히 알 수 있도록 50%에 파선 수평선을 추가했습니다. 이 선이 없으면 2003년부터 2007년까지 과반수가 남성이었는지 여성이었는지 판단하기가 거의 불가능했을 것입니다. 그림이 너무 복잡해지는 것을 피하기 위해 25%와 75%에 유사한 선을 추가하지 않았습니다.
+
+(ref:women-parliament) 1997년부터 2016년까지 르완다 의회의 성별 구성 변화. 데이터 출처: 국제 의회 연맹(IPU), ipu.org.
+
+```{r women-parliament, fig.width = 6, fig.asp = .55, fig.cap = '(ref:women-parliament)'}
+ccode = "RWA" # 르완다
+#ccode = "BEL" # 벨기에
+#ccode = "ARB" # 아랍 세계
+#ccode = "BOL" # 볼리비아
+#ccode = "EUU" # 유럽 연합
+
+women_parliaments %>% filter(country_code == ccode & year > 1990) %>%
+  mutate(women = perc_women, men = 100 - perc_women) %>%
+  select(-perc_women) %>%
+  gather(gender, percent, women, men) %>%
+  mutate(gender = factor(gender, levels = c("women", "men"))) -> women_rwanda
+
+plot_base <- ggplot(women_rwanda, aes(x = year, y = percent, fill = gender)) +
+    #geom_col(position = "stack", width = .9, color = "white") +
+    geom_col(position = "stack", width = 1, color = "#FFFFFF", size = .75, alpha = 0.8) +
+    geom_hline(
+      yintercept = c(50),
+      color = "#000000FF", size = 0.4, linetype = 2
+      #color = "#FFFFFFA0"
+    ) +
+    geom_hline(yintercept = 100, color = "black") +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(
+      name = "상대 비율",
+      labels = scales::percent_format(accuracy = 1, scale = 1),
+      expand = c(0, 0)
+    ) +
+    scale_fill_manual(values = c("#D55E00E0", "#0072B2E0"), guide = "none") +
+    coord_cartesian(clip = "off") +
+    theme_dviz_open() +
+    theme(
+      #axis.ticks.y = element_blank(),
+      #axis.ticks.x = element_blank(),
+      #axis.line.x = element_blank(),
+      axis.line.y = element_blank(),
+      plot.margin = margin(14, 1.5, 3, 1.5)
+    )
+
+# 레이블 위치 계산
+labels <- filter(women_rwanda, year == max(year)) %>%
+  mutate(pos = 100 - cumsum(percent) + 0.5*percent)
+
+yax <- axis_canvas(plot_base, axis = "y") +
+  geom_text(data = labels, aes(y = pos, label = paste0(" ", gender)),
+            family = dviz_font_family,
+            x = 0, hjust = 0, size = 14/.pt)
+
+ggdraw(insert_yaxis_grob(plot_base, yax, grid::unit(.15, "null")))
+
+```
+
+비율이 연속 변수에 따라 어떻게 변하는지 시각화하려는 경우 누적 막대에서 누적 밀도로 전환할 수 있습니다. 누적 밀도는 나란히 배열된 무한히 많은 무한히 작은 누적 막대의 극한 경우로 생각할 수 있습니다. 누적 밀도 그림의 밀도는 일반적으로 챕터 \@ref(histograms-density-plots)에서 설명한 커널 밀도 추정에서 얻으며 이 방법의 장단점에 대한 일반적인 논의는 해당 장을 참조하십시오.
+
+누적 밀도가 적절할 수 있는 예를 들기 위해 연령의 함수로서 사람들의 건강 상태를 생각해 보십시오. 연령은 연속 변수로 간주할 수 있으며 이러한 방식으로 데이터를 시각화하는 것은 상당히 잘 작동합니다(그림 \@ref(fig:health-vs-age)). 여기에는 네 가지 건강 범주가 있고 위에서 논의한 것처럼 여러 조건을 쌓는 것을 일반적으로 좋아하지 않지만 이 경우에는 그림이 허용 가능하다고 생각합니다. 전반적으로 건강은 사람들이 나이가 들면서 감소하지만 이러한 추세에도 불구하고 인구의 절반 이상이 매우 늙을 때까지 양호하거나 우수한 건강 상태를 유지한다는 것을 명확하게 알 수 있습니다.
+
+(ref:health-vs-age) 일반 사회 조사(GSS)에서 보고된 연령별 건강 상태.
+
+```{r health-vs-age, fig.asp = .5, fig.cap='(ref:health-vs-age)'}
+df_health <- select(happy, age, health) %>%
+  na.omit()
+
+# 컬러 브루어 5개 클래스 PuBu
+colors = c('#f1eef6', '#bdc9e1', '#74a9cf', '#2b8cbe', '#045a8d')[5:1]
+
+p_health <- ggplot(df_health, aes(x = age, y = ..count.., fill = health, color = health)) +
+  geom_density(position = "fill") +
+  #geom_hline(yintercept = c(.25, .50, .75), color = "#FFFFFF60") +
+  scale_x_continuous(name = "연령 (세)", expand = c(0, 0)) +
+  scale_y_continuous(
+    expand = c(0, 0), name = "상대 비율",
+    labels = scales::percent
+  ) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  theme_dviz_open() +
+  theme(
+    #axis.ticks.y = element_blank(),
+    #axis.ticks.x = element_blank(),
+    axis.line.x = element_blank(),
+    axis.line.y = element_blank(),
+    plot.margin = margin(7, 7, 3, 1.5)
+  )
+
+df_marital <- select(happy, age, marital) %>%
+  na.omit() %>%
+  filter(marital != "separated") %>% # 그림을 단순화하기 위해 별거 제거
+  mutate(marital = factor(marital, levels = c("widowed", "divorced", "married", "never married")))
+
+p_marital <- ggplot(df_marital, aes(x = age, y = ..count.., fill = marital, color = marital)) +
+  geom_density(position = "fill") +
+  scale_x_continuous(name = "연령 (세)", expand = c(0, 0)) +
+  scale_y_continuous(
+    expand = c(0, 0), name = "상대 비율",
+    labels = scales::percent
+  ) +
+  scale_color_manual(values = colors, name = "혼인 상태") +
+  scale_fill_manual(values = colors, name = "혼인 상태") +
+  theme_dviz_open() +
+  theme(
+    #axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.line.y = element_blank(),
+    plot.margin = margin(7, 7, 3, 1.5)
+  )
+
+p_aligned <- align_plots(p_health, p_marital, align = 'v')
+ggdraw(p_aligned[[1]])
+```
+
+그럼에도 불구하고 이 그림에는 주요 한계가 있습니다. 네 가지 건강 상태의 비율을 전체의 백분율로 시각화함으로써 데이터 세트에 노인보다 젊은 사람이 훨씬 더 많다는 사실을 모호하게 만듭니다. 따라서 70년에 걸친 연령에 걸쳐 양호한 건강 상태라고 보고하는 사람들의 *백분율*은 거의 변하지 않지만 특정 연령의 총 인구 수가 감소함에 따라 양호한 건강 상태의 사람들의 *절대 수*는 감소합니다. 다음 섹션에서 이 문제에 대한 잠재적인 해결책을 제시하겠습니다.
+
+
+## 전체의 일부로 비율을 개별적으로 시각화하기
+
+나란히 놓인 막대는 전체에 대한 개별 부분의 크기를 명확하게 시각화하지 못하는 문제가 있고 누적 막대는 기준선이 다르기 때문에 여러 막대를 쉽게 비교할 수 없는 문제가 있습니다. 각 부분에 대해 별도의 플롯을 만들고 각 플롯에서 전체에 대한 해당 부분을 표시하여 이러한 두 가지 문제를 해결할 수 있습니다. 그림 \@ref(fig:health-vs-age)의 건강 데이터 세트의 경우 이 절차를 통해 그림 \@ref(fig:health-vs-age-facets)가 생성됩니다. 데이터 세트의 전체 연령 분포는 음영 처리된 회색 영역으로 표시되고 각 건강 상태에 대한 연령 분포는 파란색으로 표시됩니다. 이 그림은 절대적인 측면에서 우수하거나 양호한 건강 상태의 사람 수가 30~40세 이후에 감소하는 반면 보통 건강 상태의 사람 수는 모든 연령대에 걸쳐 거의 일정하게 유지됨을 강조합니다.
+
+(ref:health-vs-age-facets) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 건강 상태. 색칠된 영역은 해당 건강 상태를 가진 사람들의 연령 밀도 추정치를 나타내고 회색 영역은 전체 연령 분포를 나타냅니다.
+
+```{r health-vs-age-facets, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:health-vs-age-facets)'}
+ggplot(mutate(df_health, health = fct_rev(health)), aes(x = age, y = ..count..)) +
+  geom_density_line(data = select(df_health, -health), aes(fill = "설문 조사 대상 전체  "), color = "transparent") +
+  geom_density_line(aes(fill = "강조된 그룹"), color = "transparent") +
+  facet_wrap(~health, nrow = 1) +
+  scale_x_continuous(name = "연령 (세)", limits = c(15, 98), expand = c(0, 0)) +
+  scale_y_continuous(name = "수", expand = c(0, 0)) +
+  scale_fill_manual(
+    values = c("#b3b3b3a0", "#2b8cbed0"),
+    name = NULL,
+    guide = guide_legend(direction = "horizontal")
+  ) +
+  coord_cartesian(clip = "off") +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    strip.text = element_text(size = 14, margin = margin(0, 0, 0.2, 0, "cm")),
+    legend.position = "bottom",
+    legend.justification = "right",
+    legend.margin = margin(4.5, 0, 1.5, 0, "pt"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "pt"),
+    legend.box.spacing = grid::unit(0, "cm")
+  )
+```
+
+
+
+두 번째 예를 들기 위해 동일한 설문 조사의 다른 변수인 혼인 상태를 고려해 보겠습니다. 혼인 상태는 건강 상태보다 연령에 따라 훨씬 더 급격하게 변하며 혼인 상태 대 연령의 누적 밀도 그림은 그다지 유익하지 않습니다(그림 \@ref(fig:marital-vs-age)).
+
+(ref:marital-vs-age) 일반 사회 조사(GSS)에서 보고된 연령별 혼인 상태. 그림을 단순화하기 위해 별거로 보고된 소수의 사례를 제거했습니다. 미혼이거나 사별한 사람들의 빈도가 연령에 따라 너무 급격하게 변하여 기혼 및 이혼한 사람들의 연령 분포가 심하게 왜곡되고 해석하기 어렵기 때문에 이 그림을 "나쁨"으로 표시했습니다.
+
+```{r marital-vs-age, fig.asp = 0.5, fig.cap='(ref:marital-vs-age)'}
+stamp_bad(p_aligned[[2]])
+```
+
+부분 밀도로 시각화된 동일한 데이터 세트가 훨씬 더 명확합니다(그림 \@ref(fig:marital-vs-age-facets)). 특히 기혼자 비율은 30대 후반에 정점을 찍고 이혼자 비율은 40대 초반에 정점을 찍으며 사별자 비율은 70대 중반에 정점을 찍는 것을 볼 수 있습니다.
+
+(ref:marital-vs-age-facets) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 혼인 상태. 색칠된 영역은 해당 혼인 상태를 가진 사람들의 연령 밀도 추정치를 나타내고 회색 영역은 전체 연령 분포를 나타냅니다.
+
+```{r marital-vs-age-facets, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:marital-vs-age-facets)'}
+ggplot(mutate(df_marital, marital = fct_rev(marital)), aes(x = age, y = ..count..)) +
+  geom_density_line(data = select(df_marital, -marital), aes(fill = "설문 조사 대상 전체  "), color = "transparent") +
+  geom_density_line(aes(fill = "강조된 그룹"), color = "transparent") +
+  facet_wrap(~marital, nrow = 1) +
+  scale_x_continuous(name = "연령 (세)", limits = c(15, 98), expand = c(0, 0)) +
+  scale_y_continuous(name = "수", expand = c(0, 0)) +
+  scale_fill_manual(
+    values = c("#b3b3b3a0", "#2b8cbed0"),
+    name = NULL,
+    guide = guide_legend(direction = "horizontal")
+  ) +
+  coord_cartesian(clip = "off") +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    strip.text = element_text(size = 14, margin = margin(0, 0, 0.2, 0, "cm")),
+    legend.position = "bottom",
+    legend.justification = "right",
+    legend.margin = margin(4.5, 0, 1.5, 0, "pt"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "pt"),
+    legend.box.spacing = grid::unit(0, "cm")
+  )
+```
+
+그러나 그림 \@ref(fig:marital-vs-age-facets)의 한 가지 단점은 이 표현이 특정 시점에서 상대적 비율을 쉽게 파악하기 어렵다는 것입니다. 예를 들어 설문 조사 대상 전체의 50% 이상이 결혼한 연령이 언제인지 알고 싶다면 그림 \@ref(fig:marital-vs-age-facets)에서 쉽게 알 수 없습니다. 이 질문에 답하기 위해 동일한 유형의 표시를 사용하되 *y* 축을 따라 절대 수 대신 상대적 비율을 표시할 수 있습니다(그림 \@ref(fig:marital-vs-age-proportions)). 이제 기혼자가 20대 후반부터 과반수를 차지하고 사별자가 70대 중반부터 과반수를 차지한다는 것을 알 수 있습니다.
+
+(ref:marital-vs-age-proportions) 설문 조사 대상 총 인원 수의 비율로 표시된 연령별 혼인 상태. 파란색으로 색칠된 영역은 해당 상태를 가진 해당 연령의 사람들의 비율을 나타내고 회색으로 색칠된 영역은 다른 모든 혼인 상태를 가진 사람들의 비율을 나타냅니다.
+
+```{r marital-vs-age-proportions, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap='(ref:marital-vs-age-proportions)'}
+df_marital2 <- rbind(
+  mutate(df_marital,
+    marital = as.character(fct_collapse(marital, `미혼` = "미혼", aother = c("기혼", "이혼", "사별"))),
+    highlight = "미혼"
+  ),
+  mutate(df_marital,
+    marital = as.character(fct_collapse(marital, 기혼 = "기혼", aother = c("미혼", "이혼", "사별"))),
+    highlight = "기혼"
+  ),
+  mutate(df_marital,
+    marital = as.character(fct_collapse(marital, 이혼 = "이혼", aother = c("미혼", "기혼", "사별"))),
+    highlight = "이혼"
+  ),
+  mutate(df_marital,
+    marital = as.character(fct_collapse(marital, 사별 = "사별", aother = c("미혼", "기혼", "이혼"))),
+    highlight = "사별"
+  )
+) %>%
+  mutate(
+    highlight = factor(highlight, levels = c("미혼", "기혼", "이혼", "사별"))
+  )
+
+ggplot(df_marital2, aes(age)) +
+  annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf, fill = "#b3b3b3a0", color = NA) +
+  geom_density_line(
+    aes(y = stat(count), fill = marital), color = "transparent", position = "fill"
+  ) +
+  facet_wrap(~highlight, nrow = 1) +
+  scale_x_continuous(
+    name = "연령 (세)",
+    #limits = c(15, 98),
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(name = "상대 비율", expand = c(0, 0), labels = scales::percent) +
+  scale_fill_manual(
+    values = c("transparent", "#2b8cbed0", "#2b8cbed0", "#2b8cbed0", "#2b8cbed0"),
+    name = NULL,
+    breaks = c("aother", "이혼"),
+    labels = c("설문 조사 대상 전체  ", "강조된 그룹"),
+    guide = guide_legend(
+      direction = "horizontal",
+      override.aes = list(fill = c("#bebebe", "#3590c0"))
+    )
+  ) +
+  coord_cartesian(clip = "off") +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    strip.text = element_text(size = 14, margin = margin(0, 0, 0.2, 0, "cm")),
+    legend.position = "bottom",
+    legend.justification = "right",
+    legend.margin = margin(4.5, 0, 1.5, 0, "pt"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "pt"),
+    legend.box.spacing = grid::unit(0, "cm")
+  )
+```

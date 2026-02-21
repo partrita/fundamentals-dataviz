@@ -1,0 +1,59 @@
+project:
+  type: book
+
+book:
+  title: "데이터 시각화의 기본"
+  author: "클라우스 O. 윌크"
+  date: "2/21/2026"
+  chapters:
+    - index.qmd
+    - preface_ko.qmd
+    - introduction_ko.qmd
+    - part: "데이터에서 시각화까지"
+      chapters:
+        - aesthetic_mapping_ko.qmd
+        - coordinate_systems_axes_ko.qmd
+        - color_basics_ko.qmd
+        - directory_of_visualizations_ko.qmd
+        - visualizing_amounts_ko.qmd
+        - visualizing_distributions_I_ko.qmd
+        - visualizing_distributions_II_ko.qmd
+        - boxplots_violins_ko.qmd
+        - visualizing_proportions_ko.qmd
+        - nested_proportions_ko.qmd
+        - visualizing_associations_ko.qmd
+        - time_series_ko.qmd
+        - visualizing_trends_ko.qmd
+        - geospatial_data_ko.qmd
+        - visualizing_uncertainty_ko.qmd
+    - part: "그림 디자인의 원칙"
+      chapters:
+        - proportional_ink_ko.qmd
+        - overlapping_points_ko.qmd
+        - pitfalls_of_color_use_ko.qmd
+        - redundant_coding_ko.qmd
+        - multi-panel_figures_ko.qmd
+        - figure_titles_captions_ko.qmd
+        - balance_data_context_ko.qmd
+        - small_axis_labels_ko.qmd
+        - avoid_line_drawings_ko.qmd
+        - no_3d_ko.qmd
+    - part: "기타 주제"
+      chapters:
+        - image_file_formats_ko.qmd
+        - choosing_visualization_software_ko.qmd
+        - telling_a_story_ko.qmd
+        - annotated_bibliography_ko.qmd
+        - technical_notes_ko.qmd
+    - references_ko.qmd
+
+bibliography: bibliography.bib
+
+execute:
+  enabled: false
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    number-sections: false

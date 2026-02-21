@@ -1,0 +1,305 @@
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# 설정 스크립트 실행
+source("_common.R")
+
+library(tidyr)
+```
+
+# 3D로 만들지 마십시오 {#no-3d}
+
+3D 플롯은 특히 비즈니스 프레젠테이션뿐만 아니라 학계에서도 상당히 인기가 있습니다. 또한 거의 항상 부적절하게 사용됩니다. 3D 플롯을 일반적인 2D 그림으로 바꾸어 개선할 수 없는 경우는 거의 없습니다. 이 장에서는 3D 플롯에 문제가 있는 이유, 일반적으로 필요하지 않은 이유, 3D 플롯이 적절할 수 있는 제한적인 상황에 대해 설명합니다.
+
+## 불필요한 3D 피하기
+
+많은 시각화 소프트웨어를 사용하면 플롯의 그래픽 요소를 3차원 개체로 만들어 플롯을 멋지게 꾸밀 수 있습니다. 가장 일반적으로 원형 차트는 공간에서 회전하는 디스크로, 막대 그래프는 열로, 선 그래프는 띠로 바뀝니다. 특히 이러한 경우 3차원은 실제 데이터를 전달하지 않습니다. 3D는 단순히 플롯을 장식하고 꾸미는 데 사용됩니다. 저는 이러한 3D 사용을 불필요하다고 생각합니다. 이것은 명백히 나쁘며 데이터 과학자의 시각적 어휘에서 지워져야 합니다.
+
+불필요한 3D의 문제는 3D 개체를 인쇄 또는 모니터 표시에 맞게 2차원으로 투영하면 데이터가 왜곡된다는 것입니다. 인간의 시각 시스템은 3D 이미지의 2D 투영을 다시 3D 공간으로 매핑할 때 이러한 왜곡을 수정하려고 합니다. 그러나 이 수정은 부분적일 수밖에 없습니다. 예를 들어 데이터의 25%를 나타내는 조각과 75%를 나타내는 조각이 있는 간단한 원형 차트를 가져와 이 원형 차트를 공간에서 회전시켜 보겠습니다(그림 \@ref(fig:rotated-pie)). 원형 차트를 보는 각도를 변경하면 조각의 크기도 변경되는 것처럼 보입니다. 특히 원형 차트의 앞쪽에 있는 25% 조각은 평평한 각도에서 원형 차트를 볼 때 25%보다 훨씬 커 보입니다(그림 \@ref(fig:rotated-pie)a).
+
+(ref:rotated-pie) 네 가지 다른 각도에서 본 동일한 3D 원형 차트. 원형 차트를 3차원으로 회전하면 앞쪽의 원형 조각이 실제보다 커 보이고 뒤쪽의 원형 조각이 작아 보입니다. 여기서 (a), (b), (c) 부분에서 데이터의 25%에 해당하는 파란색 조각은 시각적으로 원형 차트를 나타내는 영역의 25% 이상을 차지합니다. (d) 부분만이 데이터를 정확하게 나타냅니다.
+
+```{r rotated-pie, fig.asp = 5.1/6, fig.cap = '(ref:rotated-pie)'}
+ggdraw() + draw_image("figures/3d/3d-pie-assembled.png")
+```
+
+다른 유형의 3D 플롯에서도 유사한 문제가 발생합니다. 그림 \@ref(fig:titanic-3d)는 3D 막대를 사용하여 등급 및 성별별 타이타닉 승객 분석을 보여줍니다. 막대가 축에 대해 배열되는 방식 때문에 모든 막대가 실제보다 짧아 보입니다. 예를 들어 1등석으로 여행한 총 승객은 322명이었지만 그림 \@ref(fig:titanic-3d)는 그 수가 300명 미만임을 시사합니다. 이 착시는 데이터를 나타내는 열이 회색 가로선이 그려진 두 개의 뒷면에서 멀리 떨어져 있기 때문에 발생합니다. 이 효과를 보려면 열 중 하나의 아래쪽 가장자리를 0을 나타내는 가장 낮은 회색 선에 닿을 때까지 확장한 다음 위쪽 가장자리 중 하나에 대해 동일한 작업을 수행하면 모든 열이 언뜻 보기보다 더 높다는 것을 알 수 있습니다. (이 그림의 더 합리적인 2D 버전은 챕터 \@ref(visualizing-amounts)의 그림 \@ref(fig:titanic-passengers-by-class-sex) 참조)
+
+(ref:titanic-3d) 3D 누적 막대 그래프로 표시된 1등석, 2등석, 3등석으로 여행한 타이타닉호의 여성 및 남성 승객 수. 1등석, 2등석, 3등석의 총 승객 수는 각각 322명, 279명, 711명입니다(그림 \@ref(fig:titanic-passengers-by-class-sex) 참조). 그러나 이 플롯에서 1등석 막대는 300명 미만의 승객을 나타내는 것처럼 보이고 3등석 막대는 700명 미만의 승객을 나타내는 것처럼 보이며 2등석 막대는 실제 279명보다 210~220명에 더 가까워 보입니다. 또한 3등석 막대는 시각적으로 그림을 지배하여 3등석 승객 수가 실제보다 더 많은 것처럼 보이게 합니다.
+
+```{r titanic-3d, fig.asp = 4.5/6, fig.cap = '(ref:titanic-3d)'}
+stamp_bad(ggdraw() + draw_image("figures/3d/titanic-3d-bars-assembled.png"))
+```
+
+
+## 3D 위치 눈금 피하기
+
+불필요한 3D가 있는 시각화는 나쁘다고 쉽게 일축할 수 있지만 데이터를 나타내기 위해 세 개의 실제 위치 눈금(*x*, *y*, *z*)을 사용하는 시각화에 대해 어떻게 생각해야 하는지는 덜 명확합니다. 이 경우 3차원 사용은 실제 목적을 수행합니다. 그럼에도 불구하고 결과 플롯은 해석하기 어려운 경우가 많으며 제 생각에는 피해야 합니다.
+
+32개 자동차의 연비 대 배기량 및 마력의 3D 산점도를 생각해 보십시오. 이 데이터 세트는 이전에 챕터 \@ref(aesthetic-mapping), 그림 \@ref(fig:mtcars-five-scale)에서 보았습니다. 여기서 *x* 축을 따라 배기량, *y* 축을 따라 마력, *z* 축을 따라 연비를 플로팅하고 각 자동차를 점으로 나타냅니다(그림 \@ref(fig:mtcars-3d)). 이 3D 시각화가 네 가지 다른 관점에서 표시되더라도 점이 공간에 정확히 어떻게 분포되어 있는지 상상하기 어렵습니다. 저는 그림 \@ref(fig:mtcars-3d)의 (d) 부분이 특히 혼란스럽다고 생각합니다. 점을 보는 각도 외에는 아무것도 변경되지 않았음에도 불구하고 거의 다른 데이터 세트를 보여주는 것처럼 보입니다.
+
+(ref:mtcars-3d) 32개 자동차(1973~74년 모델)의 연비 대 배기량 및 마력. 각 점은 하나의 자동차를 나타내며 점 색상은 자동차의 실린더 수를 나타냅니다. 네 개의 패널 (a)~(d)는 정확히 동일한 데이터를 보여주지만 다른 관점을 사용합니다. 데이터 출처: *Motor Trend,* 1974.
+
+
+```{r mtcars-3d, fig.width = 5*6/4.2, fig.asp = 1.1, fig.cap = '(ref:mtcars-3d)'}
+library(plot3D)
+library(cowplot)
+set_null_device("png")
+
+colors <- c("#0072B2", "#CC79A7", "#E69F00")
+
+cyls <- data.frame(cyl = factor(c(4, 6, 8)))
+
+p <- ggplot(cyls, aes(cyl, cyl, color = cyl)) +
+  geom_point(size = 2.5) +
+  scale_color_manual(
+    values = colors,
+    name = "실린더 ",
+    labels = c("4  ", "6  ", "8")
+  ) +
+  theme_dviz_open(font_size = 14, rel_small = 1, font_family = dviz_font_family) +
+  theme(
+    legend.position = "top",
+    legend.justification = "right",
+    legend.key.width = unit(4, "pt")
+  )
+legend <- get_legend(p)
+
+pfun <- function(theta = 30, phi = 20) {
+  function() {
+    par(
+      xpd = NA,
+      bg = "transparent",
+      mai = c(0, 0.1, 0, 0),
+      family = dviz_font_family_condensed
+    )
+    scatter3D(
+      mtcars$disp, mtcars$hp, mtcars$mpg, colvar = mtcars$cyl,
+      col = colors,
+      pch = 19, bty ="b2", theta = theta, phi = phi, colkey = FALSE,
+      xlab = "배기량 (cu. in.)",
+      ylab ="마력 (hp)",
+      zlab = "연비 (mpg)",
+      cex.lab = 1.17
+    )
+  }
+}
+
+plot_grid(pfun(30, 20), pfun(-30, 20),
+          NULL, legend,
+          pfun(30, 40), pfun(-30, 40),
+          rel_heights = c(1, 0.1, 1), ncol = 2,
+          labels = c("a", "b", "", "", "c", "d"),
+          label_fontface = "plain", label_fontfamily = dviz_font_family)
+```
+
+이러한 3D 시각화의 근본적인 문제는 두 개의 개별적이고 연속적인 데이터 변환이 필요하다는 것입니다. 첫 번째 변환은 위치 눈금과 관련하여 챕터 \@ref(aesthetic-mapping) 및 \@ref(coordinate-systems-axes)에서 논의된 것처럼 데이터를 데이터 공간에서 3D 시각화 공간으로 매핑합니다. 두 번째 변환은 데이터를 3D 시각화 공간에서 최종 그림의 2D 공간으로 매핑합니다. (이 두 번째 변환은 실제 조각품이나 3D 인쇄물과 같이 실제 3D 환경에 표시되는 시각화에는 분명히 발생하지 않습니다. 저의 주요 반대는 2D 디스플레이에 표시되는 3D 시각화에 대한 것입니다.) 두 번째 변환은 2D 디스플레이의 각 점이 3D 시각화 공간의 점 선에 해당하기 때문에 비가역적입니다. 따라서 특정 데이터 포인트가 3D 공간의 어디에 있는지 고유하게 결정할 수 없습니다.
+
+그럼에도 불구하고 우리의 시각 시스템은 3D에서 2D로의 변환을 되돌리려고 시도합니다. 그러나 이 과정은 신뢰할 수 없고 오류가 많으며 3차원 감각을 전달하는 이미지의 적절한 단서에 크게 의존합니다. 이러한 단서를 제거하면 되돌리기가 완전히 불가능해집니다. 이는 그림 \@ref(fig:mtcars-3d)와 동일하지만 모든 깊이 단서가 제거된 그림 \@ref(fig:mtcars-3d-no-axes)에서 볼 수 있습니다. 결과는 전혀 해석할 수 없고 서로 쉽게 관련짓기도 어려운 네 가지 임의의 점 배열입니다. (a) 부분의 어떤 점이 (b) 부분의 어떤 점에 해당하는지 알 수 있겠습니까? 저는 확실히 알 수 없습니다.
+
+(ref:mtcars-3d-no-axes) 32개 자동차(1973~74년 모델)의 연비 대 배기량 및 마력. 네 개의 패널 (a)~(d)는 그림 \@ref(fig:mtcars-3d)의 동일한 패널에 해당하며 깊이 단서를 제공하는 모든 격자선만 제거되었습니다. 데이터 출처: *Motor Trend,* 1974.
+
+```{r mtcars-3d-no-axes, fig.width = 5*6/4.2, fig.asp = 1.1, fig.cap = '(ref:mtcars-3d-no-axes)'}
+pfun2 <- function(theta = 30, phi = 20) {
+  function() {
+    par(
+      xpd = NA,
+      bg = "transparent",
+      mai = c(0, 0.1, 0, 0),
+      family = dviz_font_family_condensed
+    )
+    scatter3D(
+      mtcars$disp, mtcars$hp, mtcars$mpg, colvar = mtcars$cyl,
+      col = colors,
+      pch = 19, axes = FALSE, theta = theta, phi = phi,
+      colkey = FALSE, box = FALSE,
+      cex.lab = 1.17
+    )
+  }
+}
+
+
+plot_grid(
+  pfun2(30, 20), pfun2(-30, 20),
+  NULL, legend,
+  pfun2(30, 40), pfun2(-30, 40),
+  rel_heights = c(1, 0.1, 1), ncol = 2,
+  labels = c("a", "b", "", "", "c", "d"),
+  label_fontface = "plain", label_fontfamily = dviz_font_family
+)
+
+```
+
+비가역적인 두 개의 개별 데이터 변환을 적용하는 대신 적절하고 가역적인 변환 하나만 적용하고 데이터를 2D 공간에 직접 매핑하는 것이 일반적으로 더 낫다고 생각합니다. 변수를 색상, 크기 또는 모양 눈금에 매핑할 수도 있으므로 위치 눈금으로 세 번째 차원을 추가할 필요는 거의 없습니다. 예를 들어 챕터 \@ref(aesthetic-mapping)에서는 연비 데이터 세트의 다섯 가지 변수를 한 번에 플로팅했지만 두 개의 위치 눈금만 사용했습니다(그림 \@ref(fig:mtcars-five-scale)).
+
+여기서는 그림 \@ref(fig:mtcars-3d)에 사용된 변수를 정확히 플로팅하는 두 가지 대안적인 방법을 보여주고자 합니다. 첫째, 주로 연비를 반응 변수로 생각한다면 배기량에 대해 한 번, 마력에 대해 한 번, 총 두 번 플로팅할 수 있습니다(그림 \@ref(fig:mtcars-2d-multiple)). 둘째, 연비를 부차적인 관심 변수로 두고 배기량과 마력이 서로 어떻게 관련되는지에 더 관심이 있다면 마력 대 배기량을 플로팅하고 연비를 점의 크기에 매핑할 수 있습니다(그림 \@ref(fig:mtcars-2d-size)). 두 그림 모두 그림 \@ref(fig:mtcars-3d)보다 더 유용하고 덜 혼란스럽습니다.
+
+(ref:mtcars-2d-multiple) 연비 대 배기량 (a) 및 마력 (b). 데이터 출처: *Motor Trend,* 1974.
+
+```{r mtcars-2d-multiple, fig.width = 5*6/4.2, fig.asp = .45, fig.cap = '(ref:mtcars-2d-multiple)'}
+p1 <- ggplot(mtcars, aes(x = disp, y = mpg, color = factor(cyl))) +
+  geom_point(size = 1.5) +
+  scale_color_manual(values = colors, name = "실린더", guide = "none") +
+  xlab("배기량 (cu. in.)") +
+  ylab("연비 (mpg)") +
+  theme_dviz_open(12)
+
+p2 <- ggplot(mtcars, aes(x = hp, y = mpg, color = factor(cyl))) +
+  geom_point(size = 1.5) +
+  scale_color_manual(values = colors, name = "실린더") +
+  xlab("마력 (hp)") +
+  ylab("연비 (mpg)") +
+  theme_dviz_open(12) +
+  theme(
+    legend.position = c(1, 1),
+    legend.justification = c(1, 1),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.key.width = unit(6, "pt")
+  )
+
+
+plot_grid(p1, align_legend(p2), labels = "auto")
+```
+
+(ref:mtcars-2d-size) 32개 자동차의 마력 대 배기량, 연비는 점 크기로 표시. 데이터 출처: *Motor Trend,* 1974.
+
+```{r mtcars-2d-size, fig.width = 5.5, fig.asp = 0.75, fig.cap = '(ref:mtcars-2d-size)'}
+p <- ggplot(mtcars, aes(x = disp, y = hp, size = mpg, fill = factor(cyl))) +
+  geom_point(color = "white", pch = 21) +
+  scale_fill_manual(
+    values = colors, name = "실린더",
+    guide = guide_legend(override.aes = list(size = 3))
+  ) +
+  scale_size(
+    name = "    mpg    ",
+    range = c(1, 8),
+    limits = c(8, 40),
+    breaks = c(5, 10, 20, 40),
+    guide = guide_legend(override.aes = list(fill = "gray50"))
+  ) +
+  xlab("배기량 (cu. in.)") +
+  ylab("마력 (hp)") +
+  theme_dviz_open() +
+  theme(
+    legend.title.align = 0.5,
+    legend.spacing.y = grid::unit(4, "pt")
+  )
+
+ggdraw(align_legend(p))
+```
+
+3D 산점도의 문제는 실제 데이터 표현인 점 자체가 3D 정보를 전달하지 않는다는 것인지 궁금할 수 있습니다. 예를 들어 대신 3D 막대를 사용하면 어떻게 될까요? 그림 \@ref(fig:VA-death-rates-3d)는 3D 막대로 시각화할 수 있는 일반적인 데이터 세트인 연령 그룹, 성별 및 거주지별로 계층화된 1940년 버지니아 사망률을 보여줍니다. 실제로 3D 막대가 플롯을 해석하는 데 도움이 된다는 것을 알 수 있습니다. 전경의 막대를 배경의 막대와 혼동하거나 그 반대의 경우는 거의 없습니다. 그럼에도 불구하고 그림 \@ref(fig:titanic-3d)의 맥락에서 논의된 문제는 여기에도 존재합니다. 개별 막대의 높이를 정확하게 판단하기 어렵고 직접 비교하기도 어렵습니다. 예를 들어 65~69세 도시 여성의 사망률이 60~64세 도시 남성의 사망률보다 높았을까요, 낮았을까요?
+
+(ref:VA-death-rates-3d) 3D 막대 그래프로 시각화된 1940년 버지니아 사망률. 사망률은 네 그룹의 사람(도시 및 농촌 여성 및 남성)과 다섯 가지 연령 범주(50~54세, 55~59세, 60~64세, 65~69세, 70~74세)에 대해 표시되며 1000명당 사망자 수 단위로 보고됩니다. 이 그림은 3D 관점으로 인해 플롯을 읽기 어렵기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: @Molyneaux-et-al-1947
+
+```{r VA-death-rates-3d, fig.width = 5, fig.asp = 0.8, fig.cap = '(ref:VA-death-rates-3d)'}
+pfun3 <- function() {
+
+  par(xpd = NA,
+      bg = "transparent",
+      mai = c(0.1, 0.1, 0, 0),
+      family = dviz_font_family_condensed
+  )
+
+  hist3D(x = 1:5, y = 1:4, z = VADeaths,
+         bty = "b2", phi = 20,  theta = -65,
+         xlab = "", ylab = "", zlab = "사망자 수 / 1000명",
+         col = "#56B4E9", border = darken("#56B4E9", .5),
+         shade = 0.2,
+         ticktype = "detailed", space = .3, d = 2, cex.axis = 1e-9
+  )
+  # text3D를 사용하여 x축 레이블 지정
+  text3D(x = 1:5, y = rep(0.5, 5), z = rep(3, 5),
+         labels = rownames(VADeaths),
+         add = TRUE, adj = -0.2)
+  # text3D를 사용하여 y축 레이블 지정
+  text3D(x = rep(0., 3), y = rep(5, 3), z = 20*(1:3),
+         labels  = 20*(1:3),
+         add = TRUE, adj = -1.2)
+  # text3D를 사용하여 z축 레이블 지정
+  text3D(x = rep(1, 4), y = 1:4, z = rep(0, 4),
+         labels  = colnames(VADeaths),
+         add = TRUE, adj = 1)
+}
+
+# 현재 gridGraphics의 버그로 인해 작동하지 않습니다. 나중에 다시 방문하십시오.
+# 현재로서는 png로 렌더링하여 해결합니다.
+#stamp_bad(pfun3)
+
+png("figures/VA-deaths.png", width = 4.64, height = 0.618*6, units = "in",
+    res = 600)
+pfun3()
+null <- dev.off()
+
+stamp_bad(ggdraw() +  draw_image("figures/VA-deaths.png"))
+```
+
+일반적으로 3D 시각화 대신 격자 그림(챕터 \@ref(multi-panel-figures))을 사용하는 것이 좋습니다. 버지니아 사망률 데이터 세트는 격자 그림으로 표시할 때 네 개의 패널만 필요합니다(그림 \@ref(fig:VA-death-rates-Trellis)). 저는 이 그림이 명확하고 해석하기 쉽다고 생각합니다. 사망률이 여성보다 남성에게서 더 높았고 도시 남성이 농촌 남성보다 사망률이 더 높은 경향이 있는 반면 도시 및 농촌 여성에게는 이러한 경향이 나타나지 않는다는 것이 즉시 명확합니다.
+
+(ref:VA-death-rates-Trellis) 1940년 버지니아 사망률, 격자 그림으로 시각화. 사망률은 네 그룹의 사람(도시 및 농촌 여성 및 남성)과 다섯 가지 연령 범주(50~54세, 55~59세, 60~64세, 65~69세, 70~74세)에 대해 표시되며 1000명당 사망자 수 단위로 보고됩니다. 데이터 출처: @Molyneaux-et-al-1947
+
+```{r VA-death-rates-Trellis, fig.width = 5*6/4.2, fig.cap = '(ref:VA-death-rates-Trellis)'}
+df <- data.frame(VADeaths)
+df$age <- row.names(df)
+row.names(df) <- NULL
+df_long <- gather(df, type, rate, -age) %>%
+  mutate(type =
+    case_when(
+      type == "Urban.Male" ~ "도시 남성",
+      type == "Urban.Female" ~ "도시 여성",
+      type == "Rural.Male" ~ "농촌 남성",
+      type == "Rural.Female" ~ "농촌 여성"
+    )
+  )
+ggplot(df_long, aes(age, rate)) +
+  geom_col(fill = "#56B4E9D0") +
+  facet_wrap(~type) +
+  scale_y_continuous(name = "사망자 수 / 1000명", expand = c(0, 0)) +
+  scale_x_discrete(name = "연령 그룹") +
+  theme_dviz_hgrid()
+```
+
+## 3D 시각화의 적절한 사용
+
+그러나 3D 위치 눈금을 사용하는 시각화가 때때로 적절할 수 있습니다. 첫째, 시각화가 대화형이고 뷰어가 회전할 수 있거나 또는 여러 각도에서 검사할 수 있는 VR 또는 증강 현실 환경에 표시되는 경우 이전 섹션에서 설명한 문제는 덜 중요합니다. 둘째, 시각화가 대화형이 아니더라도 한 관점에서 정적 이미지로 표시하는 대신 천천히 회전하는 것으로 표시하면 뷰어가 3D 공간에서 여러 그래픽 요소가 어디에 있는지 식별할 수 있습니다. 인간의 뇌는 여러 각도에서 촬영한 일련의 이미지에서 3D 장면을 재구성하는 데 매우 능숙하며 그래픽의 느린 회전은 바로 이러한 이미지를 제공합니다.
+
+마지막으로 실제 3D 개체 및/또는 해당 개체에 매핑된 데이터를 표시하려는 경우 3D 시각화를 사용하는 것이 합리적입니다. 예를 들어 산악 섬의 지형 기복을 표시하는 것은 합리적인 선택입니다(그림 \@ref(fig:corsica-relief)). 마찬가지로 단백질 구조에 매핑된 단백질의 진화적 서열 보존을 시각화하려는 경우 구조를 3D 개체로 표시하는 것이 합리적입니다(그림 \@ref(fig:protein-3d)). 그러나 두 경우 모두 이러한 시각화는 회전하는 애니메이션으로 표시되면 해석하기가 더 쉬울 것입니다. 기존 인쇄 출판물에서는 불가능하지만 웹에 그림을 게시하거나 프레젠테이션을 할 때는 쉽게 수행할 수 있습니다.
+
+(ref:corsica-relief) 지중해 코르시카 섬의 기복. 데이터 출처: 코페르니쿠스 토지 모니터링 서비스
+
+```{r corsica-relief, fig.cap = '(ref:corsica-relief)'}
+# rayshader로 렌더링된 그림; R 마크다운을 렌더링하는 동안 너무 느립니다.
+knitr::include_graphics("figures/3d/Corsica.png", auto_pdf = FALSE)
+```
+
+
+(ref:protein-3d) 단백질의 진화적 변이 패턴. 색칠된 튜브는 박테리아 *대장균*의 단백질 엑소뉴클레아제 III의 골격을 나타냅니다(단백질 데이터 뱅크 식별자: 1AKO). 색칠은 이 단백질의 개별 부위의 진화적 보존을 나타내며 어두운 색은 보존된 아미노산을 나타내고 밝은 색은 가변적인 아미노산을 나타냅니다. 데이터 출처: @Marcos-Echave-2015
+
+```{r protein-3d, fig.width = 4.5, fig.asp = (16+4)/19, fig.cap = '(ref:protein-3d)'}
+# ggplot2를 통해 범례 만들기
+df <- data.frame(x = 1:10,
+                 fill = runif(10))
+
+p <- ggplot(df, aes(x, y = 1, fill = fill)) + geom_tile() +
+  scale_fill_gradient2(low = darken("#A6522B", .07), mid = darken("#FFFF00", .05),
+                       high = darken("#FFFFFF", .02),
+                       midpoint = .5,
+                       limits = c(0, 1),
+                       breaks = c(0, 1),
+                       labels = c("고도로\n보존됨", "고도로\n가변적임"),
+                       name = "서열 보존",
+                       guide = guide_colorbar(direction = "horizontal",
+                                              label.position = "bottom",
+                                              title.position = "top",
+                                              ticks = FALSE,
+                                              barwidth = grid::unit(3.5, "in"),
+                                              barheight = grid::unit(0.2, "in"))) +
+  theme_dviz_open(12) +
+  theme(legend.title.align = 0.5,
+        legend.background = element_blank(),
+        legend.box.background = element_blank(),
+        legend.justification = "center")
+
+legend <- get_legend(p)
+
+plot_grid(ggdraw() +  draw_image("figures/3d/1AKO-cropped.png"),
+          legend, ncol = 1, rel_heights = c(16, 4))
+```
