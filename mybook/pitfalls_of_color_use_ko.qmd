@@ -296,7 +296,7 @@ palette_plot(cbPalette, label_size = 5, label_family = dviz_font_family) +
 ```
 
 
-표: {#tab-color-codes} @Okabe-Ito-CUD가 개발한 색맹 친화적인 색상 척도.
+Table: {#tab-color-codes} @Okabe-Ito-CUD가 개발한 색맹 친화적인 색상 척도.
 
 이름            16진수 코드     색조     C, M, Y, K (%)   R, G, B (0-255)   R, G, B (%)
 --------------  ------------ ------- ---------------- ----------------- ------------
