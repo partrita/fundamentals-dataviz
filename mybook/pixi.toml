@@ -1,0 +1,27 @@
+[workspace]
+authors = ["fkt <deepthought@postech.ac.kr>"]
+channels = ["conda-forge"]
+name = "mybook"
+platforms = ["osx-arm64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+quarto = ">=1.8.27,<2"
+r-base = "*"
+r-knitr = "*"
+r-rmarkdown = "*"
+r-gganimate = "*"
+r-transformr = "*"
+r-gifski = "*"
+r-png = "*"
+r-forcats = "*"
+r-lubridate = "*"
+r-mgcv = "*"
+r-tidyr = "*"
+r-purrr = "*"
+r-broom = "*"
+r-emmeans = "*"
+r-ggridges = "*"
+r-tidybayes = "*"
