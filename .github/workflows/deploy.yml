@@ -28,6 +28,7 @@ jobs:
         with:
           pixi-version: v0.39.0
           manifest-path: pixi.toml
+          locked: false
 
       - name: Cache Quarto Execution
         uses: actions/cache@v4
