@@ -431,11 +431,18 @@ ggplot(biorxiv_growth, aes(date_dec, count)) +
 ```{r fig-hpi-trends, fig.width = 5*6/4.2, fig.cap = '(ref:hpi-trends)'}
 hpi_trends <- house_prices %>%
   filter(year(date) >= 1980) %>%
-  filter(state %in% c("캘리포니아", "네바다", "웨스트버지니아", "텍사스")) %>%
+  filter(state %in% c("California", "Nevada", "West Virginia", "Texas")) %>%
   mutate(
     date_numeric = as.numeric(date),
     hpi = house_price_index,
-    log_hpi = log(hpi)
+    log_hpi = log(hpi),
+    state = case_when(
+      state == "California" ~ "캘리포니아",
+      state == "Nevada" ~ "네바다",
+      state == "West Virginia" ~ "웨스트버지니아",
+      state == "Texas" ~ "텍사스",
+      TRUE ~ state
+    )
   ) %>%
   group_by(state) %>%
   mutate(
