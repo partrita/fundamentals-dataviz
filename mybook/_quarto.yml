@@ -58,6 +58,6 @@ execute:
 format:
   html:
     theme: cosmo
-    mainfont: "Noto Sans KR"
+    mainfont: "Noto Sans CJK KR"
     toc: true
     number-sections: false
