@@ -278,7 +278,7 @@ price_plot <- price_plot_base_good +
 
 yann <- axis_canvas(price_plot, axis = "y") +
   geom_text(
-    data = filter(tech_stocks, date == "2017-06-02"),
+    data = filter(ungroup(tech_stocks), date == "2017-06-02"),
     aes(y = price_indexed, label = paste0(" ", company)),
     family = dviz_font_family,
     x = 0, hjust = 0, size = 12/.pt

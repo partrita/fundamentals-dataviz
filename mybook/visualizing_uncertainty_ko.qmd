@@ -772,7 +772,7 @@ contrasts_dunnettx <- data.frame(level = c(0.99, 0.95, 0.8)) %>%
   select(level, contrast, estimate, std.error = SE, conf.low = lower.CL, conf.high = upper.CL) %>%
   mutate(
     level = paste0(signif(100*level, 2), "%"),
-    contrast = stringr::str_extract(as.character(contrast), "[a-zA-Z]+")
+    contrast = stringr::str_remove(as.character(contrast), " - .*")
   )
 
 ggplot(contrasts_dunnettx, aes(x = estimate, y = reorder(contrast, estimate))) +
@@ -865,7 +865,7 @@ contrasts_dunnettx <- data.frame(level = c(0.99, 0.95, 0.8)) %>%
   select(level, contrast, estimate, std.error = SE, conf.low = lower.CL, conf.high = upper.CL) %>%
   mutate(
     level = paste0(signif(100*level, 2), "%"),
-    contrast = stringr::str_extract(as.character(contrast), "[a-zA-Z]+")
+    contrast = stringr::str_remove(as.character(contrast), " - .*")
   )
 
 p1 <- ggplot(contrasts_dunnettx, aes(x = estimate, y = reorder(contrast, estimate))) +

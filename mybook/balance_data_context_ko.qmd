@@ -253,7 +253,7 @@ price_plot +
 (ref:price-increase) 2012년 6월부터 2017년 6월까지 4개 주요 기술 회사의 주가 상승률. 막대가 수평으로 이어지므로 여기서는 수직 격자선이 적절합니다. 데이터 출처: Yahoo Finance
 
 ```{r fig-price-increase, fig.cap='(ref:price-increase)'}
-perc_increase <- filter(tech_stocks, date == ymd("2017-06-01")) %>%
+perc_increase <- filter(ungroup(tech_stocks), date == ymd("2017-06-01")) %>%
   mutate(perc=100*(price-index_price)/index_price,
          label=paste(as.character(round(perc)), "%", sep="")) %>%
   arrange(perc)

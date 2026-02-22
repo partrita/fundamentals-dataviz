@@ -179,7 +179,12 @@ MASS::oats %>%
   mutate(N = 1*as.numeric(sub("cwt", "", N, fixed = TRUE))) %>%
   group_by(N, V) %>%
   summarize(mean = 20 * mean(Y)) %>% # 계수 20은 단위를 파운드/에이커로 변환합니다.
-  mutate(variety = ifelse(V == "Golden.rain", "골든 레인", as.character(V))) ->
+  mutate(variety = case_when(
+    V == "Golden.rain" ~ "골든 레인",
+    V == "Marvellous" ~ "마블러스",
+    V == "Victory" ~ "빅토리",
+    TRUE ~ as.character(V)
+  )) ->
   oats_df
 
 oats_df$variety <- factor(oats_df$variety, levels = c("마블러스", "골든 레인", "빅토리"))

@@ -522,10 +522,10 @@ stamp_ugly(
 
 ```{r fig-tech-stocks-repetitive, fig.asp = 2*0.5, fig.cap = '(ref:tech-stocks-repetitive)'}
 
-final_prices <- filter(tech_stocks, date == ymd("2017-05-31"))
+final_prices <- filter(ungroup(tech_stocks), date == ymd("2017-05-31"))
 
 fb_price_plot <- ggplot(
-  filter(tech_stocks, ticker == "FB"),
+  filter(ungroup(tech_stocks), ticker == "FB"),
   aes(x = date, y = price, color = ticker)
 ) +
   geom_line(size = 0.66, color = "#0072B2", na.rm = TRUE) +
@@ -586,7 +586,7 @@ stamp_ugly(
 
 ```{r fig-tech-stocks-diverse, fig.asp = 2*0.5, fig.cap = '(ref:tech-stocks-diverse)'}
 
-final_prices <- filter(tech_stocks, date == ymd("2017-05-31"))
+final_prices <- filter(ungroup(tech_stocks), date == ymd("2017-05-31"))
 
 perc_increase <-
   final_prices %>%

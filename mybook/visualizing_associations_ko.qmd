@@ -616,7 +616,20 @@ CO2_emissions %>% filter(year %in% c(2000, 2005, 2010)) %>%
 
 emissions_diff[1:10,] %>% select(-diff) %>%
   gather(year, emissions, `2000`:`2010`) %>%
-  mutate(year = as.numeric(year)) -> emissions_top_ten
+  mutate(year = as.numeric(year)) %>%
+  mutate(country = case_when(
+    country == "Trinidad and Tobago" ~ "트리니다드 토바고",
+    country == "Qatar" ~ "카타르",
+    country == "United Arab Emirates" ~ "아랍에미리트",
+    country == "Oman" ~ "오만",
+    country == "Bahrain" ~ "바레인",
+    country == "Singapore" ~ "싱가포르",
+    country == "Netherlands Antilles" ~ "네덜란드령 안틸레스",
+    country == "Kazakhstan" ~ "카자흐스탄",
+    country == "Equatorial Guinea" ~ "적도 기니",
+    country == "Kuwait" ~ "쿠웨이트",
+    TRUE ~ country
+  )) -> emissions_top_ten
 
 textcol <- "gray30"
 

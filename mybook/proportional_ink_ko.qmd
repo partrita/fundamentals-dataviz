@@ -75,7 +75,7 @@ p_income_good
 (ref:fb-stock-drop-bad) 2016년 10월 22일부터 2017년 1월 21일까지 페이스북(FB) 주가. 이 그림은 2016년 11월 1일경 페이스북 주가가 폭락했음을 암시하는 것처럼 보입니다. 그러나 *y* 축이 0달러가 아닌 110달러에서 시작하기 때문에 이는 오해의 소지가 있습니다.
 
 ```{r fig-fb-stock-drop-bad, fig.cap = '(ref:fb-stock-drop-bad)'}
-df_fb_drop <- filter(tech_stocks, ticker == "FB", date >= ymd("2016-10-22") & date < ymd("2017-01-22"))
+df_fb_drop <- filter(ungroup(tech_stocks), ticker == "FB", date >= ymd("2016-10-22") & date < ymd("2017-01-22"))
 
 fb_drop_bad <- ggplot(df_fb_drop, aes(x=date, height=price - 110, y = 110)) +
   geom_ridgeline(alpha = 0.7) +
@@ -142,7 +142,7 @@ ggplot(hawaii_income_diff, aes(x = reorder(county, desc(filter(hawaii_income, ye
 (ref:fb-stock-drop-inverse) 2016년 10월 22일 가격 대비 페이스북(FB) 주가 손실. 2016년 11월 1일부터 2017년 1월 1일까지 가격은 2016년 10월 22일 고점보다 약 15달러 낮게 유지되었습니다. 그러나 2017년 1월에 가격이 회복되기 시작했습니다.
 
 ```{r fig-fb-stock-drop-inverse, fig.cap = '(ref:fb-stock-drop-inverse)'}
-df_fb_drop2 <- filter(tech_stocks,
+df_fb_drop2 <- filter(ungroup(tech_stocks),
                       ticker == "FB", date >= ymd("2016-10-22") & date < ymd("2017-01-22")) %>%
   mutate(price_drop = price - max(price))
 
