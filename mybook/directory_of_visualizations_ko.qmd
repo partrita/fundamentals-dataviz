@@ -13,9 +13,7 @@ library(sf)
 library(ungeviz)
 ```
 
-# 시각화 디렉토리 {#sec-directory-of-visualizations}
-
-이 장에서는 데이터를 시각화하는 데 일반적으로 사용되는 다양한 플롯과 차트에 대한 간략한 시각적 개요를 제공합니다. 이름을 모를 수 있는 특정 시각화를 찾는 경우 목차 역할을 하기도 하고, 일상적으로 만드는 그림의 대안을 찾아야 하는 경우 영감의 원천이 되기도 합니다.
+이 장에서는 데이터를 시각화할 때 흔히 사용하는 다양한 그래프와 차트의 시각적 요약본을 제공합니다. 특정 시각화 방법의 이름이 궁금할 때 목차처럼 활용할 수도 있고, 일상적으로 그리는 그림 대신 새로운 아이디어가 필요할 때 영감을 얻는 도구로 사용할 수도 있습니다.
 
 ```{r}
 ## 일반 설정 코드
@@ -298,14 +296,14 @@ p8 <- ggplot(filter(df_multi_amounts, x != 1), aes(x, y = factor(type, levels = 
 plot_grid(p1, p2, p7, ncol = 4, scale = .9)
 ```
 
-양(즉, 일부 범주 집합에 대해 표시되는 수치 값)을 시각화하는 가장 일반적인 방법은 수직 또는 수평으로 배열된 막대를 사용하는 것입니다(챕터 @sec-visualizing-amounts). 그러나 막대를 사용하는 대신 해당 막대가 끝나는 위치에 점을 배치할 수도 있습니다(챕터 @sec-visualizing-amounts).
+수량(특정 범주 집합에 대한 수치 데이터)을 시각화하는 가장 일반적인 방법은 수직 또는 수평으로 배열된 막대 그래프를 사용하는 것입니다(@sec-visualizing-amounts 장). 막대 대신 데이터가 끝나는 지점에 점을 찍어 점 그래프로 표현할 수도 있습니다(@sec-visualizing-amounts 장).
 
 ```{r amounts_multi, fig.width = 5*6/4.2, fig.asp = 1/2}
 plot_grid(p3, p4, p5, p6,
           p8, ncol = 4, scale = .9)
 ```
 
-양을 표시하려는 범주 집합이 두 개 이상인 경우 막대를 그룹화하거나 누적할 수 있습니다(챕터 @sec-visualizing-amounts). 또한 범주를 *x* 축과 *y* 축에 매핑하고 히트맵을 통해 색상으로 양을 표시할 수도 있습니다(챕터 @sec-visualizing-amounts).
+시각화하려는 범주 집합이 두 개 이상인 경우, 막대를 그룹으로 묶거나 위로 쌓아 올릴 수 있습니다(@sec-visualizing-amounts 장). 또한 범주들을 x축과 y축에 배치하고 수치를 색상으로 나타내는 히트맵을 사용할 수도 있습니다(@sec-visualizing-amounts 장).
 
 
 ## 분포
@@ -346,7 +344,7 @@ p4 <- ggplot(df_one_normal, aes(sample = x)) +
 plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
 ```
 
-히스토그램과 밀도 그림(챕터 @sec-histograms-density-plots)은 분포의 가장 직관적인 시각화를 제공하지만 둘 다 임의의 매개변수 선택이 필요하며 오해의 소지가 있을 수 있습니다. 누적 밀도와 분위수-분위수(q-q) 그림(챕터 @sec-ecdf-qq)은 항상 데이터를 충실하게 나타내지만 해석하기 더 어려울 수 있습니다.
+히스토그램과 밀도 그림(@sec-histograms-density-plots 장)은 분포를 가장 직관적으로 보여주지만, 파라미터(구간 너비 등) 선택에 따라 결과가 달라지므로 주의가 필요합니다. 누적 밀도 그림과 분위수-분위수(Q-Q) 그림(@sec-ecdf-qq 장)은 데이터를 있는 그대로 충실하게 보여주지만, 해석하기가 다소 까다로울 수 있습니다.
 
 
 ```{r multiple-distributions, fig.width = 5*6/4.2, fig.asp = 1/2}
@@ -403,7 +401,7 @@ plot_grid(p1, p2, p3, p4,
           p5, p6, p7, ncol = 4, scale = .9)
 ```
 
-상자 그림, 바이올린, 스트립 차트, 시나 그림은 한 번에 많은 분포를 시각화하거나 분포 간의 전반적인 변화에 주로 관심이 있을 때 유용합니다(챕터 @sec-boxplots-violins-vertical). 누적 히스토그램과 중첩 밀도는 더 적은 수의 분포를 더 심층적으로 비교할 수 있지만 누적 히스토그램은 해석하기 어려울 수 있으며 피하는 것이 가장 좋습니다(챕터 @sec-multiple-histograms-densities). 능선 그림은 바이올린 그림의 유용한 대안이 될 수 있으며 매우 많은 수의 분포를 시각화하거나 시간 경과에 따른 분포 변화를 시각화할 때 종종 유용합니다(챕터 @sec-boxplots-violins-horizontal).
+상자 그림, 바이올린 그림, 스트립 차트, 시나(sina) 그림 등은 여러 분포를 한꺼번에 비교하거나 전반적인 변화 양상에 주목할 때 유용합니다(@sec-boxplots-violins-vertical 장). 누적 히스토그램과 중첩 밀도 그림은 소수의 분포를 자세히 비교하기 좋지만, 특히 누적 히스토그램은 해석이 어려워 피하는 것이 좋습니다(@sec-multiple-histograms-densities 장). 능선(ridgeline) 그림은 바이올린 그림의 좋은 대안이며, 아주 많은 수의 분포나 시간에 따른 변화를 보여줄 때 효과적입니다(@sec-boxplots-violins-horizontal 장).
 
 ## 비율
 
@@ -461,7 +459,7 @@ p5 <- ggplot(df_props, aes(x = fct_rev(group), y = value, fill = group)) +
 plot_grid(p1, p4, p5, p2, ncol = 4, scale = .9)
 ```
 
-비율은 원형 차트, 나란히 놓인 막대 또는 누적 막대로 시각화할 수 있으며(챕터 @sec-visualizing-proportions), 양의 경우와 마찬가지로 막대는 수직 또는 수평으로 배열할 수 있습니다. 원형 차트는 개별 부분이 전체를 구성하고 단순한 분수를 강조한다는 점을 강조합니다. 그러나 개별 조각은 나란히 놓인 막대에서 더 쉽게 비교할 수 있습니다. 누적 막대는 단일 비율 집합에 대해 어색해 보이지만 여러 비율 집합을 비교할 때 유용할 수 있습니다(아래 참조).
+비율은 원형 차트, 나란한 막대, 또는 누적 막대로 시각화할 수 있습니다(@sec-visualizing-proportions 장). 막대는 수직이나 수평으로 모두 배치 가능합니다. 원형 차트는 개별 조각이 모여 전체를 이룬다는 점과 단순한 비율 관계를 강조하는 데 유용합니다. 반면, 개별 항목 간의 크기 비교는 나란히 놓인 막대 그래프가 더 수월합니다. 누적 막대 그래프는 단일 비율 데이터를 보여주기에는 다소 어색할 수 있으나, 여러 세트의 비율을 비교할 때는 매우 효과적입니다(아래 참고).
 
 
 ```{r proportions-comp, fig.width = 5*6/4.2, fig.asp = 1/4}
@@ -535,7 +533,7 @@ p8 <- plot_grid(p8_a, p8_b, p8_c, ncol = 3, scale = 1.1) +
 plot_grid(p8, p5, p6, p7, ncol = 4, scale = .9)
 ```
 
-여러 비율 집합을 시각화하거나 조건에 따른 비율 변화를 시각화할 때 원형 차트는 공간 효율성이 떨어지고 관계를 모호하게 만드는 경향이 있습니다. 그룹화된 막대는 비교하는 조건 수가 적당한 한 잘 작동하며 누적 막대는 많은 수의 조건에 대해 작동할 수 있습니다. 누적 밀도(챕터 @sec-visualizing-proportions)는 비율이 연속 변수를 따라 변할 때 적합합니다.
+여러 개의 비율 세트를 비교하거나 조건에 따른 변화를 보여줄 때, 원형 차트는 공간을 많이 차지하고 관계를 파악하기 어렵게 만듭니다. 비교 대상이 적을 때는 그룹 막대 그래프가 잘 작동하며, 대상이 많아지면 누적 막대 그래프가 유리합니다. 비율이 연속적인 변수에 따라 변하는 경우에는 누적 밀도 그림(@sec-visualizing-proportions 장)이 적합합니다.
 
 ```{r proportions-multi, fig.width = 5*6/4.2, fig.asp = 1/4}
 p1 <- ggplot(df_multi_props, aes(x = var2, y = count, fill = var1, width = group_count)) +
@@ -576,8 +574,7 @@ p3 <- ggplot(df_sets, aes(x, id = id, split = y, value = count)) +
 plot_grid(p1, p2, p3, ncol = 4, scale = .9)
 ```
 
-비율이 여러 그룹화 변수에 따라 지정되는 경우 모자이크 그림, 트리맵 또는 병렬 집합이 유용한 시각화 접근 방식입니다.
-(챕터 @sec-nested-proportions). 모자이크 그림은 한 그룹화 변수의 모든 수준이 다른 그룹화 변수의 모든 수준과 결합될 수 있다고 가정하는 반면 트리맵은 이러한 가정을 하지 않습니다. 트리맵은 한 그룹의 하위 구분이 다른 그룹의 하위 구분과 완전히 다른 경우에도 잘 작동합니다. 병렬 집합은 그룹화 변수가 두 개 이상인 경우 모자이크 그림이나 트리맵보다 더 잘 작동합니다.
+비율이 여러 그룹 변수에 의해 결정되는 경우에는 모자이크 그림(mosaic plot), 트리맵(treemap), 또는 병렬 집합 그림(parallel sets)이 유용한 대안이 됩니다(@sec-nested-proportions 장). 모자이크 그림은 모든 그룹 변수의 수준이 서로 결합될 수 있다고 가정하는 반면, 트리맵은 그런 제약이 없습니다. 트리맵은 그룹 간의 하위 구조가 완전히 다른 경우에도 잘 작동합니다. 병렬 집합 그림은 그룹 변수가 세 개 이상일 때 모자이크 그림이나 트리맵보다 더 효과적인 경우가 많습니다.
 
 
 ## *x*--*y* 관계
@@ -630,7 +627,7 @@ plot_grid(p1, p2, p3, p4, ncol = 4, scale = .9)
 ```
 
 
-산점도는 한 정량적 변수를 다른 정량적 변수와 비교하여 표시할 때 전형적인 시각화를 나타냅니다(챕터 @sec-associations-scatterplots). 세 개의 정량적 변수가 있는 경우 점 크기에 하나를 매핑하여 버블 차트라는 산점도의 변형을 만들 수 있습니다. *x* 축과 *y* 축을 따른 변수가 동일한 단위로 측정되는 쌍을 이룬 데이터의 경우 일반적으로 *x* = *y*를 나타내는 선을 추가하는 것이 도움이 됩니다(챕터 @sec-associations-paired-data). 쌍을 이룬 데이터는 직선으로 연결된 쌍을 이룬 점의 경사 그래프로 표시할 수도 있습니다(챕터 @sec-associations-paired-data).
+산점도는 한 수치형 변수를 다른 변수와 비교할 때 사용하는 가장 전형적인 시각화 도구입니다(@sec-associations-scatterplots 장). 세 개의 수치형 변수를 다룰 때는 점의 크기에 변수 하나를 매핑한 버블 차트를 활용할 수 있습니다. x축과 y축의 변수가 같은 단위로 측정된 쌍을 이룬 데이터(paired data)의 경우, 보통 x=y 선을 추가하여 비교를 돕습니다(@sec-associations-paired-data 장). 또한 두 지점을 직선으로 연결한 경사 그래프(slopegraph)로 쌍을 이룬 관계를 나타낼 수도 있습니다(@sec-associations-paired-data 장).
 
 ```{r xy-binning, fig.width = 5*6/4.2, fig.asp = 1/4}
 p5 <- ggplot(df_dense_scatter, aes(x, y)) +
@@ -679,7 +676,7 @@ p8 <- ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
 plot_grid(p5, p6, p7, p8, ncol = 4, scale = .9)
 ```
 
-많은 수의 점에 대해 일반 산점도는 중복 플로팅으로 인해 정보를 제공하지 못할 수 있습니다. 이 경우 등고선, 2D 구간 또는 육각 구간이 대안을 제공할 수 있습니다(챕터 @sec-overlapping-points). 반면에 두 개 이상의 양을 시각화하려는 경우 기본 원시 데이터 대신 상관 계수를 상관도 형태로 플로팅하도록 선택할 수 있습니다(챕터 @sec-associations-correlograms).
+데이터 포인트가 너무 많으면 산점도는 점들이 겹쳐서 정보를 파악하기 어려워질 수 있습니다. 이럴 때는 밀도 등고선, 2D 구간(binning), 또는 육각 구간(hex binning) 그림이 좋은 대안이 됩니다(@sec-overlapping-points 장). 한편, 여러 변수 사이의 관계를 한꺼번에 보고 싶을 때는 원시 데이터 대신 상관 계수를 시각화한 상관도(correlogram)를 활용하기도 합니다(@sec-associations-correlograms 장).
 
 ```{r xy-lines, fig.width = 5*6/4.2, fig.asp = 1/4}
 p1 <- ggplot(df_one_line, aes(x, y)) +
@@ -723,7 +720,7 @@ p3 <- ggplot(df_dense_scatter_sample, aes(x, y)) +
 plot_grid(p1, p2, p3, ncol = 4, scale = .9)
 ```
 
-*x* 축이 시간 또는 치료 용량과 같이 엄격하게 증가하는 양을 나타낼 때 일반적으로 선 그래프를 그립니다(챕터 @sec-time-series). 두 반응 변수의 시간적 순서가 있는 경우 두 반응 변수를 산점도에 먼저 플로팅한 다음 인접한 시간 지점에 해당하는 점을 연결하는 연결된 산점도를 그릴 수 있습니다(챕터 @sec-time-series-connected-scatter). 더 큰 데이터 세트의 추세를 나타내기 위해 평활선을 사용할 수 있습니다(챕터 @sec-visualizing-trends).
+x축이 시간이나 투여량처럼 순차적으로 늘어나는 값일 때는 대개 선 그래프를 그립니다(@sec-time-series 장). 두 반응 변수 사이의 시간적 선후 관계를 보여주고 싶을 때는, 산점도 위에 인접한 시점의 데이터를 연결한 연결 산점도(connected scatter plot)를 사용할 수 있습니다(@sec-time-series-connected-scatter 장). 대규모 데이터 세트의 전반적인 추세를 보여주려면 평활선(smooth line)을 활용합니다(@sec-visualizing-trends 장).
 
 
 ## 지리 공간 데이터 {#sec-directory-geospatial-data}

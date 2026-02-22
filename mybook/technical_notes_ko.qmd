@@ -34,9 +34,9 @@ library(nycflights13)
 
 # 기술 참고 사항 {-}
 
-이 책 전체는 **bookdown**, **rmarkdown**, **knitr** 패키지를 사용하여 R 마크다운으로 작성되었습니다. 모든 그림은 **ggplot2**로 만들어졌으며 추가 기능 패키지 **cowplot**, **egg**, **ggforce**, **ggrepel**, **ggridges**, **sf**, **treemapify**의 도움을 받았습니다. 색상 조작은 **colorspace** 및 **colorblindr** 패키지를 사용하여 수행되었습니다. 이러한 패키지 중 다수는 책의 모든 부분을 컴파일하려면 현재 개발 버전이 필요합니다.
+이 책은 **bookdown**, **rmarkdown**, **knitr** 패키지를 사용하여 R 마크다운으로 작성되었습니다. 모든 그림은 **ggplot2**를 기반으로 하며, 필요에 따라 **cowplot**, **egg**, **ggforce**, **ggrepel**, **ggridges**, **sf**, **treemapify** 등의 확장 패키지를 활용했습니다. 색상 구성에는 **colorspace**와 **colorblindr** 패키지를 사용했습니다. 책의 모든 예제를 직접 컴파일하려면 이러한 패키지들의 최신 개발 버전이 필요할 수 있습니다.
 
-이 책의 소스 코드는 https://github.com/clauswilke/dataviz에서 확인할 수 있습니다. 이 책에는 지원 R 패키지인 **dviz.supp**도 필요하며 해당 코드는 https://github.com/clauswilke/dviz.supp에서 확인할 수 있습니다.
+이 책의 소스 코드는 [GitHub 저장소](https://github.com/clauswilke/dataviz)에서 확인할 수 있습니다. 또한 본문 내용을 재현하려면 지원용 R 패키지인 **dviz.supp**가 필요하며, 해당 코드는 [dviz.supp GitHub 저장소](https://github.com/clauswilke/dviz.supp)에서 내려받을 수 있습니다.
 
 이 책은 다음 환경을 사용하여 마지막으로 컴파일되었습니다.
 ```{r}

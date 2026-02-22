@@ -51,7 +51,7 @@ book:
 bibliography: bibliography.bib
 
 execute:
-  enabled: auto
+  enabled: true
   cache: true
 
 format:
