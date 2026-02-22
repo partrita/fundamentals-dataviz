@@ -1,9 +1,5 @@
----
-title: "올바른 시각화 소프트웨어 선택하기"
----
-
 ```{r echo = FALSE, message = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 
 library(ggthemes)

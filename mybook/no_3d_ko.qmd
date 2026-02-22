@@ -1,9 +1,5 @@
----
-title: "3D로 만들지 마십시오"
----
-
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 
 library(tidyr)

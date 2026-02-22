@@ -1,9 +1,5 @@
----
-title: "데이터 시각화: 데이터를 미학적 요소에 매핑하기"
----
 
 ```{r echo = FALSE, message = FALSE}
-## 설정 스크립트 실행
 source("_common.R")
 
 library(forcats)

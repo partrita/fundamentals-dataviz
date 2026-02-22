@@ -1,9 +1,5 @@
----
-title: "가장 일반적으로 사용되는 이미지 파일 형식 이해하기"
----
 
 ```{r echo = FALSE, message = FALSE}
-## 설정 스크립트 실행
 source("_common.R")
 ```
 # 가장 일반적으로 사용되는 이미지 파일 형식 이해하기 {#sec-image-file-formats}

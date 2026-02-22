@@ -1,9 +1,5 @@
----
-title: "불확실성 시각화하기"
----
-
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 
 library(forcats)

@@ -1,9 +1,5 @@
----
-title: "이야기 전달과 요점 제시"
----
-
 ```{r echo = FALSE, message = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 
 library(lubridate)

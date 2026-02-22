@@ -4,7 +4,7 @@ project:
     - cover.png
 
 book:
-  title: "데이터 시각화의 기본"
+  title: "데이터 시각화의 기초"
   author: "클라우스 O. 윌크"
   date: "2/21/2026"
   chapters:
@@ -47,12 +47,11 @@ book:
         - telling_a_story_ko.qmd
         - annotated_bibliography_ko.qmd
         - technical_notes_ko.qmd
-    - references_ko.qmd
 
 bibliography: bibliography.bib
 
 execute:
-  enabled: true
+  enabled: auto
   cache: true
 
 format:

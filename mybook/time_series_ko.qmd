@@ -1,9 +1,5 @@
----
-title: "시계열 및 기타 독립 변수 함수 시각화"
----
-
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 
 library(ggridges)

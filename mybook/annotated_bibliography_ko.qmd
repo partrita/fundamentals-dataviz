@@ -1,9 +1,5 @@
----
-title: "주석이 달린 참고 문헌"
----
-
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-## 설정 스크립트 실행
+
 source("_common.R")
 ```
 

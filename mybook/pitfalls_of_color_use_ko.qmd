@@ -1,9 +1,6 @@
----
-title: "색상 사용의 일반적인 함정"
----
+
 
 ```{r echo = FALSE, message = FALSE}
-## 설정 스크립트 실행
 source("_common.R")
 ```
 
