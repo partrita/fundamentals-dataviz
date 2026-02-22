@@ -251,10 +251,10 @@ stamp_ugly(plot_grid(p1, p2, labels = "AUTO", rel_widths = c(1.2, 1), align = 'h
 (ref:athletes-composite-inconsistent) 남성 및 여성 운동선수의 생리학 및 신체 구성. (a) 데이터 세트에는 73명의 여성 및 85명의 남성 프로 운동선수가 포함됩니다. (b) 남성 운동선수는 여성 운동선수보다 적혈구(RBC, 리터당 $10^{12}$ 단위로 보고됨) 수가 더 높은 경향이 있지만 백혈구 수(WBC, 리터당 $10^{9}$ 단위로 보고됨)에는 이러한 차이가 없습니다. (c) 남성 운동선수는 동일한 스포츠를 하는 여성 운동선수보다 체지방률이 낮은 경향이 있습니다. 데이터 출처: @Telford-Cunningham-1991
 
 ```{r fig-athletes-composite-inconsistent, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-inconsistent)'}
-male_sport <- unique(filter(Aus_athletes, sex=="m")$sport)
-female_sport <- unique(filter(Aus_athletes, sex=="f")$sport)
+male_sport <- unique(filter(ungroup(Aus_athletes), sex=="m")$sport)
+female_sport <- unique(filter(ungroup(Aus_athletes), sex=="f")$sport)
 both_sport <- male_sport[male_sport %in% female_sport]
-athletes_df <- filter(Aus_athletes, sport %in% both_sport) %>%
+athletes_df <- filter(ungroup(Aus_athletes), sport %in% both_sport) %>%
   mutate(
     sport = case_when(
       sport == "육상 (400m)" ~ "육상",

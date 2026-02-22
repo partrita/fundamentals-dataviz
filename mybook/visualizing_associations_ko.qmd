@@ -19,7 +19,7 @@ library(tidyr)
 (ref:blue-jays-scatter) 123마리 파랑어치의 머리 길이(부리 끝에서 머리 뒤까지 측정, mm) 대 체질량(그램). 각 점은 하나의 새에 해당합니다. 무거운 새일수록 머리가 긴 경향이 어느 정도 있습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
 ```{r fig-blue-jays-scatter, fig.width = 5, fig.asp = 3/4, fig.cap='(ref:blue-jays-scatter)'}
-ggplot(blue_jays, aes(Mass, Head)) +
+ggplot(ungroup(blue_jays), aes(Mass, Head)) +
   geom_point(pch = 21, fill = "gray25", color = "white", size = 2.5) +
   scale_x_continuous(name = "체질량 (g)") +
   scale_y_continuous(name = "머리 길이 (mm)") +
@@ -31,7 +31,7 @@ ggplot(blue_jays, aes(Mass, Head)) +
 (ref:blue-jays-scatter-sex) 123마리 파랑어치의 머리 길이 대 체질량. 새의 성별은 색상으로 표시됩니다. 동일한 체질량에서 수컷 새는 암컷 새보다 머리가 더 긴 경향이 있습니다(특히 부리가 더 김). 데이터 출처: 키스 타빈, 오벌린 대학
 
 ```{r fig-blue-jays-scatter-sex, fig.width = 5, fig.asp = 3.2/4, fig.cap='(ref:blue-jays-scatter-sex)'}
-ggplot(blue_jays, aes(Mass, Head, fill = KnownSex)) +
+ggplot(ungroup(blue_jays), aes(Mass, Head, fill = KnownSex)) +
   geom_point(pch = 21, color = "white", size = 2.5) +
   scale_x_continuous(name = "체질량 (g)") +
   scale_y_continuous(name = "머리 길이 (mm)") +
@@ -68,7 +68,7 @@ ggplot(blue_jays, aes(Mass, Head, fill = KnownSex)) +
 ```{r fig-blue-jays-scatter-bubbles, fig.width = 5.5*6/4.2, fig.asp = 3.2/8, fig.cap='(ref:blue-jays-scatter-bubbles)'}
 blue_jays$sex <- ifelse(blue_jays$KnownSex == "F", "암컷 새", "수컷 새")
 blue_jays$sex <- factor(blue_jays$sex, levels = c("암컷 새", "수컷 새"))
-ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
+ggplot(ungroup(blue_jays), aes(Mass, Head, size = Skull, fill = KnownSex)) +
   geom_point(pch = 21, color = "white") +
   facet_wrap(~sex, ncol = 2, scales = "fixed") +
   scale_x_continuous(name = "체질량 (g)") +
@@ -223,7 +223,7 @@ $$
 (ref:forensic-correlations1) 법의학 작업 중에 얻은 214개 유리 조각 샘플의 광물 함량 상관 관계. 데이터 세트에는 각 유리 조각에서 발견된 마그네슘(Mg), 칼슘(Ca), 철(Fe), 칼륨(K), 나트륨(Na), 알루미늄(Al), 바륨(Ba)의 양을 측정하는 7개의 변수가 포함되어 있습니다. 색칠된 타일은 이러한 변수 쌍 간의 상관 관계를 나타냅니다. 데이터 출처: B. German
 
 ```{r fig-forensic-correlations1, fig.width = 4., fig.asp = 1, fig.cap = '(ref:forensic-correlations1)'}
-cm <- cor(select(forensic_glass, -type, -RI, -Si))
+cm <- cor(select(ungroup(forensic_glass), -type, -RI, -Si))
 df_wide <- as.data.frame(cm)
 df_long <- stack(df_wide)
 names(df_long) <- c("cor", "var1")
@@ -315,7 +315,7 @@ ggplot(filter(df_long, as.integer(var1) < as.integer(var2)),
 (ref:blue-jays-PCA) 2차원 주성분(PC) 분석 예. (a) 원본 데이터. 예제 데이터로 파랑어치 데이터 세트의 머리 길이 및 두개골 크기 측정을 사용합니다. 암컷과 수컷 새는 색상으로 구별되지만 이 구별은 PC 분석에 영향을 미치지 않습니다. (b) PCA의 첫 번째 단계로 원본 데이터 값을 0 평균과 단위 분산으로 조정합니다. 그런 다음 데이터의 최대 변동 방향을 따라 새로운 변수(주성분, PC)를 정의합니다. (c) 마지막으로 데이터를 새로운 좌표로 투영합니다. 수학적으로 이 투영은 원점을 중심으로 데이터 포인트를 회전하는 것과 같습니다. 여기에 표시된 2D 예에서 데이터 포인트는 시계 방향으로 45도 회전합니다.
 
 ```{r fig-blue-jays-PCA, fig.width = 5.5*6/4.2, fig.asp = 0.35, fig.cap = '(ref:blue-jays-PCA)'}
-p1 <- ggplot(blue_jays, aes(Skull, Head, fill = KnownSex)) +
+p1 <- ggplot(ungroup(blue_jays), aes(Skull, Head, fill = KnownSex)) +
   geom_point(pch = 21, color = "white", size = 2, stroke = 0.2) +
   scale_x_continuous(
     name = "두개골 크기 (mm)", limits = c(26, 36),

@@ -12,7 +12,7 @@ source("_common.R")
 (ref:Aus-athletes-small) 호주 남자 프로 운동선수의 키 대비 체지방률. (각 점은 한 명의 운동선수를 나타냅니다.) 이 그림은 텍스트 요소가 너무 작아서 거의 읽을 수 없다는 일반적인 문제점을 안고 있습니다. 데이터 출처: @Telford-Cunningham-1991
 
 ```{r fig-Aus-athletes-small, fig.width = 6, fig.cap='(ref:Aus-athletes-small)'}
-male_Aus <- filter(Aus_athletes, sex == "m") %>%
+male_Aus <- filter(ungroup(Aus_athletes), sex == "m") %>%
     filter(sport %in% c("Basketball", "Field", "Swim", "T400m", "TSprnt", "W Polo")) %>%
     mutate(sport = case_when(sport == "Basketball" ~ "농구",
                              sport == "Field" ~ "필드",

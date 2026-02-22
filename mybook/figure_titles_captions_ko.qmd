@@ -261,16 +261,22 @@ stamp_ugly(
 (ref:table-examples) 챕터 @sec-visualizing-amounts의 표 @tbl-boxoffice-gross 데이터를 사용한 잘못된 서식 및 적절한 서식의 표 예. (a) 이 표는 세로선 사용, 데이터 행 사이의 가로선 사용, 가운데 정렬된 데이터 열 사용을 포함하여 적절한 표 서식의 여러 규칙을 위반합니다. (b) 이 표는 표 (a)의 모든 문제를 가지고 있으며, 또한 매우 어두운 행과 매우 밝은 행을 번갈아 사용하여 추가적인 시각적 노이즈를 만듭니다. 또한 표 머리글이 표 본문과 강력하게 시각적으로 구분되지 않습니다. (c) 이것은 최소한의 디자인으로 적절하게 서식이 지정된 표입니다. (d) 색상을 사용하여 데이터를 행으로 그룹화하는 데 효과적으로 사용할 수 있지만 색상 차이는 미묘해야 합니다. 표 머리글은 더 강한 색상을 사용하여 구분할 수 있습니다. 데이터 출처: Box Office Mojo (http://www.boxofficemojo.com/). 허가를 받아 사용함
 
 ```{r fig-table-examples, fig.width = 5*6/4.2, fig.asp = 0.51, fig.cap = '(ref:table-examples)'}
-boxoffice <- tibble(
+if (!exists("dviz_font_family_bold")) {
+  dviz_font_family_bold <- dviz_font_family
+}
+
+boxoffice <- data.frame(
   Rank = 1:5,
   Title = c("스타워즈: 라스트 제다이", "쥬만지: 새로운 세계    ", "피치 퍼펙트 3", "위대한 쇼맨", "페르디난드"),
-  Amount = c("$71,565,498", "$36,169,328", "$19,928,525", "$8,805,843", "$7,316,746")
+  Amount = c("$71,565,498", "$36,169,328", "$19,928,525", "$8,805,843", "$7,316,746"),
+  stringsAsFactors = FALSE
 )
 
-boxoffice_ctr <- tibble(
+boxoffice_ctr <- data.frame(
   Rank = 1:5,
   Title = c("스타워즈: 라스트 제다이", "  쥬만지: 새로운 세계  ", "피치 퍼펙트 3", "위대한 쇼맨", "페르디난드"),
-  Amount = c("$71,565,498", "$36,169,328", "$19,928,525", "$8,805,843", "$7,316,746")
+  Amount = c("$71,565,498", "$36,169,328", "$19,928,525", "$8,805,843", "$7,316,746"),
+  stringsAsFactors = FALSE
 )
 
 table_base_size = 10

@@ -916,7 +916,7 @@ adjust_labels <- as_labeller(
   }
 )
 
-house_prices %>%
+ungroup(house_prices) %>%
   filter(
     date >= ymd("2007-01-01"),
     date <= ymd("2013-05-31")

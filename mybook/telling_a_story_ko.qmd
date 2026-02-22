@@ -406,10 +406,10 @@ ggplot(df, aes(x = pet, y = households, image = pet)) +
 (ref:athletes-composite-repetitive) 남성 및 여성 운동선수의 생리학 및 신체 구성. 오차 막대는 평균의 표준 오차를 나타냅니다. 이 그림은 지나치게 반복적입니다. 그림 @fig-athletes-composite-good과 동일한 데이터를 보여주고 일관된 시각적 언어를 사용하지만 모든 하위 그림은 동일한 유형의 시각화(막대 그래프)를 사용합니다. 이로 인해 독자가 (a), (b), (c) 부분이 완전히 다른 결과를 보여준다는 것을 처리하기 어렵습니다. 데이터 출처: @Telford-Cunningham-1991
 
 ```{r fig-athletes-composite-repetitive, fig.width = 5*6/4.2, fig.asp = 0.75, fig.cap = '(ref:athletes-composite-repetitive)'}
-male_sport <- unique(filter(Aus_athletes, sex=="m")$sport)
-female_sport <- unique(filter(Aus_athletes, sex=="f")$sport)
+male_sport <- unique(filter(ungroup(Aus_athletes), sex=="m")$sport)
+female_sport <- unique(filter(ungroup(Aus_athletes), sex=="f")$sport)
 both_sport <- male_sport[male_sport %in% female_sport]
-athletes_df <- filter(Aus_athletes, sport %in% both_sport) %>%
+athletes_df <- filter(ungroup(Aus_athletes), sport %in% both_sport) %>%
   mutate(
     sport = case_when(
       sport == "육상 (400m)" ~ "육상",

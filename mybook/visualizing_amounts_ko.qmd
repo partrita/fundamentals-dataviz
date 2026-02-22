@@ -297,7 +297,7 @@ p_income_age_faceted
 (ref:titanic-passengers-by-class-sex) 1등석, 2등석, 3등석으로 여행한 타이타닉호의 여성 및 남성 승객 수.
 
 ```{r fig-titanic-passengers-by-class-sex, fig.width = 5.5, fig.cap = '(ref:titanic-passengers-by-class-sex)'}
-titanic_groups <- titanic_all %>% filter(class != "*") %>%
+titanic_groups <- ungroup(titanic_all) %>% filter(class != "*") %>%
   select(class, sex) %>%
   group_by(class, sex) %>%
   tally() %>% arrange(class, desc(sex)) %>%

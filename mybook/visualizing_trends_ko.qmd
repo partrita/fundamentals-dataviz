@@ -248,7 +248,7 @@ ggplot(cars93, aes(x = Price, y = Fuel.tank.capacity)) +
 (ref:blue-jays-scatter-line) 123마리 파랑어치의 머리 길이 대 체질량. 새의 성별은 색상으로 표시됩니다. 이 그림은 그림 @fig-blue-jays-scatter-sex와 동일하지만 이제 개별 데이터 포인트 위에 선형 추세선을 그렸습니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
 ```{r fig-blue-jays-scatter-line, fig.width = 5, fig.asp = 3.2/4, fig.cap='(ref:blue-jays-scatter-line)'}
-ggplot(blue_jays, aes(Mass, Head, color = KnownSex, fill = KnownSex)) +
+ggplot(ungroup(blue_jays), aes(Mass, Head, color = KnownSex, fill = KnownSex)) +
   geom_point(pch = 21, color = "white", size = 2.5) +
   geom_smooth(method = "lm", size = 0.75, se = FALSE, fullrange = TRUE) +
   scale_x_continuous(name = "체질량 (g)") +
@@ -429,7 +429,7 @@ ggplot(biorxiv_growth, aes(date_dec, count)) +
 (ref:hpi-trends) 1980년부터 2017년까지 4개 주(캘리포니아, 네바다, 텍사스, 웨스트버지니아)의 프레디 맥 주택 가격 지수. 주택 가격 지수는 선택한 지리적 지역의 시간 경과에 따른 상대적 주택 가격을 추적하는 단위 없는 숫자입니다. 이 지수는 2000년 12월에 100과 같도록 임의로 조정됩니다. 파란색 선은 지수의 월별 변동을 보여주고 직선 회색 선은 해당 주의 장기 가격 추세를 보여줍니다. *y* 축은 로그 눈금이므로 직선 회색 선은 일관된 지수적 성장을 나타냅니다. 데이터 출처: 프레디 맥 주택 가격 지수
 
 ```{r fig-hpi-trends, fig.width = 5*6/4.2, fig.cap = '(ref:hpi-trends)'}
-hpi_trends <- house_prices %>%
+hpi_trends <- ungroup(house_prices) %>%
   filter(year(date) >= 1980) %>%
   filter(state %in% c("California", "Nevada", "West Virginia", "Texas")) %>%
   mutate(
@@ -507,7 +507,7 @@ ggplot(hpi_trends, aes(date, hpi_detrended)) +
 
 ```{r fig-keeling-curve, fig.cap = '(ref:keeling-curve)'}
 # 전체 연도만 사용
-ggplot(CO2, aes(date_dec, co2_interp)) +
+ggplot(ungroup(CO2), aes(date_dec, co2_interp)) +
   geom_line(color = "#0072B2", size = 0.6) +
   scale_y_continuous(
     limits = c(295, 418),
@@ -531,7 +531,7 @@ ggplot(CO2, aes(date_dec, co2_interp)) +
 
 ```{r fig-keeling-curve-decomposition, fig.width = 5*6/4.2, fig.asp = 0.9, fig.cap = '(ref:keeling-curve-decomposition)'}
 # 전체 연도만 사용
-CO2_complete <- filter(CO2, year >= 1959, year < 2018)
+CO2_complete <- filter(ungroup(CO2), year >= 1959, year < 2018)
 # 시계열 객체로 변환
 CO2_ts <- ts(data = CO2_complete$co2_interp, start = 1959, end = c(2017, 12), frequency = 12)
 # STL 방법을 통한 추세 제거

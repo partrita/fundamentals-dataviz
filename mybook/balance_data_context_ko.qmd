@@ -24,7 +24,7 @@ library(ggrepel)
 (ref:Aus-athletes-grid-bad) 호주 남자 프로 운동선수의 키 대비 체지방률. 각 점은 한 명의 운동선수를 나타냅니다. 이 그림은 비데이터에 너무 많은 잉크를 사용합니다. 전체 그림, 플롯 패널, 범례 주위에 불필요한 프레임이 있습니다. 좌표 격자가 매우 두드러지며 그 존재는 데이터 포인트에서 주의를 분산시킵니다. 데이터 출처: @Telford-Cunningham-1991
 
 ```{r fig-Aus-athletes-grid-bad, fig.cap='(ref:Aus-athletes-grid-bad)'}
-male_Aus <- filter(Aus_athletes, sex=="m") %>%
+male_Aus <- filter(ungroup(Aus_athletes), sex=="m") %>%
     filter(sport %in% c("Basketball", "Field", "Swim", "T400m", "TSprnt", "W Polo")) %>%
     mutate(sport = case_when(sport == "Basketball" ~ "농구",
                              sport == "Field" ~ "필드",

@@ -217,7 +217,7 @@ ggplot(oats_df,
 ```{r fig-house-price-unemploy, fig.width = 5*6/4.2, fig.cap = '(ref:house-price-unemploy)'}
 # 다음 그림을 위해 이미 데이터 세트 준비
 CA_house_prices <-
-  filter(house_prices, state == "California", year(date) > 2000) %>%
+  filter(ungroup(house_prices), state == "California", year(date) > 2000) %>%
   mutate(state = "캘리포니아") %>%
   mutate(
     label = ifelse(

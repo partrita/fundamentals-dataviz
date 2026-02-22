@@ -195,7 +195,7 @@ p_flights_hex_bins
 
 ```{r fig-blue-jays-contour, fig.width = 6, fig.asp = 3/4, fig.cap='(ref:blue-jays-contour)'}
 
-blue_jays_base <- ggplot(blue_jays, aes(Mass, Head)) +
+blue_jays_base <- ggplot(ungroup(blue_jays), aes(Mass, Head)) +
   scale_x_continuous(
     limits = c(57, 82),
     expand = c(0, 0),

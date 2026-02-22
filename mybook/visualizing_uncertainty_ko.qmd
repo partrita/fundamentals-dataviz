@@ -1374,7 +1374,7 @@ bayes_emmeans %>%
 (ref:blue-jays-male-conf-band) 그림 @fig-blue-jays-scatter-line에서와 같이 수컷 파랑어치의 머리 길이 대 체질량. 직선 파란색 선은 데이터에 대한 최상의 선형 적합을 나타내고 선 주위의 회색 띠는 선형 적합의 불확실성을 보여줍니다. 회색 띠는 95% 신뢰 수준을 나타냅니다. 데이터 출처: 키스 타빈, 오벌린 대학
 
 ```{r fig-blue-jays-male-conf-band, fig.width = 5.5, fig.asp = 3/4, fig.cap = '(ref:blue-jays-male-conf-band)'}
-blue_jays_male <- filter(blue_jays, KnownSex == "M")
+blue_jays_male <- filter(ungroup(blue_jays), KnownSex == "M")
 
 fit <- gam(Head ~ Mass, data = blue_jays_male, method = "REML")
 

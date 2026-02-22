@@ -103,7 +103,7 @@ ggplot(bund_pie) +
 bundestag <- mutate(bundestag,
                     label_y = cumsum(seats) - seats/2)
 
-bt_bars_stacked_base <- ggplot(bundestag, aes(x = 1, y = seats, fill = factor(party, levels = rev(party)))) +
+bt_bars_stacked_base <- ggplot(ungroup(bundestag), aes(x = 1, y = seats, fill = factor(party, levels = rev(party)))) +
   geom_col(position = "stack", color = "white") +
   geom_text(
     aes(x = 1., y = label_y, label = seats),
@@ -166,7 +166,7 @@ plot_grid(
 (ref:bundestag-bars-side-by-side) 1976년~1980년 제8대 독일 연방의회 정당 구성, 나란히 놓인 막대로 시각화. 그림 @fig-bundestag-stacked-bars에서와 마찬가지로 SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
 
 ```{r fig-bundestag-bars-side-by-side, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:bundestag-bars-side-by-side)'}
-bt_bars <- ggplot(bundestag, aes(x = factor(party, levels = bundestag$party), y = seats, fill = party)) +
+bt_bars <- ggplot(ungroup(bundestag), aes(x = factor(party, levels = party), y = seats, fill = party)) +
   geom_col() +
   geom_text(aes(label = seats), size = main_size, vjust = 2, color = c("white", "white", "black")) +
   scale_x_discrete(name = NULL) +
@@ -364,7 +364,7 @@ ggdraw(insert_yaxis_grob(plot_base, yax, grid::unit(.15, "null")))
 (ref:health-vs-age) 일반 사회 조사(GSS)에서 보고된 연령별 건강 상태.
 
 ```{r fig-health-vs-age, fig.asp = .5, fig.cap='(ref:health-vs-age)'}
-df_health <- select(happy, age, health) %>%
+df_health <- select(ungroup(happy), age, health) %>%
   na.omit()
 
 # 컬러 브루어 5개 클래스 PuBu
@@ -389,7 +389,7 @@ p_health <- ggplot(df_health, aes(x = age, y = ..count.., fill = health, color =
     plot.margin = margin(7, 7, 3, 1.5)
   )
 
-df_marital <- select(happy, age, marital) %>%
+df_marital <- select(ungroup(happy), age, marital) %>%
   na.omit() %>%
   filter(marital != "separated") %>% # 그림을 단순화하기 위해 별거 제거
   mutate(marital = factor(marital, levels = c("widowed", "divorced", "married", "never married")))
