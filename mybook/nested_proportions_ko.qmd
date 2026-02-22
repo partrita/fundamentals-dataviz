@@ -288,7 +288,7 @@ ggplot(bridges_tidy, aes(area = count, subgroup = material, fill = interaction(e
 (ref:US-states-treemap) 트리맵으로 시각화된 미국의 주. 각 사각형은 하나의 주를 나타내며 각 사각형의 면적은 해당 주의 육지 면적에 비례합니다. 주는 서부, 북동부, 중서부, 남부의 4개 지역으로 그룹화됩니다. 색칠은 각 주의 주민 수에 비례하며 어두운 색일수록 주민 수가 많음을 나타냅니다. 데이터 출처: 2010년 미국 인구 조사
 
 ```{r fig-US-states-treemap, fig.width = 5.5*6/4.2, fig.cap = '(ref:US-states-treemap)'}
-population_df <- left_join(US_census, US_regions) %>%
+population_df <- left_join(ungroup(US_census), US_regions) %>%
     group_by(region, division, state) %>%
     summarize(
       pop2000 = sum(pop2000, na.rm = TRUE),

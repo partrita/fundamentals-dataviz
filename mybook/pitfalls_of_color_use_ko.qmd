@@ -15,7 +15,7 @@ source("_common.R")
 
 ```{r fig-popgrowth-vs-popsize-colored, fig.width = 6, fig.asp = 2*0.618, fig.cap = '(ref:popgrowth-vs-popsize-colored)'}
 
-popgrowth_df <- left_join(US_census, US_regions) %>%
+popgrowth_df <- left_join(ungroup(US_census), US_regions) %>%
     group_by(region, division, state) %>%
     summarize(pop2000 = sum(pop2000, na.rm = TRUE),
               pop2010 = sum(pop2010, na.rm = TRUE),

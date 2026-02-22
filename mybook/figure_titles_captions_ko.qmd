@@ -190,7 +190,7 @@ ggplot(blue_jays, aes(Mass, Head, size = Skull, fill = KnownSex)) +
 (ref:tech-stocks-minimal-labeling) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 챕터 @sec-redundant-coding의 그림 @fig-tech-stocks-good-legend을 약간 수정한 버전입니다. 여기서 시간을 나타내는 *x* 축에는 제목이 없습니다. 2013, 2014 등의 숫자가 연도를 나타낸다는 것은 맥락에서 명확합니다.
 
 ```{r fig-tech-stocks-minimal-labeling, fig.cap = '(ref:tech-stocks-minimal-labeling)'}
-price_plot_base <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
+price_plot_base <- ggplot(ungroup(tech_stocks), aes(x = date, y = price_indexed, color = ticker)) +
   geom_line(na.rm = TRUE) +
   scale_color_manual(
     values = c("#000000", "#E69F00", "#56B4E9", "#009E73"),

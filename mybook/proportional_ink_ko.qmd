@@ -284,7 +284,7 @@ ggplot(df_oceania_ratios, aes(x = reorder(country, gdp_ratio), y = gdp_ratio)) +
 (ref:RI-pop-pie) 로드아일랜드 카운티의 주민 수를 원형 차트로 표시했습니다. 각 파이 조각의 각도와 면적은 해당 카운티의 주민 수에 비례합니다. 데이터 출처: 2010년 미국 인구 조사.
 
 ```{r fig-RI-pop-pie, fig.cap = '(ref:RI-pop-pie)'}
-RI_pop <- US_census %>%
+RI_pop <- ungroup(US_census) %>%
   filter(state %in% c("Rhode Island", "로드아일랜드")) %>%
   extract(name, "county", regex = "(.+)(?: County| 카운티)") %>%
   select(county, pop2010) %>%

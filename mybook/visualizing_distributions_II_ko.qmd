@@ -80,7 +80,7 @@ ggplot(student_data, aes(x = points, y = ..y..)) +
 (ref:county-populations) 2010년 미국 인구 조사에 따른 미국 카운티의 주민 수 분포. (a) 밀도 그림. (b) 경험적 누적 분포 함수.
 
 ```{r fig-county-populations, fig.width = 5, fig.asp = 2*0.618, fig.cap='(ref:county-populations)'}
-p1 <- ggplot(US_census, aes(x=pop2010)) +
+p1 <- ggplot(ungroup(US_census), aes(x=pop2010)) +
   geom_density(fill = "#56B4E9", color = "transparent") +
   scale_x_continuous(expand = c(0.01, 0), name = "주민 수",
                      limits = c(0, 2.3e6),
@@ -93,7 +93,7 @@ p1 <- ggplot(US_census, aes(x=pop2010)) +
   theme_dviz_grid(12) +
   theme(plot.margin = margin(3, 1.5, 12, 1.5))
 
-p2 <- ggplot(US_census, aes(x=pop2010)) +
+p2 <- ggplot(ungroup(US_census), aes(x=pop2010)) +
   stat_ecdf(geom = "step", color = "#0072B2", pad = FALSE) +
   scale_x_continuous(expand = c(0.01, 0), name = "주민 수",
                      limits = c(0, 2.3e6),
@@ -112,7 +112,7 @@ plot_grid(p1, p2, ncol = 1, align = 'v', labels = 'auto')
 (ref:county-populations-log) 미국 카운티 주민 수의 로그 분포. (a) 밀도 그림. (b) 경험적 누적 분포 함수.
 
 ```{r fig-county-populations-log, fig.width = 5, fig.asp = 2*0.618, fig.cap='(ref:county-populations-log)'}
-p1_log <- ggplot(US_census, aes(x=log10(pop2010))) +
+p1_log <- ggplot(ungroup(US_census), aes(x=log10(pop2010))) +
   geom_density(fill = "#56B4E9", color = "transparent") +
   scale_x_continuous(
     expand = c(0.01, 0),
@@ -123,7 +123,7 @@ p1_log <- ggplot(US_census, aes(x=log10(pop2010))) +
   theme_dviz_grid(12) +
   theme(plot.margin = margin(3, 1.5, 12, 1.5))
 
-p2_log <- ggplot(US_census, aes(x=log10(pop2010))) +
+p2_log <- ggplot(ungroup(US_census), aes(x=log10(pop2010))) +
   stat_ecdf(geom = "step", color = "#0072B2", pad = FALSE) +
   scale_x_continuous(
     expand = c(0.01, 0),
@@ -142,7 +142,7 @@ plot_grid(p1_log, p2_log, ncol = 1, align = 'v', labels = 'auto')
 (ref:county-populations-tail-log-log) 해당 주민 수 이상의 카운티 상대 빈도 대 카운티 주민 수.
 
 ```{r fig-county-populations-tail-log-log, fig.cap='(ref:county-populations-tail-log-log)'}
-ggplot(US_census, aes(x=pop2010, y = 1-..y..)) +
+ggplot(ungroup(US_census), aes(x=pop2010, y = 1-..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2", size = 0.75, pad = FALSE) +
   scale_x_log10(expand = c(0.01, 0),
                 breaks = c(1e2, 1e3, 1e4, 1e5, 1e6, 1e7),
@@ -159,7 +159,7 @@ ggplot(US_census, aes(x=pop2010, y = 1-..y..)) +
 (ref:word-counts-tail-log-log) 소설 모비 딕의 단어 수 분포. 소설에서 해당 횟수 이상으로 나오는 단어의 상대 빈도 대 단어가 사용된 횟수가 표시됩니다.
 
 ```{r fig-word-counts-tail-log-log, fig.cap='(ref:word-counts-tail-log-log)' }
-ggplot(Moby_Dick, aes(x=count, y = 1-..y..)) +
+ggplot(ungroup(Moby_Dick), aes(x=count, y = 1-..y..)) +
   stat_ecdf(geom = "step", color = "#0072B2", size = 0.75, pad = FALSE) +
   scale_x_log10(expand = c(0.01, 0), breaks = c(1, 10, 100, 1000, 10000),
                 name = "단어가 사용된 횟수") +
@@ -223,7 +223,7 @@ df_segment <- data.frame(
   yend = c(-Inf, 15)
 )
 
-ggplot(US_census, aes(sample = log(pop2010))) +
+ggplot(ungroup(US_census), aes(sample = log(pop2010))) +
   geom_abline(slope = 1, intercept = 0, color = "grey70") +
   stat_qq(dparams = params, color = "#0072B2") +
   geom_segment(

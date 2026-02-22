@@ -37,7 +37,7 @@ plot_grid(p1, p2, p3, ncol = 1)
 (ref:popgrowth-US) 2000년부터 2010년까지 미국의 인구 증가. 서부와 남부의 주들이 가장 큰 증가를 보인 반면, 중서부와 북동부의 주들은 훨씬 적은 증가를 보이거나 미시간주의 경우 심지어 감소했습니다. 데이터 출처: 미국 인구 조사국
 
 ```{r fig-popgrowth-US, fig.width = 6, fig.asp = 1.2, fig.cap = '(ref:popgrowth-US)'}
-popgrowth_df <- left_join(US_census, US_regions) %>%
+popgrowth_df <- left_join(ungroup(US_census), US_regions) %>%
     group_by(region, division, state) %>%
     summarize(pop2000 = sum(pop2000, na.rm = TRUE),
               pop2010 = sum(pop2010, na.rm = TRUE),

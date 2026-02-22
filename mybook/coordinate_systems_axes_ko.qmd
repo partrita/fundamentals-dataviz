@@ -241,7 +241,7 @@ plot_grid(plotlist[[1]], plotlist[[2]], plotlist[[3]], stamp_wrong(plotlist[[4]]
 
 ```{r fig-texas-counties-pop-ratio-log, fig.width = 5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:texas-counties-pop-ratio-log)'}
 set.seed(3878)
-US_census %>% filter(state %in% c("Texas", "텍사스")) %>%
+ungroup(US_census) %>% filter(state %in% c("Texas", "텍사스")) %>%
   select(name, pop2010) %>%
   extract(name, "county", regex = "(.+)(?: County| 카운티)") %>%
   mutate(popratio = pop2010/median(pop2010)) %>%

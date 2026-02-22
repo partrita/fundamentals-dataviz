@@ -179,7 +179,7 @@ cvd_sim2(iris_scatter2_small, label_size = 14, label_y = .98, scale = .95)
 (ref:tech-stocks-bad-legend) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 범례의 회사 이름을 데이터 곡선과 일치시키는 데 상당한 정신적 에너지가 필요하기 때문에 "나쁨"으로 표시되었습니다. 데이터 출처: Yahoo Finance
 
 ```{r fig-tech-stocks-bad-legend, fig.cap = '(ref:tech-stocks-bad-legend)'}
-price_plot_base <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
+price_plot_base <- ggplot(ungroup(tech_stocks), aes(x = date, y = price_indexed, color = ticker)) +
   geom_line(size = 0.66, na.rm = TRUE) +
   scale_color_manual(
     values = c("#000000", "#E69F00", "#56B4E9", "#009E73"),
@@ -213,7 +213,7 @@ stamp_bad(
 (ref:tech-stocks-good-legend) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 데이터 출처: Yahoo Finance
 
 ```{r fig-tech-stocks-good-legend, fig.cap = '(ref:tech-stocks-good-legend)'}
-price_plot_base_good <- ggplot(tech_stocks, aes(x = date, y = price_indexed, color = ticker)) +
+price_plot_base_good <- ggplot(ungroup(tech_stocks), aes(x = date, y = price_indexed, color = ticker)) +
   scale_color_manual(
     values = c("#000000", "#E69F00", "#56B4E9", "#009E73"),
     name = "",

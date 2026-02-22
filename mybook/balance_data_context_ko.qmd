@@ -164,7 +164,7 @@ R 소프트웨어 ggplot2는 회색 배경에 흰색 선으로 된 상당히 눈
 (ref:price-plot-ggplot-default) 4개 주요 기술 회사의 시간에 따른 주가. 각 회사의 주가는 2012년 6월에 100과 같도록 정규화되었습니다. 이 그림은 ggplot2 기본 모양을 모방하여 회색 배경에 흰색 주 격자선과 보조 격자선을 사용합니다. 이 특정 예에서 격자선이 데이터 선을 압도하여 균형이 잘 맞지 않고 데이터에 충분한 강조를 두지 않는 그림이 되었다고 생각합니다. 데이터 출처: Yahoo Finance
 
 ```{r fig-price-plot-ggplot-default, fig.cap='(ref:price-plot-ggplot-default)'}
-price_plot <- ggplot(tech_stocks, aes(x=date, y=price_indexed, color=ticker)) +
+price_plot <- ggplot(ungroup(tech_stocks), aes(x=date, y=price_indexed, color=ticker)) +
   geom_line(size = 0.66, na.rm = TRUE) +
   scale_color_manual(
     values = c("#000000", "#E69F00", "#56B4E9", "#009E73"),
@@ -214,7 +214,7 @@ stamp_bad(
 (ref:price-plot-refline) 4개 주요 기술 회사의 시간에 따른 지수화된 주가. 그림 @fig-price-plot-no-grid에 지수 값 100에 얇은 수평선을 추가하면 플롯이涵盖하는 전체 기간 동안 중요한 참조를 제공하는 데 도움이 됩니다. 데이터 출처: Yahoo Finance
 
 ```{r fig-price-plot-refline, fig.cap='(ref:price-plot-refline)'}
-price_plot2 <- ggplot(tech_stocks, aes(x=date, y=price_indexed, color=ticker)) +
+price_plot2 <- ggplot(ungroup(tech_stocks), aes(x=date, y=price_indexed, color=ticker)) +
   geom_hline(yintercept = 100, size = 0.5, color="grey70") +
   geom_line(size = 0.66, na.rm = TRUE) +
   scale_color_manual(
