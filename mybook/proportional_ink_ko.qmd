@@ -1,5 +1,5 @@
 ---
-title: "(PART\) 2부: 그림 디자인의 원칙 {-}"
+title: "비례 잉크의 원칙"
 ---
 
 ```{r echo = FALSE, message = FALSE}
@@ -13,8 +13,6 @@ library(ggforce)
 library(treemapify)
 ```
 
-
-# (PART\*) 2부: 그림 디자인의 원칙 {-}
 
 # 비례 잉크의 원칙 {#sec-proportional-ink}
 

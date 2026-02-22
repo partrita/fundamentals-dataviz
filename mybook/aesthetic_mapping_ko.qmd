@@ -1,5 +1,5 @@
 ---
-title: "(PART\) 1부: 데이터에서 시각화까지 {-}"
+title: "데이터 시각화: 데이터를 미학적 요소에 매핑하기"
 ---
 
 ```{r echo = FALSE, message = FALSE}
@@ -10,9 +10,6 @@ library(forcats)
 library(patchwork)
 library(lubridate)
 ```
-
-
-# (PART\*) 1부: 데이터에서 시각화까지 {-}
 
 
 # 데이터 시각화: 데이터를 미학적 요소에 매핑하기 {#sec-aesthetic-mapping}

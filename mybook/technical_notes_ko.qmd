@@ -1,5 +1,5 @@
 ---
-title: "library(rgeos)"
+title: "기술 참고 사항"
 ---
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
