@@ -173,7 +173,8 @@ stamp_phantom(fb_drop_inverse)
 ```{r fig-oceania-gdp-logbars, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-logbars)'}
 library(gapminder)
 
-df_oceania <- filter(gapminder_unfiltered, year == 2007, continent == "오세아니아") %>%
+df_oceania <- filter(gapminder_unfiltered, year == 2007, continent == "Oceania") %>%
+  mutate(continent = "오세아니아") %>%
   mutate(GDP = pop*gdpPercap) %>%
   arrange(desc(GDP))
 
@@ -237,10 +238,22 @@ ggplot(df_oceania, aes(x = reorder(country, -GDP), y = log10(GDP))) +
 (ref:oceania-gdp-relative) 파푸아뉴기니 GDP 대비 2007년 오세아니아 국가 GDP. 데이터 출처: 갭마인더.
 
 ```{r fig-oceania-gdp-relative, fig.width = 6, fig.asp = 0.5, fig.cap = '(ref:oceania-gdp-relative)'}
-GDP_PNG <- filter(df_oceania, country == "파푸아뉴기니")$GDP
+GDP_PNG <- filter(df_oceania, country == "Papua New Guinea")$GDP
 
 df_oceania_ratios <- mutate(df_oceania, gdp_ratio = GDP/GDP_PNG) %>%
-  filter(country != "파푸아뉴기니")
+  filter(country != "Papua New Guinea") %>%
+  mutate(country = case_when(
+    country == "Australia" ~ "호주",
+    country == "New Zealand" ~ "뉴질랜드",
+    country == "Fiji" ~ "피지",
+    country == "French Polynesia" ~ "프랑스령 폴리네시아",
+    country == "New Caledonia" ~ "뉴칼레도니아",
+    country == "Vanuatu" ~ "바누아투",
+    country == "Samoa" ~ "사모아",
+    country == "Tonga" ~ "통가",
+    country == "Federated States of Micronesia" ~ "미크로네시아 연방",
+    TRUE ~ country
+  ))
 
 ggplot(df_oceania_ratios, aes(x = reorder(country, gdp_ratio), y = gdp_ratio)) +
   geom_col(fill = "#56B4E9") +

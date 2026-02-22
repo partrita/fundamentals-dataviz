@@ -349,7 +349,9 @@ ggplot(titanic_groups, aes(x = class, y = n, fill = sex)) +
 
 ```{r fig-Americas-life-expect, fig.width = 6., fig.asp = .9, fig.cap = '(ref:Americas-life-expect)'}
 library(gapminder)
-df_Americas <- gapminder %>% filter(year == 2007, continent == "아메리카")
+df_Americas <- gapminder %>%
+  filter(year == 2007, continent == "Americas") %>%
+  mutate(continent = "아메리카")
 ggplot(df_Americas, aes(x = lifeExp, y = fct_reorder(country, lifeExp))) +
   geom_point(color = "#0072B2", size = 3) +
   scale_x_continuous(

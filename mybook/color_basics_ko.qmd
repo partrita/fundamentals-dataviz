@@ -170,7 +170,8 @@ plot_grid(p1, p2, p3, ncol = 1)
 ```{r fig-map-Texas-race, fig.width = 6, fig.asp = 0.75, fig.cap = '(ref:map-Texas-race)'}
 texas_race %>% st_sf() %>%
   st_transform(crs = texas_crs) %>%
-  filter(variable == "백인") %>%
+  filter(variable == "White") %>%
+  mutate(variable = "백인") %>%
   ggplot(aes(fill = pct)) +
   geom_sf(color = "white") +
   coord_sf(xlim = texas_xlim, datum = NA) +
@@ -289,10 +290,12 @@ ggplot(popgrowth_hilight, aes(x = state, y = 100*popgrowth, fill = region)) +
 
 ```{r fig-Aus-athletes-track, fig.width = 6, fig.cap='(ref:Aus-athletes-track)'}
 male_Aus <- filter(Aus_athletes, sex=="m") %>%
-  filter(sport %in% c("농구", "필드", "수영", "육상 (400m)",
-                      "육상 (단거리)", "수구")) %>%
-  mutate(sport = case_when(sport == "육상 (400m)" ~ "육상",
-                           sport == "육상 (단거리)" ~ "육상",
+  filter(sport %in% c("Basketball", "Field", "Swim", "T400m", "TSprnt", "W Polo")) %>%
+  mutate(sport = case_when(sport == "Basketball" ~ "농구",
+                           sport == "Field" ~ "필드",
+                           sport == "Swim" ~ "수영",
+                           sport %in% c("T400m", "TSprnt") ~ "육상",
+                           sport == "W Polo" ~ "수구",
                            TRUE ~ sport))
 
 male_Aus$sport <- factor(male_Aus$sport,

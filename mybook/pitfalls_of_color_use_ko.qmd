@@ -191,7 +191,8 @@ texas_xlim <- c(558298.7, 2112587)
 # texas_income에서 지오메트리 재사용
 texas_race %>% st_sf() %>%
   st_transform(crs = texas_crs) %>%
-  filter(variable == "백인") %>%
+  filter(variable == "White") %>%
+  mutate(variable = "백인") %>%
   ggplot(aes(fill = pct)) +
     geom_sf(color = "white") +
     coord_sf(xlim = texas_xlim, datum = NA) +

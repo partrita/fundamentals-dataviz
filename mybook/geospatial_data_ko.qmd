@@ -871,7 +871,7 @@ p
 (ref:median-income-statebins) 미국의 모든 주의 중간 소득을 카토그램 히트맵으로 표시했습니다. 각 주는 동일한 크기의 정사각형으로 표시되며 정사각형은 다른 주에 대한 각 주의 대략적인 위치에 따라 배열됩니다. 이 표현은 각 주에 동일한 시각적 가중치를 부여합니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
 ```{r fig-median-income-statebins, fig.asp = 0.62, fig.cap = '(ref:median-income-statebins)'}
-filter(US_income, name != "푸에르토리코", GEOID != "11") %>% # 푸에르토리코와 DC 제거
+filter(US_income, !name %in% c("Puerto Rico", "푸에르토리코"), GEOID != "11") %>% # 푸에르토리코와 DC 제거
   ggplot(aes(state = name, fill = income_bins)) +
   geom_statebins(family = dviz.supp::dviz_font_family,
                  lbl_size = 14/.pt) +

@@ -737,7 +737,7 @@ lower48 <- mutate(
     ifelse(is.na(median_income), 25000, median_income), # 누락된 값 숨기기
     breaks = c(0, 40000, 50000, 60000, 70000, 80000)
   )
-) %>% filter(!name %in% c("알래스카", "하와이", "컬럼비아 특별구"))
+) %>% filter(!name %in% c("Alaska", "Hawaii", "District of Columbia", "알래스카", "하와이", "컬럼비아 특별구"))
 
 
 p1_main <- ggplot(lower48) +
@@ -777,7 +777,7 @@ lower48_carto <- mutate(
     ifelse(is.na(median_income), 25000, median_income), # 누락된 값 숨기기
     breaks = c(0, 40000, 50000, 60000, 70000, 80000)
   )
-) %>% filter(!name %in% c("알래스카", "하와이", "컬럼비아 특별구"))
+) %>% filter(!name %in% c("Alaska", "Hawaii", "District of Columbia", "알래스카", "하와이", "컬럼비아 특별구"))
 
 p3_main <- ggplot(lower48_carto, aes(fill = income_bins)) +
   geom_sf(color = palette[1], size = 0.2) +
