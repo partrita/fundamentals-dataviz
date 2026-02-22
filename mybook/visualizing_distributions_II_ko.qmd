@@ -1,3 +1,7 @@
+---
+title: "분포 시각화: 경험적 누적 분포 함수 및 q-q 그림"
+---
+
 ```{r echo = FALSE, message = FALSE}
 ## 설정 스크립트 실행
 source("_common.R")
@@ -107,7 +111,7 @@ p2 <- ggplot(ungroup(US_census), aes(x=pop2010)) +
 plot_grid(p1, p2, ncol = 1, align = 'v', labels = 'auto')
 ```
 
-밀도 그림(그림 @fig-county-populationsa)은 0 바로 근처에 날카로운 정점을 보이며 분포의 세부 정보는 거의 보이지 않습니다. 마찬가지로 ecdf(그림 @fig-county-populationsb)는 0 근처에서 급격한 상승을 보이며 분포의 세부 정보는 다시 거의 보이지 않습니다. 이 특정 데이터 세트의 경우 데이터를 로그 변환하고 로그 변환된 값의 분포를 시각화할 수 있습니다. 이 변환은 카운티의 인구 수가 실제로는 멱법칙이 아니라 거의 완벽한 로그 정규 분포를 따르기 때문에 여기서 작동합니다(섹션 @sec-qq-plots 참조). 실제로 로그 변환된 값의 밀도 그림은 멋진 종 모양 곡선을 보여주고 해당 ecdf는 멋진 S자 모양을 보여줍니다(그림 @fig-county-populations-log).
+밀도 그림(그림 @fig-county-populations (a))은 0 바로 근처에 날카로운 정점을 보이며 분포의 세부 정보는 거의 보이지 않습니다. 마찬가지로 ecdf(그림 @fig-county-populations (b))는 0 근처에서 급격한 상승을 보이며 분포의 세부 정보는 다시 거의 보이지 않습니다. 이 특정 데이터 세트의 경우 데이터를 로그 변환하고 로그 변환된 값의 분포를 시각화할 수 있습니다. 이 변환은 카운티의 인구 수가 실제로는 멱법칙이 아니라 거의 완벽한 로그 정규 분포를 따르기 때문에 여기서 작동합니다(섹션 @sec-qq-plots 참조). 실제로 로그 변환된 값의 밀도 그림은 멋진 종 모양 곡선을 보여주고 해당 ecdf는 멋진 S자 모양을 보여줍니다(그림 @fig-county-populations-log).
 
 (ref:county-populations-log) 미국 카운티 주민 수의 로그 분포. (a) 밀도 그림. (b) 경험적 누적 분포 함수.
 

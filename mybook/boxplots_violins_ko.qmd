@@ -1,3 +1,7 @@
+---
+title: "한 번에 많은 분포 시각화하기"
+---
+
 ```{r echo = FALSE, message = FALSE}
 ## 설정 스크립트 실행
 source("_common.R")

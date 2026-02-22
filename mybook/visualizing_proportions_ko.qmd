@@ -1,3 +1,7 @@
+---
+title: "비율 시각화하기"
+---
+
 ```{r echo = FALSE, message = FALSE}
 ## 설정 스크립트 실행
 source("_common.R")
@@ -28,7 +32,7 @@ small_size <- small_rel * main_size
 
 (ref:bundestag-pie) 1976년~1980년 제8대 독일 연방의회 정당 구성, 원형 차트로 시각화. 이 시각화는 SPD와 FDP의 연립 정부가 야당인 CDU/CSU보다 약간의 과반수를 차지했음을 명확하게 보여줍니다.
 
-```{r bundestag-pie, fig.cap='(ref:bundestag-pie)'}
+```{r fig-bundestag-pie, fig.cap='(ref:bundestag-pie)'}
 # 각 파이의 시작 및 끝 각도 계산
 bund_pie <- bundestag %>%
   arrange(seats) %>%
@@ -95,11 +99,11 @@ ggplot(bund_pie) +
   )
 ```
 
-원형 차트는 원을 조각으로 나누어 각 조각의 면적이 전체에서 차지하는 비율에 비례하도록 합니다. 동일한 절차를 직사각형에 수행할 수 있으며 결과는 누적 막대 차트입니다(그림 @fig-bundestag-stacked-bars). 막대를 세로로 자르는지 가로로 자르는지에 따라 세로 누적 막대(그림 @fig-bundestag-stacked-barsa) 또는 가로 누적 막대(그림 @fig-bundestag-stacked-barsb)를 얻습니다.
+원형 차트는 원을 조각으로 나누어 각 조각의 면적이 전체에서 차지하는 비율에 비례하도록 합니다. 동일한 절차를 직사각형에 수행할 수 있으며 결과는 누적 막대 차트입니다(그림 @fig-bundestag-stacked-bars). 막대를 세로로 자르는지 가로로 자르는지에 따라 세로 누적 막대(그림 @fig-bundestag-stacked-bars (a)) 또는 가로 누적 막대(그림 @fig-bundestag-stacked-bars (b))를 얻습니다.
 
 (ref:bundestag-stacked-bars) 1976년~1980년 제8대 독일 연방의회 정당 구성, 누적 막대로 시각화. (a) 세로로 쌓인 막대. (b) 가로로 쌓인 막대. SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
 
-```{r bundestag-stacked-bars, fig.width = 5.5*6/4.2, fig.cap='(ref:bundestag-stacked-bars)'}
+```{r fig-bundestag-stacked-bars, fig.width = 5.5*6/4.2, fig.cap='(ref:bundestag-stacked-bars)'}
 bundestag <- mutate(bundestag,
                     label_y = cumsum(seats) - seats/2)
 
@@ -161,7 +165,7 @@ plot_grid(
 )
 ```
 
-그림 @fig-bundestag-stacked-barsa의 막대를 가져와 서로 겹쳐 쌓는 대신 나란히 배치할 수도 있습니다. 이 시각화는 세 그룹을 직접 비교하기 쉽게 만들지만 데이터의 다른 측면을 모호하게 만듭니다(그림 @fig-bundestag-bars-side-by-side). 가장 중요한 것은 나란히 놓인 막대 그래프에서 각 막대와 전체의 관계가 시각적으로 명확하지 않다는 것입니다.
+그림 @fig-bundestag-stacked-bars (a)의 막대를 가져와 서로 겹쳐 쌓는 대신 나란히 배치할 수도 있습니다. 이 시각화는 세 그룹을 직접 비교하기 쉽게 만들지만 데이터의 다른 측면을 모호하게 만듭니다(그림 @fig-bundestag-bars-side-by-side). 가장 중요한 것은 나란히 놓인 막대 그래프에서 각 막대와 전체의 관계가 시각적으로 명확하지 않다는 것입니다.
 
 (ref:bundestag-bars-side-by-side) 1976년~1980년 제8대 독일 연방의회 정당 구성, 나란히 놓인 막대로 시각화. 그림 @fig-bundestag-stacked-bars에서와 마찬가지로 SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
 
@@ -185,7 +189,7 @@ bt_bars
 
 많은 저자들이 원형 차트를 단호하게 거부하고 나란히 놓인 막대나 누적 막대를 지지합니다. 다른 사람들은 일부 응용 프로그램에서 원형 차트 사용을 옹호합니다. 제 개인적인 의견은 이러한 시각화 중 어느 것도 다른 것보다 일관되게 우수하지 않다는 것입니다. 데이터 세트의 특징과 전달하려는 특정 이야기에 따라 한 가지 또는 다른 접근 방식을 선호할 수 있습니다. 제8대 독일 연방의회의 경우 원형 차트가 최상의 옵션이라고 생각합니다. SPD와 FDP의 연립 정부가 CDU/CSU보다 약간의 과반수를 차지했음을 명확하게 보여줍니다(그림 @fig-bundestag-pie). 이 사실은 다른 어떤 플롯에서도 시각적으로 명확하지 않습니다(그림 @fig-bundestag-stacked-bars 및 @fig-bundestag-bars-side-by-side).
 
-일반적으로 원형 차트는 1/2, 1/3 또는 1/4과 같은 단순한 분수를 강조하는 것이 목표일 때 잘 작동합니다. 또한 매우 작은 데이터 세트가 있는 경우에도 잘 작동합니다. 그림 @fig-bundestag-pie와 같은 단일 원형 차트는 괜찮아 보이지만 그림 @fig-bundestag-stacked-barsa와 같은 단일 열의 누적 막대는 어색해 보입니다. 반면에 누적 막대는 여러 조건의 나란히 비교 또는 시계열에서 작동할 수 있으며 개별 분수를 서로 직접 비교하려는 경우 나란히 놓인 막대가 선호됩니다. 원형 차트, 누적 막대 및 나란히 놓인 막대의 여러 장단점에 대한 요약은 표 @tbl-pros-cons-pie-bar에 나와 있습니다.
+일반적으로 원형 차트는 1/2, 1/3 또는 1/4과 같은 단순한 분수를 강조하는 것이 목표일 때 잘 작동합니다. 또한 매우 작은 데이터 세트가 있는 경우에도 잘 작동합니다. 그림 @fig-bundestag-pie와 같은 단일 원형 차트는 괜찮아 보이지만 그림 @fig-bundestag-stacked-bars (a)와 같은 단일 열의 누적 막대는 어색해 보입니다. 반면에 누적 막대는 여러 조건의 나란히 비교 또는 시계열에서 작동할 수 있으며 개별 분수를 서로 직접 비교하려는 경우 나란히 놓인 막대가 선호됩니다. 원형 차트, 누적 막대 및 나란히 놓인 막대의 여러 장단점에 대한 요약은 표 @tbl-pros-cons-pie-bar에 나와 있습니다.
 
 ----------------------------------------------------------------------------------------
                                     원형 차트         누적 막대      나란히 놓인 막대
