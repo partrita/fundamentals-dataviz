@@ -132,6 +132,7 @@ tempsplot_F <- ggplot(temps_wide_label, aes(x = `샌디에이고`, y = `휴스�
   geom_text_repel(
     aes(label = label), point.padding = .4, color = "black",
     min.segment.length = 0, size = 12/.pt,
+    max.overlaps = Inf,
     family = dviz_font_family,
     nudge_x = (9/5)*temps_wide_label$nudge_x,
     nudge_y = (9/5)*temps_wide_label$nudge_y
@@ -156,6 +157,7 @@ tempsplot_C <- ggplot(temps_wide_label, aes(x = F2C(`샌디에이고`), y = F2C(
   geom_text_repel(
     aes(label = label), point.padding = .4, color = "black",
     min.segment.length = 0, size = 12/.pt,
+    max.overlaps = Inf,
     family = dviz_font_family,
     nudge_x = temps_wide_label$nudge_x,
     nudge_y = temps_wide_label$nudge_y
@@ -254,7 +256,7 @@ ggplot(tx_counties, aes(x = index, y = popratio)) +
   geom_hline(yintercept = 1, linetype = 2, color = "grey40") +
   geom_point(size = 0.5, color = "#0072B2") +
   geom_text_repel(aes(label = label), point.padding = .4, color = "black",
-                  min.segment.length = 0, family = dviz_font_family) +
+                  min.segment.length = 0, max.overlaps = Inf, family = dviz_font_family) +
   scale_y_log10(breaks = c(.01, .1, 1, 10, 100),
                 name = "인구 수 / 중간값",
                 labels = label_log10) +
@@ -272,7 +274,7 @@ ggplot(tx_counties, aes(x = index, y = popratio)) +
 counties_lin <- ggplot(tx_counties, aes(x = index, y = popratio)) +
   geom_point(size = 0.5, color = "#0072B2") +
   geom_text_repel(aes(label = label_large), point.padding = .4, color = "black",
-                  min.segment.length = 0, family = dviz_font_family) +
+                  min.segment.length = 0, max.overlaps = Inf, family = dviz_font_family) +
   scale_y_continuous(name = "인구 수 / 중간값") +
   scale_x_continuous(limits = c(.5, nrow(tx_counties) + .5), expand = c(0, 0),
                      breaks = NULL, #c(1, 50*(1:5)),
