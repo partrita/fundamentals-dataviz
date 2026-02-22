@@ -1122,8 +1122,15 @@ plot_grid(
 (ref:butterfat-bars) 네 가지 소 품종 우유의 평균 유지방 함량. 오차 막대는 평균의 표준 오차 +/-를 나타냅니다. 이러한 유형의 시각화는 과학 문헌에서 자주 볼 수 있습니다. 기술적으로는 정확하지만 각 범주 내의 변동이나 표본 평균의 불확실성을 특별히 잘 나타내지는 못합니다. 개별 품종 내 유지방 함량 변동은 그림 @fig-butterfat-densitites를 참조하십시오. 데이터 출처: 캐나다 순종 젖소 생산 능력 기록
 
 ```{r fig-butterfat-bars, fig.width = 5, fig.cap = '(ref:butterfat-bars)'}
-cows %>% filter(breed != "캐나다산") %>%
-  mutate(breed = as.character(breed)) %>%
+cows %>%
+  filter(breed != "Canadian") %>%
+  mutate(breed = case_when(
+    breed == "Ayrshire" ~ "에어셔",
+    breed == "Guernsey" ~ "건지",
+    breed == "Holstein-Friesian" ~ "홀스타인-프리지안",
+    breed == "Jersey" ~ "저지",
+    TRUE ~ as.character(breed)
+  )) %>%
   group_by(breed) %>%
   summarize(
     mean = mean(butterfat),

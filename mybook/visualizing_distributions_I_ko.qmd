@@ -382,7 +382,15 @@ ggplot(gender_counts, aes(x = age, y = ifelse(gender == "male",-1, 1)*count, fil
 ```{r fig-butterfat-densitites, fig.cap = '(ref:butterfat-densitites)'}
 cows %>%
   mutate(breed = as.character(breed)) %>%
-  filter(breed != "캐나다산") -> cows_filtered
+  filter(breed != "Canadian") %>%
+  mutate(breed = case_when(
+    breed == "Ayrshire" ~ "에어셔",
+    breed == "Guernsey" ~ "건지",
+    breed == "Holstein-Friesian" ~ "홀스타인-프리지안",
+    breed == "Jersey" ~ "저지",
+    TRUE ~ breed
+  )) %>%
+  mutate(breed = factor(breed, levels = c("에어셔", "건지", "홀스타인-프리지안", "저지"))) -> cows_filtered
 
 # 꽃받침 길이에 대한 밀도 계산
 cows_dens <- group_by(cows_filtered, breed) %>%
