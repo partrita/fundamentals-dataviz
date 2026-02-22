@@ -28,7 +28,7 @@ small_size <- small_rel * main_size
 
 (ref:bundestag-pie) 1976년~1980년 제8대 독일 연방의회 정당 구성, 원형 차트로 시각화. 이 시각화는 SPD와 FDP의 연립 정부가 야당인 CDU/CSU보다 약간의 과반수를 차지했음을 명확하게 보여줍니다.
 
-```{r, bundestag-pie, fig-cap='(ref:bundestag-pie)'}
+```{r bundestag-pie, fig.cap='(ref:bundestag-pie)'}
 # 각 파이의 시작 및 끝 각도 계산
 bund_pie <- bundestag %>%
   arrange(seats) %>%
@@ -99,7 +99,7 @@ ggplot(bund_pie) +
 
 (ref:bundestag-stacked-bars) 1976년~1980년 제8대 독일 연방의회 정당 구성, 누적 막대로 시각화. (a) 세로로 쌓인 막대. (b) 가로로 쌓인 막대. SPD와 FDP가 합쳐서 CDU/CSU보다 의석이 많았다는 것이 즉시 명확하지 않습니다.
 
-```{r, bundestag-stacked-bars, fig-width = 5.5*6/4.2, fig-cap='(ref:bundestag-stacked-bars)'}
+```{r bundestag-stacked-bars, fig.width = 5.5*6/4.2, fig.cap='(ref:bundestag-stacked-bars)'}
 bundestag <- mutate(bundestag,
                     label_y = cumsum(seats) - seats/2)
 
