@@ -401,7 +401,7 @@ plot_grid(
 point_color <- darken("#009E73", .3)
 
 cacao %>%
-  filter(location == "캐나다") -> cacao_single
+  filter(location == "Canada") -> cacao_single
 
 fit <- lm(rating ~ 1, data = cacao_single)
 
@@ -504,8 +504,8 @@ ggplot(CI_df, aes(estimate, type)) +
 (ref:cocoa-CI-vs-n) 표본 크기가 작을수록 신뢰 구간이 넓어집니다. 캐나다와 스위스의 초콜릿 바는 평균 평가와 표준 편차가 비슷합니다(단순한 검은색 오차 막대로 표시됨). 그러나 스위스 바보다 캐나다 바가 3배 이상 많이 평가되었으므로 스위스 평가 평균에 대한 신뢰 구간(여러 색상과 두께의 오차 막대를 서로 겹쳐 그린 것으로 표시됨)이 캐나다 평가 평균에 대한 신뢰 구간보다 훨씬 넓습니다. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
 ```{r fig-cocoa-CI-vs-n, fig.width = 5*6/4.2, fig.asp = 0.46, warning = FALSE, message = FALSE, fig.cap = '(ref:cocoa-CI-vs-n)'}
-cacao_CA <- filter(cacao, location == "캐나다")
-cacao_CH <- filter(cacao, location == "스위스")
+cacao_CA <- filter(cacao, location == "Canada")
+cacao_CH <- filter(cacao, location == "Switzerland")
 
 fit_CA <- lm(rating ~ 1, data = cacao_CA)
 fit_CH <- lm(rating ~ 1, data = cacao_CH)
@@ -664,10 +664,17 @@ ggplot(rbind(CI_df, sd_df), aes(estimate, interaction(location, type))) +
 (ref:mean-chocolate-ratings) 6개국의 제조업체에서 생산한 초콜릿 바의 평균 초콜릿 맛 평가 및 관련 신뢰 구간. 데이터 출처: 브래디 브렐린스키, 맨해튼 초콜릿 협회
 
 ```{r fig-mean-chocolate-ratings, fig.width = 5*6/4.2, fig.asp = 0.5, fig.cap = '(ref:mean-chocolate-ratings)'}
-#countries <- c("오스트리아", "벨기에", "캐나다", "페루", "스위스")
-#
-cacao_small <-
-  cacao_small %>%
+cacao_small <- cacao %>%
+  filter(location %in% c("Canada", "Switzerland", "Austria", "Belgium", "U.S.A.", "France")) %>%
+  mutate(location = case_when(
+    location == "Canada" ~ "캐나다",
+    location == "Switzerland" ~ "스위스",
+    location == "Austria" ~ "오스트리아",
+    location == "Belgium" ~ "벨기에",
+    location == "U.S.A." ~ "미국",
+    location == "France" ~ "프랑스",
+    TRUE ~ location
+  )) %>%
   mutate(location = fct_recode(location, US = "미국")) # 오라일리 스타일로 변경
 
 fit <- lm(rating ~ location, data = cacao_small)
@@ -1158,7 +1165,7 @@ ggplot(cow_means, aes(x = breed, y = mean, ymin = mean - 1.96*se, ymax = mean + 
 (ref:median-age-income) 펜실베이니아 67개 카운티의 중간 소득 대 중간 연령. 오차 막대는 90% 신뢰 구간을 나타냅니다. 데이터 출처: 2015년 5개년 미국 지역사회 조사
 
 ```{r fig-median-age-income, fig.width = 5, fig.asp = 3/4, fig.cap = '(ref:median-age-income)'}
-filter(US_income_age, state == "펜실베이니아") %>%
+filter(US_income_age, state == "Pennsylvania") %>%
   ggplot(aes(age, income)) +
   geom_errorbarh(
     aes(xmin = age - age.moe, xmax = age + age.moe),
@@ -1532,7 +1539,12 @@ HOP 개념을 설명하기 위해 초콜릿 바 등급으로 다시 돌아가 �
 
 ```{r fig-chocolate-HOP-static, fig.width = 5.5*6/4.2, fig.asp = 0.6, fig.cap = '(ref:chocolate-HOP-static)'}
 cacao %>%
-  filter(location %in% c("캐나다", "미국")) %>%
+  filter(location %in% c("Canada", "U.S.A.")) %>%
+  mutate(location = case_when(
+    location == "Canada" ~ "캐나다",
+    location == "U.S.A." ~ "미국",
+    TRUE ~ location
+  )) %>%
   mutate(location = fct_recode(location, US = "미국")) -> cacao_US_CA
 
 set.seed(49323)

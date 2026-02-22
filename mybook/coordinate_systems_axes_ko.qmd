@@ -442,14 +442,15 @@ plot_grid(
 
 ```{r fig-temperature-normals-polar, fig.width = 6, fig.cap = '(ref:temperature-normals-polar)'}
 temps_long <- gather(temps_wide, location, temperature, -month, -day, -date) %>%
-  filter(location %in% c("시카고",
-                         "데스밸리",
-                         "휴스턴",
-                         "샌디에이고")) %>%
-  mutate(location = factor(location, levels = c("데스밸리",
-                                                "휴스턴",
-                                                "샌디에이고",
-                                                "시카고")))
+  filter(location %in% c("Chicago", "Death Valley", "Houston", "San Diego")) %>%
+  mutate(location = case_when(
+    location == "Chicago" ~ "시카고",
+    location == "Death Valley" ~ "데스밸리",
+    location == "Houston" ~ "휴스턴",
+    location == "San Diego" ~ "샌디에이고",
+    TRUE ~ location
+  )) %>%
+  mutate(location = factor(location, levels = c("데스밸리", "휴스턴", "샌디에이고", "시카고")))
 
 ggplot(temps_long, aes(x = date, y = temperature, color = location)) +
   geom_line(size = 1) +
